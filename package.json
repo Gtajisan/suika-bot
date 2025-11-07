@@ -1,0 +1,43 @@
+{
+  "name": "rento-bot",
+  "version": "1.0.0",
+  "description": "A powerful Discord bot with modular structure like Goat-Bot-V2",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "modular"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.29.0",
+    "axios": "^1.12.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "canvas": "^3.2.0",
+    "cheerio": "^1.1.2",
+    "child_process": "^1.0.2",
+    "cookie-parser": "^1.4.7",
+    "crypto": "^1.0.1",
+    "discord.js": "^14.24.0",
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.2",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.3.2",
+    "gradient-string": "^3.0.0",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.48",
+    "mongoose": "^8.19.2",
+    "nekos.life": "^3.0.0",
+    "ora": "^5.4.1",
+    "os": "^0.1.2",
+    "path": "^0.12.7"
+  }
+}

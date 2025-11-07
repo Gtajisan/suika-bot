@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', { 
+        title: title,
+        description: 'Powerful Discord bot with moderation, leveling, economy, and fun features. Enhance your Discord server with RentoBot today!',
+        url: '/',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('partials/nav', { 
+        title: title,
+        isAuthenticated: typeof user !== 'undefined' && user,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+
+    <% if (isAdmin) { %>
+        <div class="admin-dashboard container">
+            <h2>Admin Dashboard</h2>
+            <div class="admin-nav">
+                <a href="/admin">Dashboard</a>
+                <a href="/admin/users">Users</a>
+                <a href="/admin/guilds">Guilds</a>
+            </div>
+
+            <div class="stats-grid" style="max-width: 100%;">
+                <div class="stat-card">
+                    <div class="icon">👥</div>
+                    <div class="value"><%= users.length %></div>
+                    <div class="label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">📊</div>
+                    <div class="value"><%= guilds.length %></div>
+                    <div class="label">Total Guilds</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">⚡</div>
+                    <div class="value"><%= stats.commands %></div>
+                    <div class="label">Commands Available</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Quick Actions</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                    <a href="/admin/users" class="action-item">
+                        <span class="action-icon">👥</span>
+                        <span>Manage Users</span>
+                    </a>
+                    <a href="/admin/guilds" class="action-item">
+                        <span class="action-icon">📊</span>
+                        <span>Manage Servers</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <header class="hero">
+        <div class="container">
+            <h1>Welcome to RentoBot</h1>
+            <p>A powerful Discord bot with moderation, leveling, economy, and more!</p>
+            <div style="display: flex; gap: 16px; justify-content: center; margin-top: 24px;">
+                <a href="https://discord.com/api/oauth2/authorize?client_id=<%= config.discord.clientId %>&permissions=8&scope=bot%20applications.commands" class="btn btn-primary" target="_blank">Invite RentoBot</a>
+                <a href="/commands" class="btn">View Commands</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="features container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">🛡️</div>
+                <h3>Moderation</h3>
+                <p>Powerful moderation tools to keep your server safe</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📊</div>
+                <h3>Leveling System</h3>
+                <p>Engage your members with XP and level progression</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">💰</div>
+                <h3>Economy</h3>
+                <p>Virtual currency system with shop and banking</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎮</div>
+                <h3>Fun Games</h3>
+                <p>Quiz, slots, tic-tac-toe and more interactive games</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎨</div>
+                <h3>Customization</h3>
+                <p>Custom rank cards, prefixes, and welcome messages</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⚙️</div>
+                <h3>Easy Setup</h3>
+                <p>Simple configuration with intuitive commands</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats container">
+        <h2>Bot Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">🌐</div>
+                <div class="value"><%= stats.servers %></div>
+                <div class="label">Servers</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">👥</div>
+                <div class="value"><%= stats.users %></div>
+                <div class="label">Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⚡</div>
+                <div class="value"><%= stats.commands %></div>
+                <div class="label">Commands</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>RentoBot</h3>
+                    <p>A powerful Discord bot with moderation, leveling, economy, and fun features to enhance your server experience.</p>
+                    <div class="footer-social">
+                        <a href="https://discord.gg/zYdj9qQX" target="_blank" title="Discord">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/notsopreety/DC-Bot" target="_blank" title="GitHub">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/commands">Commands</a>
+                    <a href="/features">Features</a>
+                    <a href="/about">About</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <a href="https://discord.com/api/oauth2/authorize?client_id=<%= config.discord.clientId %>&permissions=8&scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Invite Bot</a>
+                    <a href="https://discord.gg/zYdj9qQX" target="_blank" rel="noopener noreferrer">Support Server</a>
+                    <a href="https://github.com/notsopreety/DC-Bot" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="/login">Admin Login</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <%= new Date().getFullYear() %> RentoBot. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="/about">About</a>
+                    <a href="/commands">Commands</a>
+                    <a href="https://discord.gg/zYdj9qQX" target="_blank" rel="noopener noreferrer">Support</a>
+                    <a href="https://github.com/notsopreety/DC-Bot" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

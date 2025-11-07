@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', { 
+        title: title,
+        description: 'View RentoBot statistics, leaderboards, and server information. Track user rankings and bot performance.',
+        url: '/dashboard',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('partials/nav', { 
+        title: title,
+        isAuthenticated: typeof user !== 'undefined' && user,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+    
+    <div class="dashboard-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Dashboard</h2>
+                <p>Welcome back! Here's what's happening with RentoBot.</p>
+            </div>
+
+            <div class="bot-info-section animate-fade-in" id="botInfoSection">
+                <div class="skeleton-card" id="botInfoSkeleton">
+                    <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                </div>
+                <div id="botInfoContent" style="display: none;"></div>
+            </div>
+
+            <div class="stats-grid" style="max-width: 100%; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="stat-card">
+                    <div class="icon">📊</div>
+                    <div class="value"><%= stats.servers %></div>
+                    <div class="label">Total Servers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">👥</div>
+                    <div class="value"><%= stats.users %></div>
+                    <div class="label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">💬</div>
+                    <div class="value"><%= stats.commandsUsed %></div>
+                    <div class="label">Commands Used</div>
+                </div>
+            </div>
+
+            <div class="leaderboard-grid">
+                <div class="card">
+                    <h3>Server Leaderboard</h3>
+                    <div id="guildLeaderboard">
+                        <p style="text-align: center; color: var(--text-muted);">Loading...</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>User Leaderboard</h3>
+                    <div id="userLeaderboard">
+                        <p style="text-align: center; color: var(--text-muted);">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Quick Actions</h3>
+                <div class="quick-actions" style="background: transparent; border: none; padding: 0;">
+                    <a href="/commands" class="action-item">
+                        <span class="action-icon">🎮</span>
+                        <span>View All Commands</span>
+                    </a>
+                    <a href="/features" class="action-item">
+                        <span class="action-icon">⚡</span>
+                        <span>Explore Features</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadBotInfo() {
+            try {
+                const response = await fetch('/api/botinfo');
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    if (errorData.initializing) {
+                        document.getElementById('botInfoSkeleton').innerHTML = '<p style="text-align: center; color: var(--warning);">⏳ Bot is initializing... Please refresh in a moment.</p>';
+                    } else {
+                        document.getElementById('botInfoSkeleton').innerHTML = `<p style="text-align: center; color: var(--danger);">❌ Error: ${errorData.error || 'Failed to load bot information'}</p>`;
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                
+                const content = `
+                    <div class="bot-info-header">
+                        <img src="${data.botAvatar}" alt="Bot Avatar" class="bot-avatar">
+                        <div class="bot-details">
+                            <h2>${data.botTag}</h2>
+                            <p>Bot ID: ${data.botId}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bot-stats-grid">
+                        <div class="bot-stat-item">
+                            <h4>Servers</h4>
+                            <div class="value">${data.statistics.servers.toLocaleString()}</div>
+                        </div>
+                        <div class="bot-stat-item">
+                            <h4>Users</h4>
+                            <div class="value">${data.statistics.users.toLocaleString()}</div>
+                        </div>
+                        <div class="bot-stat-item">
+                            <h4>Channels</h4>
+                            <div class="value">${data.statistics.channels.toLocaleString()}</div>
+                        </div>
+                        <div class="bot-stat-item">
+                            <h4>Commands</h4>
+                            <div class="value">${data.statistics.commands}</div>
+                        </div>
+                        <div class="bot-stat-item">
+                            <h4>Total Executions</h4>
+                            <div class="value">${data.statistics.totalCommandsUsed.toLocaleString()}</div>
+                        </div>
+                        <div class="bot-stat-item">
+                            <h4>Total Messages</h4>
+                            <div class="value">${data.statistics.totalMessages.toLocaleString()}</div>
+                        </div>
+                    </div>
+
+                    <div class="system-info-grid">
+                        <div class="system-info-card">
+                            <h4>⚙️ System Status</h4>
+                            <div class="system-info-item">
+                                <span class="system-info-label">Uptime</span>
+                                <span class="system-info-value">${data.system.uptime}</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="system-info-label">Memory</span>
+                                <span class="system-info-value">${data.system.memoryUsage} MB (${data.system.memoryPercent}%)</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="system-info-label">Ping</span>
+                                <span class="system-info-value">${data.system.ping}ms</span>
+                            </div>
+                        </div>
+
+                        <div class="system-info-card">
+                            <h4>💻 Technical Info</h4>
+                            <div class="system-info-item">
+                                <span class="system-info-label">Node.js</span>
+                                <span class="system-info-value">${data.system.nodeVersion}</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="system-info-label">Discord.js</span>
+                                <span class="system-info-value">${data.system.discordJsVersion}</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="system-info-label">Platform</span>
+                                <span class="system-info-value">${data.system.platform}</span>
+                            </div>
+                        </div>
+
+                        <div class="system-info-card">
+                            <h4>🏆 Top Commands</h4>
+                            ${data.topCommands.length > 0 ? `
+                                <ul class="top-commands-list">
+                                    ${data.topCommands.map(cmd => `
+                                        <li>
+                                            <div class="command-rank">${cmd.rank}</div>
+                                            <div class="command-name">${cmd.name}</div>
+                                            <div class="command-count">${cmd.executions.toLocaleString()}</div>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : '<p style="text-align: center; color: var(--text-muted);">No command statistics yet</p>'}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('botInfoContent').innerHTML = content;
+                document.getElementById('botInfoSkeleton').style.display = 'none';
+                document.getElementById('botInfoContent').style.display = 'block';
+            } catch (error) {
+                console.error('Network error loading bot info:', error);
+                document.getElementById('botInfoSkeleton').innerHTML = '<p style="text-align: center; color: var(--danger);">❌ Network error: Unable to connect to the server</p>';
+            }
+        }
+
+        async function loadLeaderboards() {
+            try {
+                const guildRes = await fetch('/api/leaderboard/guilds');
+                const guilds = await guildRes.json();
+                const guildLeaderboard = document.getElementById('guildLeaderboard');
+                
+                if (guilds.length === 0) {
+                    guildLeaderboard.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No server data available yet</p>';
+                } else {
+                    guildLeaderboard.innerHTML = guilds.map((guild, idx) => {
+                        const rankClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : '';
+                        return `
+                            <div class="leaderboard-item">
+                                <div class="leaderboard-rank ${rankClass}">${guild.rank}</div>
+                                <div class="leaderboard-info">
+                                    <div class="leaderboard-name">${guild.name}</div>
+                                    <div class="leaderboard-stats">
+                                        <span>👥 ${guild.members} members</span>
+                                        <span>⚡ ${guild.commands} commands</span>
+                                        <span>💬 ${guild.messages.toLocaleString()} messages</span>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-score">#${guild.rank}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                const userRes = await fetch('/api/leaderboard/users');
+                const users = await userRes.json();
+                const userLeaderboard = document.getElementById('userLeaderboard');
+                
+                if (users.length === 0) {
+                    userLeaderboard.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No user data available yet</p>';
+                } else {
+                    userLeaderboard.innerHTML = users.map((user, idx) => {
+                        const rankClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : '';
+                        return `
+                            <div class="leaderboard-item">
+                                <div class="leaderboard-rank ${rankClass}">${user.rank}</div>
+                                <div class="leaderboard-info">
+                                    <div class="leaderboard-name">${user.name}</div>
+                                    <div class="leaderboard-stats">
+                                        <span>⚡ ${user.commands} commands</span>
+                                        <span>💬 ${user.messages.toLocaleString()} messages</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error loading leaderboards:', error);
+            }
+        }
+
+        loadBotInfo();
+        loadLeaderboards();
+    </script>
+        <%- include('partials/footer') %>
+</body>
+</html>

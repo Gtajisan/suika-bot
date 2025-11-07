@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', { 
+        title: title,
+        description: 'Discover RentoBot features: advanced moderation tools, leveling system, economy commands, fun interactions, and more for your Discord server.',
+        url: '/features',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('partials/nav', { 
+        title: title,
+        isAuthenticated: typeof user !== 'undefined' && user,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+    
+    <div class="dashboard-section">
+        <div class="container">
+            <div class="section-header" style="text-align: center;">
+                <h2>Powerful Tools for Every Server</h2>
+                <p>RentoBot brings anime fun, powerful utilities, and media tools into your Discord server. Everything you need to boost engagement and productivity in one place.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Anime Commands</h3>
+                    <p>Express yourself with anime-themed interactions</p>
+                    <ul>
+                        <li>Send anime hugs, kisses, slaps, and more</li>
+                        <li>Get random neko images</li>
+                        <li>Fun anime reactions to engage with friends</li>
+                        <li>Perfect for anime communities</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⬇️</div>
+                    <h3>Downloader Tools</h3>
+                    <p>Download and share media easily</p>
+                    <ul>
+                        <li>Download Instagram videos directly in chat</li>
+                        <li>Save Spotify tracks for quick sharing</li>
+                        <li>Fast and reliable media downloader</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Fun & Games</h3>
+                    <p>Keep the community entertained</p>
+                    <ul>
+                        <li>Apply fun effects to avatars</li>
+                        <li>Search movies directly from IMDb</li>
+                        <li>Interactive commands to spark activity</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Utility Commands</h3>
+                    <p>Essential tools for your server</p>
+                    <ul>
+                        <li>Check server and user information</li>
+                        <li>Message count tracking</li>
+                        <li>Real-time bot ping check</li>
+                        <li>Helpful /help command for all commands</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+        <%- include('partials/footer') %>
+</body>
+</html>

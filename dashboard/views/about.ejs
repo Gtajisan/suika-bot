@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', { 
+        title: title,
+        description: 'Learn about RentoBot - our mission, vision, and the features that make us the best Discord bot for your server.',
+        url: '/about',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('partials/nav', { 
+        title: title,
+        isAuthenticated: typeof user !== 'undefined' && user,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+   
+    <div class="dashboard-section">
+        <div class="container">
+            <div class="section-header" style="text-align: center;">
+                <h2>Smart, Fun and Reliable</h2>
+                <p>RentoBot was created to make Discord more enjoyable and easier to manage. Whether you want a laugh, need quick downloads, or are looking for handy utilities, RentoBot is here to help your community thrive.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Anime Features</h3>
+                    <p>Fun commands like hug, kiss, slap, and neko that bring anime vibes into your server.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⬇️</div>
+                    <h3>Downloader Tools</h3>
+                    <p>Easily grab videos from Instagram or tracks from Spotify without leaving Discord.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">😄</div>
+                    <h3>Fun and Games</h3>
+                    <p>Play with avatars, discover random movies, and keep your community entertained.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3>Utility Essentials</h3>
+                    <p>Simple tools like ping, help, user info, and message count that make server life easier.</p>
+                </div>
+            </div>
+
+            <div class="vision-section">
+                <h2>The Vision</h2>
+                <p>RentoBot is built for people who want their servers to feel alive and welcoming. It combines practical tools with fun commands so everyone can enjoy being part of your community. New features are added regularly, making sure the bot grows along with your server.</p>
+            </div>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+</body>
+</html>

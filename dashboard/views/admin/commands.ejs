@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', {
+        title: title,
+        description: 'Manage RentoBot commands - View statistics, enable/disable commands, and monitor usage.',
+        url: '/admin/commands',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('../partials/nav', {
+        title: title,
+        isAuthenticated: true,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+
+    <div class="admin-container container">
+        <div class="admin-header">
+            <h1>Command Statistics</h1>
+        </div>
+
+        <div class="admin-nav">
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/guilds">Servers</a>
+            <a href="/admin/commands" class="active">Commands</a>
+        </div>
+
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Command Name</th>
+                            <th>Category</th>
+                            <th>Execution Count</th>
+                            <th>Last Used</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% commandStats.sort((a, b) => b.executionCount - a.executionCount).forEach(cmd => { %>
+                            <tr>
+                                <td><%= cmd.commandName %></td>
+                                <td><%= cmd.category || 'Unknown' %></td>
+                                <td><%= cmd.executionCount %></td>
+                                <td><%= cmd.lastExecuted ? new Date(cmd.lastExecuted).toLocaleDateString() : 'Never' %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/footer') %>
+</body>
+</html>

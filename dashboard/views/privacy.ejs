@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', { 
+        title: title,
+        description: 'RentoBot Privacy Policy - Learn how we collect, use, and protect your data when using our Discord bot services.',
+        url: '/privacy',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('partials/nav', { 
+        title: title,
+        isAuthenticated: typeof user !== 'undefined' && user,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+    
+    <div class="legal-page">
+        <div class="container">
+            <div class="legal-header">
+                <h1>Privacy Policy</h1>
+                <p class="last-updated">Last Updated: October 31, 2025</p>
+            </div>
+
+            <div class="legal-content">
+                <section>
+                    <h2>1. Introduction</h2>
+                    <p>This Privacy Policy explains how RentoBot ("we", "us", or "the bot") collects, uses, and protects your information when you use our Discord bot service.</p>
+                    <p>By using RentoBot, you agree to the collection and use of information in accordance with this policy.</p>
+                </section>
+
+                <section>
+                    <h2>2. Information We Collect</h2>
+                    <p>RentoBot collects and stores the following types of information:</p>
+                    
+                    <h3>2.1 Automatically Collected Information</h3>
+                    <ul>
+                        <li><strong>User Information:</strong> Discord user ID, username, and discriminator</li>
+                        <li><strong>Server Information:</strong> Server (guild) ID, server name, and member count</li>
+                        <li><strong>Usage Data:</strong> Command execution statistics, message counts, and interaction logs</li>
+                    </ul>
+
+                    <h3>2.2 User-Provided Information</h3>
+                    <ul>
+                        <li><strong>Command Inputs:</strong> Information you provide when using bot commands</li>
+                        <li><strong>Custom Settings:</strong> Preferences for rank cards, greetings, and other customizable features</li>
+                        <li><strong>Economy Data:</strong> Virtual currency balances and transaction history</li>
+                        <li><strong>Leveling Data:</strong> Experience points (XP) and level progression</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>3. How We Use Your Information</h2>
+                    <p>We use the collected information for the following purposes:</p>
+                    <ul>
+                        <li>To provide and maintain the bot's functionality</li>
+                        <li>To track user progression in leveling and economy systems</li>
+                        <li>To generate statistics and analytics for the dashboard</li>
+                        <li>To customize user experience based on preferences</li>
+                        <li>To improve and optimize the bot's features</li>
+                        <li>To prevent abuse and enforce our Terms of Service</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>4. Data Storage and Security</h2>
+                    <p>Your data is stored in a secure MongoDB database. We implement appropriate technical and organizational measures to protect your information against unauthorized access, alteration, disclosure, or destruction.</p>
+                    <p>However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+                </section>
+
+                <section>
+                    <h2>5. Data Retention</h2>
+                    <p>We retain your data for as long as:</p>
+                    <ul>
+                        <li>You continue to use RentoBot in your server</li>
+                        <li>It is necessary to provide our services</li>
+                        <li>Required by law or for legitimate business purposes</li>
+                    </ul>
+                    <p>When a server removes the bot, associated server data may be retained for a reasonable period for backup and analytics purposes.</p>
+                </section>
+
+                <section>
+                    <h2>6. Data Sharing and Disclosure</h2>
+                    <p>We do not sell, trade, or rent your personal information to third parties. We may share data only in the following circumstances:</p>
+                    <ul>
+                        <li><strong>With Your Consent:</strong> When you explicitly authorize us to share specific information</li>
+                        <li><strong>Legal Requirements:</strong> If required by law or in response to valid legal requests</li>
+                        <li><strong>Protection of Rights:</strong> To protect our rights, property, or safety, or that of our users</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>7. Your Rights and Choices</h2>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li><strong>Access Your Data:</strong> Request a copy of the data we have about you</li>
+                        <li><strong>Data Deletion:</strong> Request deletion of your personal data</li>
+                        <li><strong>Data Correction:</strong> Request correction of inaccurate data</li>
+                        <li><strong>Opt-Out:</strong> Stop using the bot at any time by removing it from your server</li>
+                    </ul>
+                    <p>To exercise these rights, please contact us through our support server.</p>
+                </section>
+
+                <section>
+                    <h2>8. Children's Privacy</h2>
+                    <p>RentoBot is intended for use in accordance with Discord's Terms of Service, which require users to be at least 13 years old (or older depending on your country). We do not knowingly collect information from children under the age required by applicable law.</p>
+                </section>
+
+                <section>
+                    <h2>9. Third-Party Services</h2>
+                    <p>RentoBot may integrate with third-party services (such as Discord's API). These services have their own privacy policies, and we encourage you to review them:</p>
+                    <ul>
+                        <li>Discord Privacy Policy: <a href="https://discord.com/privacy" target="_blank">https://discord.com/privacy</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>10. Changes to This Privacy Policy</h2>
+                    <p>We may update this Privacy Policy from time to time. We will notify users of significant changes by:</p>
+                    <ul>
+                        <li>Posting the new Privacy Policy on this page</li>
+                        <li>Updating the "Last Updated" date</li>
+                        <li>Announcing in our support server for major changes</li>
+                    </ul>
+                    <p>Continued use of the bot after changes constitutes acceptance of the updated policy.</p>
+                </section>
+
+                <section>
+                    <h2>11. Contact Us</h2>
+                    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or your data:</p>
+                    <ul>
+                        <li>Join our Discord support server: <a href="https://discord.gg/zYdj9qQX" target="_blank">https://discord.gg/zYdj9qQX</a></li>
+                        <li>Visit our GitHub repository: <a href="https://github.com/notsopreety/DC-Bot" target="_blank">https://github.com/notsopreety/DC-Bot</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>12. Data Controller Information</h2>
+                    <p>The data controller responsible for your personal information is the RentoBot development team. You can reach us through the contact methods listed above.</p>
+                </section>
+            </div>
+
+            <div class="legal-footer">
+                <p>For any privacy-related inquiries or to exercise your data rights, please contact us through our <a href="https://discord.gg/zYdj9qQX" target="_blank">support server</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

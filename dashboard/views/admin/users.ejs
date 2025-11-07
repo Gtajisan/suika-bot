@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', { 
+        title: title,
+        description: 'Manage RentoBot users - View user statistics, levels, and economy data.',
+        url: '/admin/users',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('../partials/nav', { 
+        title: title,
+        isAuthenticated: true,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+
+    <div class="admin-container container">
+        <div class="admin-header">
+            <h1>User Management</h1>
+        </div>
+
+        <div class="admin-nav">
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/users" class="active">Users</a>
+            <a href="/admin/guilds">Servers</a>
+        </div>
+
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Level</th>
+                            <th>Money</th>
+                            <th>Commands Used</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user.userID %></td>
+                                <td><%= user.name || 'Unknown' %></td>
+                                <td><%= user.level || 1 %></td>
+                                <td><%= user.money || 0 %></td>
+                                <td><%= user.stats?.totalCommandsUsed || 0 %></td>
+                                <td>
+                                    <% if (user.banned && user.banned.status) { %>
+                                        <span class="badge danger">Banned</span>
+                                    <% } else { %>
+                                        <span class="badge success">Active</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-small" onclick="editUser('<%= user.userID %>')">Edit</button>
+                                    <% if (user.banned && user.banned.status) { %>
+                                        <button class="btn btn-success btn-small" onclick="unbanUser('<%= user.userID %>')">Unban</button>
+                                    <% } else { %>
+                                        <button class="btn btn-danger btn-small" onclick="banUser('<%= user.userID %>')">Ban</button>
+                                    <% } %>
+                                    <button class="btn btn-danger btn-small" onclick="deleteUser('<%= user.userID %>')">Delete</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="editUserModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+        <div style="position:relative; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--bg-secondary); padding:24px; border-radius:8px; max-width:800px; width:90%; max-height:80vh; overflow-y:auto;">
+            <h2 style="margin-top:0;">Edit User Data</h2>
+            <p style="color:var(--text-secondary); margin-bottom:16px;">Edit raw user data (JSON format)</p>
+            <textarea id="userDataEditor" style="width:100%; min-height:400px; font-family:monospace; padding:12px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-primary); color:var(--text-primary); resize:vertical;"></textarea>
+            <div style="margin-top:16px; display:flex; gap:8px;">
+                <button class="btn btn-primary" onclick="saveUserData()">Save Changes</button>
+                <button class="btn" onclick="closeEditUserModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    
+    <script>
+        let currentEditUserId = null;
+
+        async function editUser(userId) {
+            currentEditUserId = userId;
+            try {
+                const res = await fetch(`/admin/users/${userId}/edit`);
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('userDataEditor').value = JSON.stringify(data.user, null, 2);
+                    document.getElementById('editUserModal').style.display = 'block';
+                } else {
+                    alert('Error loading user data: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to load user data');
+            }
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+            currentEditUserId = null;
+        }
+
+        async function saveUserData() {
+            if (!currentEditUserId) return;
+
+            try {
+                const jsonData = JSON.parse(document.getElementById('userDataEditor').value);
+
+                const res = await fetch(`/admin/users/${currentEditUserId}/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userData: jsonData })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('User data updated successfully');
+                    closeEditUserModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Invalid JSON format or save failed: ' + error.message);
+            }
+        }
+
+        async function banUser(userId) {
+            const reason = prompt('Enter ban reason:');
+            if (!reason) return;
+
+            try {
+                const res = await fetch(`/admin/users/${userId}/ban`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('User banned successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to ban user');
+            }
+        }
+
+        async function unbanUser(userId) {
+            if (!confirm('Are you sure you want to unban this user?')) return;
+
+            try {
+                const res = await fetch(`/admin/users/${userId}/unban`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('User unbanned successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to unban user');
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('⚠️ WARNING: This will permanently delete all data for this user!\n\nAre you absolutely sure?')) return;
+
+            try {
+                const res = await fetch(`/admin/users/${userId}/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('User deleted successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to delete user');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', { 
+        title: title,
+        description: 'Manage Discord servers using RentoBot - View guild statistics and configurations.',
+        url: '/admin/guilds',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('../partials/nav', { 
+        title: title,
+        isAuthenticated: true,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+
+    <div class="admin-container container">
+        <div class="admin-header">
+            <h1>Server Management</h1>
+        </div>
+
+        <div class="admin-nav">
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/guilds" class="active">Servers</a>
+        </div>
+
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Server ID</th>
+                            <th>Name</th>
+                            <th>Members</th>
+                            <th>Commands Used</th>
+                            <th>Prefix</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% guilds.forEach(guild => { %>
+                            <tr>
+                                <td><%= guild.guildID %></td>
+                                <td><%= guild.guildName || 'Unknown' %></td>
+                                <td><%= guild.stats?.totalMembers || 0 %></td>
+                                <td><%= guild.stats?.totalCommandsUsed || 0 %></td>
+                                <td><%= guild.prefix || '!' %></td>
+                                <td>
+                                    <% if (guild.banned && guild.banned.status) { %>
+                                        <span class="badge danger">Banned</span>
+                                    <% } else { %>
+                                        <span class="badge success">Active</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-small" onclick="editGuild('<%= guild.guildID %>')">Edit</button>
+                                    <% if (guild.banned && guild.banned.status) { %>
+                                        <button class="btn btn-success btn-small" onclick="unbanGuild('<%= guild.guildID %>')">Unban</button>
+                                    <% } else { %>
+                                        <button class="btn btn-danger btn-small" onclick="banGuild('<%= guild.guildID %>')">Ban</button>
+                                    <% } %>
+                                    <button class="btn btn-danger btn-small" onclick="deleteGuild('<%= guild.guildID %>')">Delete</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="editGuildModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+        <div style="position:relative; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--bg-secondary); padding:24px; border-radius:8px; max-width:800px; width:90%; max-height:80vh; overflow-y:auto;">
+            <h2 style="margin-top:0;">Edit Guild Data</h2>
+            <p style="color:var(--text-secondary); margin-bottom:16px;">Edit raw guild data (JSON format)</p>
+            <textarea id="guildDataEditor" style="width:100%; min-height:400px; font-family:monospace; padding:12px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-primary); color:var(--text-primary); resize:vertical;"></textarea>
+            <div style="margin-top:16px; display:flex; gap:8px;">
+                <button class="btn btn-primary" onclick="saveGuildData()">Save Changes</button>
+                <button class="btn" onclick="closeEditGuildModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEditGuildId = null;
+
+        async function editGuild(guildId) {
+            currentEditGuildId = guildId;
+            try {
+                const res = await fetch(`/admin/guilds/${guildId}/edit`);
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('guildDataEditor').value = JSON.stringify(data.guild, null, 2);
+                    document.getElementById('editGuildModal').style.display = 'block';
+                } else {
+                    alert('Error loading guild data: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to load guild data');
+            }
+        }
+
+        function closeEditGuildModal() {
+            document.getElementById('editGuildModal').style.display = 'none';
+            currentEditGuildId = null;
+        }
+
+        async function saveGuildData() {
+            if (!currentEditGuildId) return;
+
+            try {
+                const jsonData = JSON.parse(document.getElementById('guildDataEditor').value);
+
+                const res = await fetch(`/admin/guilds/${currentEditGuildId}/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ guildData: jsonData })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Guild data updated successfully');
+                    closeEditGuildModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Invalid JSON format or save failed: ' + error.message);
+            }
+        }
+
+        async function banGuild(guildId) {
+            const reason = prompt('Enter ban reason:');
+            if (!reason) return;
+
+            try {
+                const res = await fetch(`/admin/guilds/${guildId}/ban`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Server banned successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to ban server');
+            }
+        }
+
+        async function unbanGuild(guildId) {
+            if (!confirm('Are you sure you want to unban this server?')) return;
+
+            try {
+                const res = await fetch(`/admin/guilds/${guildId}/unban`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Server unbanned successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to unban server');
+            }
+        }
+
+        async function deleteGuild(guildId) {
+            if (!confirm('⚠️ WARNING: This will permanently delete all data for this server!\n\nAre you absolutely sure?')) return;
+
+            try {
+                const res = await fetch(`/admin/guilds/${guildId}/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Server deleted successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to delete server');
+            }
+        }
+    </script>
+    <%- include('../partials/footer') %>
+</body>
+</html>

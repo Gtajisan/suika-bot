@@ -1,0 +1,113 @@
+
+<nav>
+    <div class="nav-container">
+        <a href="/" class="nav-brand">
+            <% if (typeof botClient !== 'undefined' && botClient && botClient.user && botClient.user.displayAvatarURL) { %>
+                <img src="<%= botClient.user.displayAvatarURL() %>" alt="<%= botClient.user.username %>" class="brand-avatar">
+            <% } %>
+            <span class="brand-name">
+                <% if (typeof botClient !== 'undefined' && botClient && botClient.user) { %>
+                    <%= botClient.user.username %>
+                <% } else { %>
+                    RentoBot
+                <% } %>
+            </span>
+        </a>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+            <span class="hamburger"></span>
+        </button>
+
+        <div class="nav-menu" id="navMenu">
+            <ul class="nav-links">
+                <li><a href="/" class="<%= typeof title !== 'undefined' && (title.includes('Home') || title === 'RentoBot') ? 'active' : '' %>">Home</a></li>
+                <li><a href="/dashboard" class="<%= typeof title !== 'undefined' && title.includes('Dashboard') && !title.includes('Admin') ? 'active' : '' %>">Dashboard</a></li>
+                <li><a href="/commands" class="<%= typeof title !== 'undefined' && title.includes('Commands') && !title.includes('Admin') ? 'active' : '' %>">Commands</a></li>
+                <li><a href="/features" class="<%= typeof title !== 'undefined' && title.includes('Features') ? 'active' : '' %>">Features</a></li>
+                <li><a href="/about" class="<%= typeof title !== 'undefined' && title.includes('About') ? 'active' : '' %>">About</a></li>
+            </ul>
+            
+            <div class="nav-auth">
+                <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+                    <a href="/admin" class="btn btn-admin">Admin</a>
+                    <a href="/logout" class="btn btn-logout">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-login">Login</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="nav-overlay" id="navOverlay"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const navOverlay = document.getElementById('navOverlay');
+    const navClose = document.getElementById('navClose');
+    
+    function closeMenu() {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+        navOverlay.classList.remove('active');
+        document.body.classList.remove('nav-open');
+    }
+    
+    function openMenu() {
+        navToggle.setAttribute('aria-expanded', 'true');
+        navToggle.classList.add('active');
+        navMenu.classList.add('active');
+        navOverlay.classList.add('active');
+        document.body.classList.add('nav-open');
+    }
+    
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+            if (isExpanded) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        // Close menu when clicking overlay
+        if (navOverlay) {
+            navOverlay.addEventListener('click', closeMenu);
+        }
+
+        // Close menu when clicking on a link
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (window.innerWidth > 992) {
+                    closeMenu();
+                }
+            }, 250);
+        });
+
+        // Prevent scroll when menu is open
+        const style = document.createElement('style');
+        style.textContent = `
+            body.nav-open {
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+});
+</script>
