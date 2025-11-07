@@ -59,7 +59,7 @@ module.exports = {
             }
 
             if (!fs.existsSync(pathData)) {
-                const res = await axios.get('https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/scripts/cmds/assets/hubble/nasa.json');
+                const res = await axios.get('https://raw.githubusercontent.com/notsopreety/Rento-Bot/main/scripts/commands/assets/hubble/nasa.json');
                 fs.writeFileSync(pathData, JSON.stringify(res.data, null, 2));
                 hubbleData = res.data;
             } else {
@@ -88,7 +88,7 @@ module.exports = {
                     if (fs.existsSync(pathData)) {
                         hubbleData = JSON.parse(fs.readFileSync(pathData, 'utf-8'));
                     } else {
-                        const res = await axios.get('https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/scripts/cmds/assets/hubble/nasa.json');
+                        const res = await axios.get('https://raw.githubusercontent.com/notsopreety/Rento-Bot/main/scripts/commands/assets/hubble/nasa.json');
                         hubbleData = res.data;
                         fs.writeFileSync(pathData, JSON.stringify(res.data, null, 2));
                     }

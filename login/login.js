@@ -88,7 +88,7 @@ function displayBanner() {
     }
     
     const author = ("Created with ♡ | Samir Badaila");
-    const srcUrl = ("Source: https://github.com/ntkhang03/Goat-Bot-V2");
+    const srcUrl = ("Source: https://github.com/notsopreety/Rento-Bot");
     
     for (const t of subTitleArray) {
         const textColor2 = gradient("#9F98E8", "#AFF6CF")(t);
