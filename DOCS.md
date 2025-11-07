@@ -820,7 +820,7 @@ See [STEP_INSTALL.md](STEP_INSTALL.md#-troubleshooting) for detailed troubleshoo
 ## 📞 Support
 
 - **Discord**: [Join support server](https://discord.gg/zYdj9qQX)
-- **GitHub**: [Open an issue](https://github.com/notsopreety/DC-Bot/issues)
+- **GitHub**: [Open an issue](https://github.com/notsopreety/Rento-Bot/issues)
 - **Documentation**: This file and README.md
 
 ---

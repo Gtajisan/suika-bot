@@ -129,8 +129,8 @@ Enable these intents in Discord Developer Portal > Bot section:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/notsopreety/DC-Bot.git
-cd DC-Bot
+git clone https://github.com/notsopreety/Rento-Bot.git
+cd Rento-Bot
 ```
 
 ### 2. Configure Environment
@@ -309,7 +309,7 @@ Access the web dashboard at `http://localhost:5000`:
 Need help? Here's how to get support:
 
 - **Discord Server**: [Join our support server](https://discord.gg/zYdj9qQX)
-- **GitHub Issues**: [Report bugs or request features](https://github.com/notsopreety/DC-Bot/issues)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/notsopreety/Rento-Bot/issues)
 - **Documentation**: Check [DOCS.md](DOCS.md) for detailed information
 
 ---
@@ -381,6 +381,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ by Samir Badaila**
 
-[⭐ Star this repo](https://github.com/notsopreety/DC-Bot) • [🐛 Report Bug](https://github.com/notsopreety/DC-Bot/issues) • [✨ Request Feature](https://github.com/notsopreety/DC-Bot/issues)
+[⭐ Star this repo](https://github.com/notsopreety/Rento-Bot) • [🐛 Report Bug](https://github.com/notsopreety/Rento-Bot/issues) • [✨ Request Feature](https://github.com/notsopreety/Rento-Bot/issues)
 
 </div>

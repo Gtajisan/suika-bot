@@ -183,7 +183,7 @@ If not installed, download from [nodejs.org](https://nodejs.org/)
 1. Go to [Replit](https://replit.com)
 2. Click **"Create Repl"**
 3. Choose **"Import from GitHub"**
-4. Enter: `https://github.com/notsopreety/DC-Bot`
+4. Enter: `https://github.com/notsopreety/Rento-Bot`
 5. Click **"Import from GitHub"**
 
 #### Step 2: Configure Bot
@@ -233,12 +233,12 @@ If you prefer environment variables over config.json, you can use Replit Secrets
 
 **Option A - Using Git**:
 ```bash
-git clone https://github.com/notsopreety/DC-Bot.git
-cd DC-Bot
+git clone https://github.com/notsopreety/Rento-Bot.git
+cd Rento-Bot
 ```
 
 **Option B - Download ZIP**:
-1. Go to [GitHub Repository](https://github.com/notsopreety/DC-Bot)
+1. Go to [GitHub Repository](https://github.com/notsopreety/Rento-Bot)
 2. Click **"Code"** → **"Download ZIP"**
 3. Extract ZIP file
 4. Open terminal/command prompt in extracted folder
@@ -515,8 +515,8 @@ sudo apt install -y git
 
 ```bash
 # Clone repository
-git clone https://github.com/notsopreety/DC-Bot.git
-cd DC-Bot
+git clone https://github.com/notsopreety/Rento-Bot.git
+cd Rento-Bot
 
 # Install dependencies
 npm install
@@ -864,12 +864,12 @@ If you're still having issues:
    - This file - Installation guide
 
 2. **Search Issues**: 
-   - [GitHub Issues](https://github.com/notsopreety/DC-Bot/issues)
+   - [GitHub Issues](https://github.com/notsopreety/Rento-Bot/issues)
    - Check if someone had the same problem
 
 3. **Ask for Help**:
    - Discord: [Join support server](https://discord.gg/zYdj9qQX)
-   - GitHub: [Create new issue](https://github.com/notsopreety/DC-Bot/issues/new)
+   - GitHub: [Create new issue](https://github.com/notsopreety/Rento-Bot/issues/new)
 
 4. **When Asking for Help, Include**:
    - Bot version (`!botinfo`)
