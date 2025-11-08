@@ -7,9 +7,11 @@
 ![Discord.js](https://img.shields.io/badge/discord.js-v14.24.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+![Views](https://count.getloli.com/get/@Rento-Bot?theme=gelbooru)
+
 **A powerful, modular Discord bot inspired by Goat-Bot-V2 with advanced features, economy system, and interactive commands.**
 
-[Features](#-features) • [Installation](#-installation) • [Documentation](DOCS.md) • [Support](#-support)
+[Features](#-features) • [Installation](#-STEP_INSTALL.md) • [Documentation](DOCS.md) • [Support](#-support)
 
 </div>
 
