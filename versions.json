@@ -1,5 +1,17 @@
 [
     {
+        "version": "1.0.4",
+        "files": {
+            "login/login.js": "Updated login.js by removing unused code and optimizing imports with better auto dependencies installation",
+            "package.json": "Updated version to 1.0.4"
+        },
+        "deleteFiles": {
+            "UPDATER_README.md": "Removed comprehensive documentation for the update system",
+            "UPDATE_SYSTEM_SUMMARY.md": "Removed implementation summary and usage guide"
+        },
+        "reinstallDependencies": false
+    },
+    {
         "version": "1.0.3",
         "files": {
             "updater.js": "Added main updater script with version checking, file updates, and automatic backups",

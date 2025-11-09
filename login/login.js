@@ -1,38 +1,43 @@
 
-process.stdout.write("\x1b]2;Discord Bot - inspired by Goat-Bot-V2\x1b\x5c");
+process.stdout.write("\x1b]2;Rento Bot - inspired by Goat-Bot-V2\x1b\x5c");
 
 const gradient = require("gradient-string").default || require("gradient-string");
 const fs = require("fs-extra");
 const path = require("path");
-const { Client } = require('discord.js');
 const { execSync } = require('child_process');
 const ora = require('ora');
+const log = require('../logger/log.js');
+const axios = require('axios');
+const { colors } = require('../func/colors.js');
+const mongoose = require('mongoose');
 
-const currentVersion = require(`${process.cwd()}/package.json`).version;
+const packageJson = require(`${process.cwd()}/package.json`);
+const currentVersion = packageJson.version;
 
 function centerText(text, length) {
-    const width = process.stdout.columns;
-    const leftPadding = Math.floor((width - (length || text.length)) / 2);
-    const rightPadding = width - leftPadding - (length || text.length);
-    const paddedString = ' '.repeat(leftPadding > 0 ? leftPadding : 0) + text + ' '.repeat(rightPadding > 0 ? rightPadding : 0);
+    const width = process.stdout.columns || 80;
+    const textLength = length || text.length;
+    const leftPadding = Math.max(0, Math.floor((width - textLength) / 2));
+    const rightPadding = Math.max(0, width - leftPadding - textLength);
+    const paddedString = ' '.repeat(leftPadding) + text + ' '.repeat(rightPadding);
     console.log(paddedString);
 }
 
 const titles = [
     [
-        "██████╗ ██╗███████╗ ██████╗ ██████╗ ██████╗ ██████╗     ██████╗  ██████╗ ████████╗",
-        "██╔══██╗██║██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔══██╗    ██╔══██╗██╔═══██╗╚══██╔══╝",
-        "██║  ██║██║███████╗██║     ██║   ██║██████╔╝██║  ██║    ██████╔╝██║   ██║   ██║   ",
-        "██║  ██║██║╚════██║██║     ██║   ██║██╔══██╗██║  ██║    ██╔══██╗██║   ██║   ██║   ",
-        "██████╔╝██║███████║╚██████╗╚██████╔╝██║  ██║██████╔╝    ██████╔╝╚██████╔╝   ██║   ",
-        "╚═════╝ ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝     ╚═════╝  ╚═════╝    ╚═╝   "
+        "██████╗ ███████╗███╗   ██╗████████╗ ██████╗     ██████╗  ██████╗ ████████╗",
+        "██╔══██╗██╔════╝████╗  ██║╚══██╔══╝██╔═══██╗    ██╔══██╗██╔═══██╗╚══██╔══╝",
+        "██████╔╝█████╗  ██╔██╗ ██║   ██║   ██║   ██║    ██████╔╝██║   ██║   ██║   ",
+        "██╔══██╗██╔══╝  ██║╚██╗██║   ██║   ██║   ██║    ██╔══██╗██║   ██║   ██║   ",
+        "██║  ██║███████╗██║ ╚████║   ██║   ╚██████╔╝    ██████╔╝╚██████╔╝   ██║   ",
+        "╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝     ╚═════╝  ╚═════╝    ╚═╝   "
     ],
     [
-        "█▀▄ █ █▀ █▀▀ █▀█ █▀█ █▀▄   █▄▄ █▀█ ▀█▀",
-        "█▄▀ █ ▄█ █▄▄ █▄█ █▀▄ █▄▀   █▄█ █▄█ ░█░"
+        "█▀█ █▀▀ █▄░█ ▀█▀ █▀█   █▄▄ █▀█ ▀█▀",
+        "█▀▄ ██▄ █░▀█ ░█░ █▄█   █▄█ █▄█ ░█░"
     ],
     [
-        "DISCORD BOT V" + currentVersion
+        "Rento BOT V" + currentVersion
     ],
     [
         "BOT"
@@ -40,23 +45,26 @@ const titles = [
 ];
 
 function createLine(content, isMaxWidth = false) {
-    const widthConsole = process.stdout.columns > 50 ? 50 : process.stdout.columns;
-    if (!content)
-        return Array(isMaxWidth ? process.stdout.columns : widthConsole).fill("─").join("");
-    else {
-        content = ` ${content.trim()} `;
-        const lengthContent = content.length;
-        const lengthLine = isMaxWidth ? process.stdout.columns - lengthContent : widthConsole - lengthContent;
-        let left = Math.floor(lengthLine / 2);
-        if (left < 0 || isNaN(left))
-            left = 0;
-        const lineOne = Array(left).fill("─").join("");
-        return lineOne + content + lineOne;
+    const width = process.stdout.columns || 80;
+    const widthConsole = width > 50 ? 50 : width;
+    
+    if (!content) {
+        const lineWidth = isMaxWidth ? width : widthConsole;
+        return "─".repeat(lineWidth);
     }
+    
+    const trimmedContent = ` ${content.trim()} `;
+    const contentLength = trimmedContent.length;
+    const lineWidth = isMaxWidth ? width : widthConsole;
+    const availableWidth = lineWidth - contentLength;
+    const left = Math.max(0, Math.floor(availableWidth / 2));
+    const right = Math.max(0, availableWidth - left);
+    
+    return "─".repeat(left) + trimmedContent + "─".repeat(right);
 }
 
 function displayBanner() {
-    const maxWidth = process.stdout.columns;
+    const maxWidth = process.stdout.columns || 80;
     const title = maxWidth > 85 ?
         titles[0] :
         maxWidth > 36 ?
@@ -72,23 +80,24 @@ function displayBanner() {
         centerText(textColor, text.length);
     }
     
-    let subTitle = `Discord Bot V${currentVersion} - A powerful modular Discord bot`;
+    let subTitle = `Rento Bot V${currentVersion} - A powerful modular Discord bot`;
     const subTitleArray = [];
     if (subTitle.length > maxWidth) {
         while (subTitle.length > maxWidth) {
             let lastSpace = subTitle.slice(0, maxWidth).lastIndexOf(' ');
-            lastSpace = lastSpace == -1 ? maxWidth : lastSpace;
+            lastSpace = lastSpace === -1 ? maxWidth : lastSpace;
             subTitleArray.push(subTitle.slice(0, lastSpace).trim());
             subTitle = subTitle.slice(lastSpace).trim();
         }
-        subTitle ? subTitleArray.push(subTitle) : '';
-    }
-    else {
+        if (subTitle) {
+            subTitleArray.push(subTitle);
+        }
+    } else {
         subTitleArray.push(subTitle);
     }
     
-    const author = ("Created with ♡ | Samir Badaila");
-    const srcUrl = ("Source: https://github.com/notsopreety/Rento-Bot");
+    const author = "Created with ♡ | Samir Badaila";
+    const srcUrl = "Source: https://github.com/notsopreety/Rento-Bot";
     
     for (const t of subTitleArray) {
         const textColor2 = gradient("#9F98E8", "#AFF6CF")(t);
@@ -102,7 +111,10 @@ function displayBanner() {
 }
 
 function scanAllPackages() {
-    const regExpCheckPackage = /require\s*\(\s*[`'"]([^`'"]+)[`'"]\s*\)/g;
+    // Match both require() and import statements
+    const regExpRequire = /require\s*\(\s*[`'"]([^`'"]+)[`'"]\s*\)/g;
+    const regExpImport = /import\s+(?:.*\s+from\s+)?[`'"]([^`'"]+)[`'"]/g;
+    const regExpImportDynamic = /import\s*\(\s*[`'"]([^`'"]+)[`'"]\s*\)/g;
     const allPackages = new Set();
     
     // Node.js built-in modules to exclude
@@ -111,7 +123,10 @@ function scanAllPackages() {
         'events', 'child_process', 'cluster', 'dgram', 'dns', 'net',
         'readline', 'repl', 'tls', 'tty', 'url', 'v8', 'vm', 'zlib',
         'assert', 'buffer', 'constants', 'domain', 'module', 'process',
-        'querystring', 'string_decoder', 'sys', 'timers', 'punycode'
+        'querystring', 'string_decoder', 'sys', 'timers', 'punycode',
+        'fs/promises', 'path/posix', 'path/win32', 'stream/promises',
+        'util/types', 'util/promises', 'worker_threads', 'perf_hooks',
+        'inspector', 'trace_events', 'async_hooks', 'wasi'
     ]);
     
     const dirsToScan = [
@@ -122,57 +137,100 @@ function scanAllPackages() {
         'logger',
         'database',
         'utils',
-        'dashboard'
+        'dashboard',
+        'func'
     ];
     
     const filesToScan = [
         'Bot.js',
         'index.js',
         'loadConfig.js',
-        'utils.js'
+        'utils.js',
+        'updater.js',
+        'update.js'
     ];
+    
+    function extractPackageName(packageName) {
+        // Skip relative imports
+        if (packageName.startsWith('./') || packageName.startsWith('../') || packageName.startsWith('/')) {
+            return null;
+        }
+        
+        // Skip if contains variables or template syntax
+        if (packageName.includes('$') || packageName.includes('{') || packageName.includes('}')) {
+            return null;
+        }
+        
+        // Skip if it's a data URL or protocol
+        if (packageName.startsWith('http://') || packageName.startsWith('https://') || packageName.startsWith('data:')) {
+            return null;
+        }
+        
+        // Handle scoped packages
+        let normalizedName;
+        if (packageName.startsWith('@')) {
+            normalizedName = packageName.split('/').slice(0, 2).join('/');
+        } else {
+            normalizedName = packageName.split('/')[0];
+        }
+        
+        // Skip built-in Node.js modules
+        if (builtInModules.has(normalizedName)) {
+            return null;
+        }
+        
+        // Skip if package name looks invalid
+        if (normalizedName.length === 0 || normalizedName.length > 214) {
+            return null;
+        }
+        
+        return normalizedName;
+    }
     
     function scanFile(filePath) {
         try {
             if (!fs.existsSync(filePath)) return;
             
             const content = fs.readFileSync(filePath, 'utf8');
-            let matches = content.match(regExpCheckPackage);
             
+            // Scan for require() statements
+            let matches = content.match(regExpRequire);
             if (matches) {
                 matches.forEach(match => {
                     const pkgMatch = match.match(/[`'"]([^`'"]+)[`'"]/);
                     if (pkgMatch && pkgMatch[1]) {
-                        let packageName = pkgMatch[1];
-                        
-                        // Skip relative imports
-                        if (packageName.startsWith('./') || packageName.startsWith('../') || packageName.startsWith('/')) {
-                            return;
+                        const packageName = extractPackageName(pkgMatch[1]);
+                        if (packageName) {
+                            allPackages.add(packageName);
                         }
-                        
-                        // Skip if contains variables or template syntax
-                        if (packageName.includes('$') || packageName.includes('{') || packageName.includes('}')) {
-                            return;
+                    }
+                });
+            }
+            
+            // Scan for ES6 import statements
+            matches = content.match(regExpImport);
+            if (matches) {
+                matches.forEach(match => {
+                    const pkgMatch = match.match(/[`'"]([^`'"]+)[`'"]/);
+                    if (pkgMatch && pkgMatch[1]) {
+                        const packageName = extractPackageName(pkgMatch[1]);
+                        if (packageName) {
+                            allPackages.add(packageName);
                         }
-                        
-                        // Handle scoped packages
-                        if (packageName.startsWith('@')) {
-                            packageName = packageName.split('/').slice(0, 2).join('/');
-                        } else {
-                            packageName = packageName.split('/')[0];
+                    }
+                });
+            }
+            
+            // Scan for dynamic import() statements
+            matches = content.match(regExpImportDynamic);
+            if (matches) {
+                matches.forEach(match => {
+                    const pkgMatch = match.match(/[`'"]([^`'"]+)[`'"]/);
+                    if (pkgMatch && pkgMatch[1]) {
+                        const packageName = extractPackageName(pkgMatch[1]);
+                        if (packageName) {
+                            allPackages.add(packageName);
                         }
-                        
-                        // Skip built-in Node.js modules
-                        if (builtInModules.has(packageName)) {
-                            return;
-                        }
-                        
-                        // Skip if package name looks invalid
-                        if (packageName.length === 0 || packageName.length > 214) {
-                            return;
-                        }
-                        
-                        allPackages.add(packageName);
                     }
                 });
             }
@@ -193,7 +251,7 @@ function scanAllPackages() {
                 
                 if (stat.isDirectory()) {
                     scanDirectory(fullPath);
-                } else if (item.endsWith('.js') && !item.endsWith('.eg.js')) {
+                } else if ((item.endsWith('.js') || item.endsWith('.mjs') || item.endsWith('.cjs')) && !item.endsWith('.eg.js')) {
                     scanFile(fullPath);
                 }
             }
@@ -216,8 +274,6 @@ function scanAllPackages() {
 }
 
 async function checkPackages() {
-    const log = require('../logger/log.js');
-    
     console.log(gradient("#FF6B6B", "#4ECDC4")(createLine("PACKAGE VERIFICATION", true)));
     console.log();
     
@@ -232,16 +288,14 @@ async function checkPackages() {
     
     const missingPackages = [];
     const installedPackages = [];
-    let checkedCount = 0;
     
     const checkSpinner = ora({
         text: gradient.cristal('Verifying package installations...'),
         spinner: 'dots12'
     }).start();
     
-    for (const pkg of detectedPackages) {
-        checkedCount++;
-        checkSpinner.text = gradient.cristal(`Checking [${checkedCount}/${detectedPackages.length}] ${pkg}`);
+    detectedPackages.forEach((pkg, index) => {
+        checkSpinner.text = gradient.cristal(`Checking [${index + 1}/${detectedPackages.length}] ${pkg}`);
         
         try {
             require.resolve(pkg);
@@ -249,7 +303,7 @@ async function checkPackages() {
         } catch (error) {
             missingPackages.push(pkg);
         }
-    }
+    });
     
     checkSpinner.stop();
     
@@ -266,20 +320,39 @@ async function checkPackages() {
             spinner: 'aesthetic'
         }).start();
         
+        const failedPackages = [];
+        const installedPackagesList = [];
+        
         for (let i = 0; i < missingPackages.length; i++) {
             const pkg = missingPackages[i];
             try {
                 installSpinner.text = gradient.rainbow(`Installing [${i + 1}/${missingPackages.length}] ${pkg}...`);
-                execSync(`npm install ${pkg} --save --silent`, { stdio: 'pipe' });
-                installSpinner.text = gradient.rainbow(`✓ Installed ${pkg}`);
+                execSync(`npm install ${pkg} --save --silent`, { 
+                    stdio: 'pipe',
+                    cwd: process.cwd()
+                });
+                installedPackagesList.push(pkg);
+                installSpinner.text = gradient.rainbow(`✓ Installed ${pkg} [${i + 1}/${missingPackages.length}]`);
             } catch (error) {
-                installSpinner.fail(gradient("#FF6B6B", "#C44569")(`Failed to install ${pkg}`));
-                log.error("PKG CHECK", `Failed to install ${pkg}: ${error.message}`);
-                process.exit(1);
+                failedPackages.push({ pkg, error: error.message });
+                log.warn("PKG CHECK", `Failed to install ${pkg}: ${error.message}`);
+                installSpinner.text = gradient.rainbow(`⚠ Failed ${pkg} [${i + 1}/${missingPackages.length}]`);
             }
         }
         
-        installSpinner.succeed(gradient.rainbow(`All ${missingPackages.length} missing packages installed successfully!`));
+        installSpinner.stop();
+        
+        if (installedPackagesList.length > 0) {
+            console.log(gradient("#06FFA5", "#09FBD3")(`✓ Successfully installed ${installedPackagesList.length} package(s): ${installedPackagesList.slice(0, 5).join(', ')}${installedPackagesList.length > 5 ? '...' : ''}`));
+        }
+        
+        if (failedPackages.length > 0) {
+            console.log(gradient("#FF6B6B", "#FFE66D")(`⚠ Failed to install ${failedPackages.length} package(s): ${failedPackages.map(f => f.pkg).join(', ')}`));
+            console.log(gradient("#FFE66D", "#FF6B6B")(`   You may need to install them manually: npm install ${failedPackages.map(f => f.pkg).join(' ')}`));
+            log.warn("PKG CHECK", `Some packages failed to install automatically. Manual installation may be required.`);
+        } else if (installedPackagesList.length === missingPackages.length) {
+            console.log(gradient("#06FFA5", "#09FBD3")(`✓ All ${missingPackages.length} missing packages installed successfully!`));
+        }
     }
     
     console.log();
@@ -290,9 +363,7 @@ async function checkPackages() {
 }
 
 async function loadDatabase() {
-    const log = require('../logger/log.js');
     const config = require('../loadConfig.js');
-    const mongoose = require('mongoose');
     
     console.log(gradient("#A8E6CF", "#FFD3B6")(createLine("DATABASE CONNECTION", true)));
     console.log();
@@ -317,7 +388,6 @@ async function loadDatabase() {
         console.log();
         console.log(gradient("#A8E6CF", "#FFD3B6")(createLine(null, true)));
         console.log();
-        return true;
     } catch (error) {
         dbSpinner.fail(gradient("#FF6B6B", "#C44569")(`Failed to connect: ${error.message}`));
         throw error;
@@ -325,8 +395,6 @@ async function loadDatabase() {
 }
 
 async function loadCommands(client) {
-    const log = require('../logger/log.js');
-    
     console.log(gradient("#FFEAA7", "#FDCB6E")(createLine("LOADING COMMANDS", true)));
     console.log();
     
@@ -336,7 +404,6 @@ async function loadCommands(client) {
         console.log();
         console.log(gradient("#FFEAA7", "#FDCB6E")(createLine(null, true)));
         console.log();
-        return true;
     } catch (error) {
         log.error("COMMANDS", `Critical error: ${error.message}`);
         throw error;
@@ -344,8 +411,6 @@ async function loadCommands(client) {
 }
 
 async function loadEvents(client) {
-    const log = require('../logger/log.js');
-    
     console.log(gradient("#74B9FF", "#A29BFE")(createLine("LOADING EVENTS", true)));
     console.log();
     
@@ -355,7 +420,6 @@ async function loadEvents(client) {
         console.log();
         console.log(gradient("#74B9FF", "#A29BFE")(createLine(null, true)));
         console.log();
-        return true;
     } catch (error) {
         log.error("EVENTS", `Critical error: ${error.message}`);
         throw error;
@@ -363,8 +427,6 @@ async function loadEvents(client) {
 }
 
 async function loginBot(client, config) {
-    const log = require('../logger/log.js');
-    
     console.log(gradient("#FF7675", "#FD79A8")(createLine("BOT LOGIN", true)));
     console.log();
     
@@ -379,7 +441,6 @@ async function loginBot(client, config) {
         console.log();
         console.log(gradient("#FF7675", "#FD79A8")(createLine(null, true)));
         console.log();
-        return true;
     } catch (error) {
         loginSpinner.fail(gradient("#FF6B6B", "#C44569")(`Failed to login: ${error.message}`));
         throw error;
@@ -387,7 +448,6 @@ async function loginBot(client, config) {
 }
 
 async function checkRestartNotification(client) {
-    const log = require('../logger/log.js');
     const restartFilePath = path.join(process.cwd(), 'scripts', 'commands', 'tmp', 'restart.txt');
     
     if (fs.existsSync(restartFilePath)) {
@@ -423,14 +483,14 @@ async function checkRestartNotification(client) {
             log.error("RESTART", `Failed to send restart notification: ${error.message}`);
             try {
                 await fs.unlink(restartFilePath);
-            } catch {}
+            } catch (unlinkError) {
+                // Ignore unlink errors
+            }
         }
     }
 }
 
 async function initializePresence(client) {
-    const log = require('../logger/log.js');
-    
     console.log(gradient("#DDA15E", "#BC6C25")(createLine("PRESENCE MANAGER", true)));
     console.log();
     
@@ -453,8 +513,6 @@ async function initializePresence(client) {
 }
 
 async function startDashboard(client, config) {
-    const log = require('../logger/log.js');
-    
     if (config.dashboard.enabled) {
         console.log(gradient("#E056FD", "#F7797D")(createLine("DASHBOARD", true)));
         console.log();
@@ -476,11 +534,28 @@ async function startDashboard(client, config) {
     }
 }
 
-async function checkForUpdatesOnStartup() {
-    const log = require('../logger/log.js');
-    const axios = require('axios');
-    const { colors } = require('../func/colors.js');
+/**
+ * Compare two version strings
+ * @param {string} v1 - First version
+ * @param {string} v2 - Second version
+ * @returns {number} 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+ */
+function compareVersion(v1, v2) {
+    const parts1 = v1.split('.').map(Number);
+    const parts2 = v2.split('.').map(Number);
     
+    for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+        const part1 = parts1[i] || 0;
+        const part2 = parts2[i] || 0;
+        
+        if (part1 > part2) return 1;
+        if (part1 < part2) return -1;
+    }
+    
+    return 0;
+}
+
+async function checkForUpdatesOnStartup() {
     try {
         console.log(gradient("#A8E6CF", "#FFD3B6")(createLine("VERSION CHECK", true)));
         console.log();
@@ -490,31 +565,11 @@ async function checkForUpdatesOnStartup() {
             spinner: 'dots12'
         }).start();
         
-        // Get current version
-        const packageJson = require('../package.json');
-        const currentVersion = packageJson.version;
-        
         // Get latest version from GitHub
         const { data: latestPackageJson } = await axios.get('https://raw.githubusercontent.com/notsopreety/Rento-Bot/main/package.json', {
             timeout: 10000
         });
         const latestVersion = latestPackageJson.version;
-        
-        // Compare versions
-        function compareVersion(v1, v2) {
-            const parts1 = v1.split('.').map(Number);
-            const parts2 = v2.split('.').map(Number);
-            
-            for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
-                const part1 = parts1[i] || 0;
-                const part2 = parts2[i] || 0;
-                
-                if (part1 > part2) return 1;
-                if (part1 < part2) return -1;
-            }
-            
-            return 0;
-        }
         
         const comparison = compareVersion(latestVersion, currentVersion);
         
@@ -568,8 +623,6 @@ async function login(client, config) {
         await checkRestartNotification(client);
         await startDashboard(client, config);
         
-        const log = require('../logger/log.js');
-        
         console.log(gradient("#00B4DB", "#0083B0")(createLine(null, true)));
         console.log();
         
@@ -582,7 +635,6 @@ async function login(client, config) {
         console.log();
         
     } catch (error) {
-        const log = require('../logger/log.js');
         log.error("STARTUP", `Critical error during startup: ${error.message}`);
         console.error(error);
         process.exit(1);
@@ -590,3 +642,4 @@ async function login(client, config) {
 }
 
 module.exports = login;
+
