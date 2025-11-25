@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+*.log
+*.js.map
+dist/
+build/
+.cache/
+temp/
+logs/
+database/
+backups/

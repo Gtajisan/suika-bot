@@ -1,0 +1,14 @@
+{
+  "telegram": {
+    "token": ""
+  },
+  "database": {
+    "mongodbUri": ""
+  },
+  "bot": {
+    "prefix": "/",
+    "timezone": "Asia/Kathmandu",
+    "defaultLang": "en",
+    "adminBot": []
+  }
+}
