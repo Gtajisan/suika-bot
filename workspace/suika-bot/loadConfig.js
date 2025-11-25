@@ -5,7 +5,7 @@ function loadConfig() {
     const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 
     config.telegram.token = process.env.TELEGRAM_BOT_TOKEN || config.telegram.token;
-    config.database.mongodbUri = process.env.MONGODB_URI || config.database.mongodbUri;
+    config.database.mongodbUri = process.env.MONGODB_URI || config.database.mongodbUri || '';
     config.bot.prefix = process.env.BOT_PREFIX || config.bot.prefix;
     config.bot.timezone = process.env.BOT_TIMEZONE || config.bot.timezone || "Asia/Kathmandu";
 
@@ -13,9 +13,9 @@ function loadConfig() {
         config.bot.adminBot = [process.env.BOT_ADMIN_ID];
     }
 
-    if (!config.telegram.token || !config.database.mongodbUri) {
-        console.error('\x1b[31m[ERROR]\x1b[0m Missing required environment variables!');
-        console.error('Please set TELEGRAM_BOT_TOKEN and MONGODB_URI in .env file or Replit Secrets');
+    if (!config.telegram.token) {
+        console.error('\x1b[31m[ERROR]\x1b[0m Missing Telegram Bot Token!');
+        console.error('Set TELEGRAM_BOT_TOKEN in Replit Secrets');
         process.exit(1);
     }
 

@@ -2,7 +2,8 @@ const { Telegraf, Markup, session } = require('telegraf');
 const config = require('./loadConfig.js');
 const log = require('./logger/log.js');
 const errorNotifier = require('./logger/errorNotifier');
-const mongoose = require('mongoose');
+const { initializeDatabase } = require('./database');
+const { startDashboard } = require('./dashboard/app.js');
 
 process.on('unhandledRejection', error => {
     log.error('Unhandled Rejection: ' + error.message);
@@ -34,20 +35,6 @@ global.db = global.SuikaBot.db;
 global.client = { cache: {}, database: { creatingUserData: [] } };
 global.temp = { createUserData: [] };
 
-async function connectDatabase() {
-    try {
-        await mongoose.connect(config.database.mongodbUri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        log.info('✅ Connected to MongoDB');
-        return true;
-    } catch (error) {
-        log.error(`MongoDB Connection Error: ${error.message}`);
-        return false;
-    }
-}
-
 const loadCommands = require('./handlers/loadCommands.js');
 const loadEvents = require('./handlers/loadEvents.js');
 
@@ -55,12 +42,7 @@ async function initialize() {
     try {
         console.log('\x1b[36m%s\x1b[0m', '🍈 Initializing Suika Bot...');
         
-        const dbConnected = await connectDatabase();
-        if (!dbConnected) {
-            log.warn('⚠️  Continuing without database connection');
-        }
-
-        const usersData = require('./database/usersData.js');
+        const usersData = await initializeDatabase();
         global.db.usersData = usersData;
 
         await loadCommands();
@@ -89,6 +71,16 @@ async function initialize() {
         console.log('\x1b[32m%s\x1b[0m', `✅ Suika Bot started successfully!`);
         console.log('\x1b[33m%s\x1b[0m', `👤 Bot Username: @${botInfo.username}`);
         console.log('\x1b[33m%s\x1b[0m', `💾 Developer: Gtajisan`);
+        
+        // Start dashboard on separate port
+        setTimeout(() => {
+            try {
+                startDashboard();
+            } catch (err) {
+                log.error(`Dashboard error: ${err.message}`);
+            }
+        }, 500);
+
         console.log('\x1b[36m%s\x1b[0m', `━━━━━━━━━━━━━━━━━━━━━━━━`);
 
     } catch (error) {
@@ -100,14 +92,12 @@ async function initialize() {
 process.once('SIGINT', () => {
     log.info('Shutting down gracefully...');
     bot.stop('SIGINT');
-    mongoose.disconnect();
     process.exit(0);
 });
 
 process.once('SIGTERM', () => {
     log.info('Shutting down gracefully...');
     bot.stop('SIGTERM');
-    mongoose.disconnect();
     process.exit(0);
 });
 
