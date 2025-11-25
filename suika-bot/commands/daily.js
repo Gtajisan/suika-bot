@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -41,7 +40,7 @@ module.exports = {
             const minutes = Math.floor((timeLeft % 3600000) / 60000);
             const response = getLang("alreadyClaimed", `${hours}h ${minutes}m`);
             
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
 
         const reward = Math.floor(Math.random() * 500) + 500;
@@ -51,11 +50,11 @@ module.exports = {
         });
 
         const response = getLang("claimed", reward);
-        const embed = new EmbedBuilder()
-            .setDescription(response)
-            .setColor(0xFFD700)
+        const embed = {}
+            // Description: response
+            
             .setTimestamp();
 
-        return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+        return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -45,16 +44,13 @@ module.exports = {
         const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         const startedAt = `<t:${Math.floor(global.RentoBot.startTime / 1000)}:F>`;
 
-        const embed = new EmbedBuilder()
-            .setTitle(getLang("title"))
-            .setDescription(
-                getLang("uptime", uptimeString) + "\n\n" +
+        // Title: getLang("title")
+             + "\n\n" +
                 getLang("details", days, hours, minutes, seconds) + "\n\n" +
                 getLang("started", startedAt)
-            )
-            .setColor(0x00AE86)
+            */ //(0x00AE86)
             .setTimestamp();
 
-        return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+        return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

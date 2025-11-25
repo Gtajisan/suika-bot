@@ -1,7 +1,6 @@
 
 const axios = require('axios');
 const { createCanvas, loadImage } = require('canvas');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -76,7 +75,7 @@ module.exports = {
         // Validate prompt
         if (!prompt || prompt.trim().length === 0) {
             const response = getLang("noPrompt").replace('{prefix}', prefix);
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
 
         // Defer reply for slash commands
@@ -88,7 +87,7 @@ module.exports = {
         const generatingMsg = getLang("generating");
         const initialMsg = isSlash 
             ? await interaction.editReply(generatingMsg)
-            : await message.reply(generatingMsg);
+            : await ctx.reply(generatingMsg);
 
         // Generate images with retry logic
         const maxRetries = 3;
@@ -201,14 +200,13 @@ module.exports = {
             const attachment = new AttachmentBuilder(filepath, { name: 'generated-images.png' });
 
             // Create embed
-            const embed = new EmbedBuilder()
-                .setTitle(getLang("success").replace('{time}', generationTime))
+            const embed = {}
+                // Title: getLang("success".replace('{time}', generationTime))
                 .setDescription(
                     getLang("prompt").replace('{prompt}', prompt) + '\n\n' +
                     getLang("selectImage")
                 )
-                .setImage('attachment://generated-images.png')
-                .setColor(0x00AE86)
+                // Image: 'attachment://generated-images.png'*/ //(0x00AE86
                 .setFooter({ text: `Requested by ${isSlash ? interaction.user.tag : message.author.tag}` })
                 .setTimestamp();
 
@@ -277,11 +275,10 @@ module.exports = {
                     const imgNum = parseInt(customId.split('_')[1]);
                     
                     if (imgNum >= 1 && imgNum <= 4 && imageUrls[imgNum - 1]) {
-                        const imgEmbed = new EmbedBuilder()
-                            .setTitle(getLang("imageTitle").replace('{number}', imgNum))
-                            .setDescription(getLang("prompt").replace('{prompt}', prompt))
-                            .setImage(imageUrls[imgNum - 1])
-                            .setColor(0x00AE86)
+                        const imgEmbed = {}
+                            // Title: getLang("imageTitle".replace('{number}', imgNum))
+                            // Description: getLang("prompt".replace('{prompt}', prompt))
+                            // Image: imageUrls[imgNum - 1]*/ //(0x00AE86
                             .setFooter({ text: `Image ${imgNum} of 4` })
                             .setTimestamp();
 

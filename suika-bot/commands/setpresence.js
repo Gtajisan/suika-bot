@@ -102,7 +102,7 @@ module.exports = {
 
         if (!action) {
             const response = getLang("invalidAction");
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
 
         const presenceManager = global.RentoBot.presenceManager;
@@ -132,7 +132,7 @@ module.exports = {
             case 'competing': {
                 if (!text) {
                     const response = getLang("noText");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const activityType = activityTypes[action];
@@ -153,17 +153,17 @@ module.exports = {
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                     
                     const response = getLang("successActivity", action, text);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 } catch (error) {
                     const response = getLang("saveError", error.message);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
             }
 
             case 'status': {
                 if (!text || !validStatuses.includes(text.toLowerCase())) {
                     const response = getLang("invalidStatus");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 await presenceManager.setStatus(text.toLowerCase());
@@ -183,17 +183,17 @@ module.exports = {
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                     
                     const response = getLang("successStatus", text);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 } catch (error) {
                     const response = getLang("saveError", error.message);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
             }
 
             case 'rotate': {
                 if (presenceManager.isRotating) {
                     const response = getLang("rotateAlready");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 presenceManager.startRotation();
@@ -212,10 +212,10 @@ module.exports = {
                     const totalActivities = presenceManager.presetActivities.length;
                     const interval = config.presence.rotationInterval;
                     const response = getLang("rotateStart", totalActivities, interval);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 } catch (error) {
                     const response = getLang("saveError", error.message);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
             }
 
@@ -233,7 +233,7 @@ module.exports = {
                     listMessage += `\n... and ${activities.length - 20} more activities`;
                 }
 
-                return message ? message.reply(listMessage) : interaction.reply(listMessage);
+                return message ? ctx.reply(listMessage) : ctx.reply(listMessage);
             }
 
             case 'stats': {
@@ -253,13 +253,13 @@ module.exports = {
                     totalCommands, totalMessages, totalUsers
                 );
 
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'stop': {
                 if (!presenceManager.isRotating) {
                     const response = getLang("rotateNotRunning");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 presenceManager.stopRotation();
@@ -271,16 +271,16 @@ module.exports = {
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                     
                     const response = getLang("rotateStop");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 } catch (error) {
                     const response = getLang("saveError", error.message);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
             }
 
             default: {
                 const response = getLang("invalidAction");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
         }
     }

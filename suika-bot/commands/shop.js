@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 const SHOP_ITEMS = [
     { id: "trophy", name: "🏆 Trophy", price: 5000, description: "A shiny trophy for your collection" },
@@ -123,9 +122,9 @@ module.exports = {
                     description += "\n";
                 }
 
-                const embed = new EmbedBuilder()
-                    .setDescription(description)
-                    .setColor(0x5865F2)
+                const embed = {}
+                    // Description: description
+                    
                     .setFooter({ text: `Page ${page + 1}/${totalPages} • Your Balance: $${userData.money.toLocaleString()}` })
                     .setTimestamp();
 
@@ -189,8 +188,8 @@ module.exports = {
             const components = generateButtons(currentPage);
 
             const reply = isSlash ? 
-                await interaction.reply({ embeds: [embed], components: components, fetchReply: true }) : 
-                await message.reply({ embeds: [embed], components: components });
+                await ctx.reply({ embeds: [embed], components: components, fetchReply: true }) : 
+                await ctx.reply({ embeds: [embed], components: components });
 
             const buttonHandler = async (btnInteraction) => {
                 if (btnInteraction.user.id !== user.id) {
@@ -231,9 +230,8 @@ module.exports = {
                         data: { ...freshUserData.data, inventory }
                     });
 
-                    const successEmbed = new EmbedBuilder()
-                        .setDescription(getLang("purchaseSuccess", 1, item.name, totalCost.toLocaleString()))
-                        .setColor(0x57F287);
+                    const successEmbed = {}
+                        // Description: getLang("purchaseSuccess", 1, item.name, totalCost.toLocaleString()*/ //(0x57F287);
 
                     await btnInteraction.reply({ embeds: [successEmbed], ephemeral: true });
                 } else if (btnInteraction.customId.startsWith('shop_sell_')) {
@@ -261,9 +259,8 @@ module.exports = {
                         data: { ...freshUserData.data, inventory }
                     });
 
-                    const successEmbed = new EmbedBuilder()
-                        .setDescription(getLang("sellSuccess", 1, item.name, sellPrice.toLocaleString()))
-                        .setColor(0xFEE75C);
+                    const successEmbed = {}
+                        // Description: getLang("sellSuccess", 1, item.name, sellPrice.toLocaleString()*/ //(0xFEE75C);
 
                     await btnInteraction.reply({ embeds: [successEmbed], ephemeral: true });
                 }
@@ -292,14 +289,14 @@ module.exports = {
 
         if (!item) {
             return isSlash ? 
-                interaction.reply({ content: getLang("invalidItem"), ephemeral: true }) : 
-                message.reply(getLang("invalidItem"));
+                ctx.reply({ content: getLang("invalidItem"), ephemeral: true }) : 
+                ctx.reply(getLang("invalidItem"));
         }
 
         if (quantity <= 0 || isNaN(quantity)) {
             return isSlash ? 
-                interaction.reply({ content: getLang("invalidQuantity"), ephemeral: true }) : 
-                message.reply(getLang("invalidQuantity"));
+                ctx.reply({ content: getLang("invalidQuantity"), ephemeral: true }) : 
+                ctx.reply(getLang("invalidQuantity"));
         }
 
         // Handle buy action
@@ -308,8 +305,8 @@ module.exports = {
 
             if (userData.money < totalCost) {
                 return isSlash ? 
-                    interaction.reply({ content: getLang("insufficientFunds", totalCost.toLocaleString(), userData.money.toLocaleString()), ephemeral: true }) : 
-                    message.reply(getLang("insufficientFunds", totalCost.toLocaleString(), userData.money.toLocaleString()));
+                    ctx.reply({ content: getLang("insufficientFunds", totalCost.toLocaleString(), userData.money.toLocaleString()), ephemeral: true }) : 
+                    ctx.reply(getLang("insufficientFunds", totalCost.toLocaleString(), userData.money.toLocaleString()));
             }
 
             const inventory = userData.data.inventory || {};
@@ -320,12 +317,11 @@ module.exports = {
                 data: { ...userData.data, inventory }
             });
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("purchaseSuccess", quantity, item.name, totalCost.toLocaleString()))
-                .setColor(0x57F287)
+            const embed = {}
+                // Description: getLang("purchaseSuccess", quantity, item.name, totalCost.toLocaleString()*/ //(0x57F287)
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
 
         // Handle sell action
@@ -335,8 +331,8 @@ module.exports = {
 
             if (currentAmount < quantity) {
                 return isSlash ? 
-                    interaction.reply({ content: getLang("notEnoughItems", currentAmount, quantity), ephemeral: true }) : 
-                    message.reply(getLang("notEnoughItems", currentAmount, quantity));
+                    ctx.reply({ content: getLang("notEnoughItems", currentAmount, quantity), ephemeral: true }) : 
+                    ctx.reply(getLang("notEnoughItems", currentAmount, quantity));
             }
 
             const sellPrice = Math.floor(item.price * 0.7);
@@ -349,12 +345,11 @@ module.exports = {
                 data: { ...userData.data, inventory }
             });
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("sellSuccess", quantity, item.name, totalEarnings.toLocaleString()))
-                .setColor(0xFEE75C)
+            const embed = {}
+                // Description: getLang("sellSuccess", quantity, item.name, totalEarnings.toLocaleString()*/ //(0xFEE75C)
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
     }
 };

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -49,13 +48,12 @@ module.exports = {
         const jpgURL = targetUser.displayAvatarURL({ extension: 'jpg', size: 1024 });
         const webpURL = targetUser.displayAvatarURL({ extension: 'webp', size: 1024 });
 
-        const embed = new EmbedBuilder()
-            .setTitle(getLang("title", targetUser.username))
-            .setDescription(getLang("links", pngURL, jpgURL, webpURL))
-            .setImage(avatarURL)
-            .setColor(0x5865F2)
+        const embed = {}
+            // Title: getLang("title", targetUser.username)
+            // Description: getLang("links", pngURL, jpgURL, webpURL)
+            // Image: avatarURL*/ //(0x5865F2
             .setTimestamp();
 
-        return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+        return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

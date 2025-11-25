@@ -1,5 +1,4 @@
 
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -75,7 +74,7 @@ module.exports = {
 
         if (!resetType || !['users', 'guilds', 'stats', 'all'].includes(resetType.toLowerCase())) {
             const response = getLang("invalidType");
-            return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const type = resetType.toLowerCase();
@@ -93,16 +92,16 @@ module.exports = {
                     .setStyle(ButtonStyle.Secondary)
             );
 
-        const confirmEmbed = new EmbedBuilder()
-            .setColor('#FF0000')
-            .setTitle('🚨 Database Reset Confirmation')
-            .setDescription(getLang("confirmReset", typeDisplay))
+        const confirmEmbed = {}
+            
+            // Title: '🚨 Database Reset Confirmation'
+            // Description: getLang("confirmReset", typeDisplay)
             .setFooter({ text: 'This action cannot be undone!' })
             .setTimestamp();
 
         const reply = isSlash ? 
-            await interaction.reply({ embeds: [confirmEmbed], components: [row], fetchReply: true }) : 
-            await message.reply({ embeds: [confirmEmbed], components: [row] });
+            await ctx.reply({ embeds: [confirmEmbed], components: [row], fetchReply: true }) : 
+            await ctx.reply({ embeds: [confirmEmbed], components: [row] });
 
         const buttonHandler = async (btnInteraction) => {
             if (btnInteraction.user.id !== user.id) {
@@ -110,9 +109,9 @@ module.exports = {
             }
 
             if (btnInteraction.customId === 'reset_cancel') {
-                const cancelledEmbed = new EmbedBuilder()
-                    .setColor('#FFA500')
-                    .setDescription(getLang("cancelled"))
+                const cancelledEmbed = {}
+                    
+                    // Description: getLang("cancelled")
                     .setTimestamp();
 
                 await btnInteraction.update({ embeds: [cancelledEmbed], components: [] });
@@ -123,9 +122,9 @@ module.exports = {
             }
 
             if (btnInteraction.customId === 'reset_confirm') {
-                const resettingEmbed = new EmbedBuilder()
-                    .setColor('#FFFF00')
-                    .setDescription(getLang("resetting", typeDisplay))
+                const resettingEmbed = {}
+                    
+                    // Description: getLang("resetting", typeDisplay)
                     .setTimestamp();
 
                 await btnInteraction.update({ embeds: [resettingEmbed], components: [] });
@@ -141,9 +140,9 @@ module.exports = {
                             await global.db.userModel.deleteMany({});
                             global.db.allUserData = [];
 
-                            const successEmbed = new EmbedBuilder()
-                                .setColor('#00FF00')
-                                .setDescription(getLang("usersReset", userCount))
+                            const successEmbed = {}
+                                
+                                // Description: getLang("usersReset", userCount)
                                 .setTimestamp();
 
                             await btnInteraction.editReply({ embeds: [successEmbed] });
@@ -155,9 +154,9 @@ module.exports = {
                             await global.db.guildModel.deleteMany({});
                             global.db.allGuildData = [];
 
-                            const recreatingEmbed = new EmbedBuilder()
-                                .setColor('#FFFF00')
-                                .setDescription(getLang("recreatingGuilds"))
+                            const recreatingEmbed = {}
+                                
+                                // Description: getLang("recreatingGuilds")
                                 .setTimestamp();
                             await btnInteraction.editReply({ embeds: [recreatingEmbed] });
 
@@ -167,9 +166,9 @@ module.exports = {
                                 recreatedCount++;
                             }
 
-                            const successEmbed = new EmbedBuilder()
-                                .setColor('#00FF00')
-                                .setDescription(getLang("guildsReset", guildCount) + '\n' + getLang("guildsRecreated", recreatedCount))
+                            const successEmbed = {}
+                                
+                                // Description: getLang("guildsReset", guildCount + '\n' + getLang("guildsRecreated", recreatedCount))
                                 .setTimestamp();
 
                             await btnInteraction.editReply({ embeds: [successEmbed] });
@@ -181,9 +180,9 @@ module.exports = {
                             await global.db.commandStatsModel.deleteMany({});
                             global.db.allCommandStats = [];
 
-                            const successEmbed = new EmbedBuilder()
-                                .setColor('#00FF00')
-                                .setDescription(getLang("statsReset", statsCount))
+                            const successEmbed = {}
+                                
+                                // Description: getLang("statsReset", statsCount)
                                 .setTimestamp();
 
                             await btnInteraction.editReply({ embeds: [successEmbed] });
@@ -203,9 +202,9 @@ module.exports = {
                             global.db.allGuildData = [];
                             global.db.allCommandStats = [];
 
-                            const recreatingEmbed = new EmbedBuilder()
-                                .setColor('#FFFF00')
-                                .setDescription(getLang("recreatingGuilds"))
+                            const recreatingEmbed = {}
+                                
+                                // Description: getLang("recreatingGuilds")
                                 .setTimestamp();
                             await btnInteraction.editReply({ embeds: [recreatingEmbed] });
 
@@ -215,9 +214,9 @@ module.exports = {
                                 recreatedCount++;
                             }
 
-                            const successEmbed = new EmbedBuilder()
-                                .setColor('#00FF00')
-                                .setDescription(getLang("allReset", userCount, guildCount, statsCount) + '\n' + getLang("guildsRecreated", recreatedCount))
+                            const successEmbed = {}
+                                
+                                // Description: getLang("allReset", userCount, guildCount, statsCount + '\n' + getLang("guildsRecreated", recreatedCount))
                                 .setTimestamp();
 
                             await btnInteraction.editReply({ embeds: [successEmbed] });
@@ -225,9 +224,9 @@ module.exports = {
                         }
                     }
                 } catch (error) {
-                    const errorEmbed = new EmbedBuilder()
-                        .setColor('#FF0000')
-                        .setDescription(getLang("error", error.message))
+                    const errorEmbed = {}
+                        
+                        // Description: getLang("error", error.message)
                         .setTimestamp();
 
                     await btnInteraction.editReply({ embeds: [errorEmbed] });
@@ -246,9 +245,9 @@ module.exports = {
                 global.RentoBot.onButton.delete('reset_confirm');
                 global.RentoBot.onButton.delete('reset_cancel');
 
-                const timeoutEmbed = new EmbedBuilder()
-                    .setColor('#FFA500')
-                    .setDescription(getLang("timeout"))
+                const timeoutEmbed = {}
+                    
+                    // Description: getLang("timeout")
                     .setTimestamp();
 
                 try {

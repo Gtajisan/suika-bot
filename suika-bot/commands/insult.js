@@ -91,39 +91,39 @@ module.exports = {
             case 'start': {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (global.insultTargets.has(targetUser.id)) {
                     const response = getLang("alreadyTarget", targetUser.tag);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 global.insultTargets.add(targetUser.id);
                 const response = getLang("targetAdded", targetUser.tag);
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'stop': {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (!global.insultTargets.has(targetUser.id)) {
                     const response = getLang("notTarget", targetUser.tag);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 global.insultTargets.delete(targetUser.id);
                 const response = getLang("targetRemoved", targetUser.tag);
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'list': {
                 if (global.insultTargets.size === 0) {
                     const response = getLang("noTargets");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const targetList = await Promise.all(
@@ -138,23 +138,23 @@ module.exports = {
                 );
 
                 const response = getLang("targetList", targetList.join("\n"));
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             default: {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (global.insultTargets.has(targetUser.id)) {
                     const response = getLang("alreadyTarget", targetUser.tag);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 global.insultTargets.add(targetUser.id);
                 const response = getLang("targetAdded", targetUser.tag);
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
         }
     }

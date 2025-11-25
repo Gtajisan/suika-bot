@@ -72,7 +72,7 @@ module.exports = {
 
         if (!action) {
             const response = getLang("invalidAction");
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
 
         const config = global.RentoBot.config;
@@ -85,12 +85,12 @@ module.exports = {
             case 'add': {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (config.bot.adminBot.includes(targetUser.id)) {
                     const response = getLang("alreadyAdmin", targetUser.tag);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 config.bot.adminBot.push(targetUser.id);
@@ -99,23 +99,23 @@ module.exports = {
                     const configPath = path.join(process.cwd(), 'config.json');
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                     const response = getLang("addSuccess", targetUser.tag);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 } catch (error) {
                     const response = getLang("saveError", error.message);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
             }
 
             case 'remove': {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const index = config.bot.adminBot.indexOf(targetUser.id);
                 if (index === -1) {
                     const response = getLang("notAdmin", targetUser.tag);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 config.bot.adminBot.splice(index, 1);
@@ -124,17 +124,17 @@ module.exports = {
                     const configPath = path.join(process.cwd(), 'config.json');
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                     const response = getLang("removeSuccess", targetUser.tag);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 } catch (error) {
                     const response = getLang("saveError", error.message);
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
             }
 
             case 'list': {
                 if (config.bot.adminBot.length === 0) {
                     const response = getLang("noAdmins");
-                    return message ? message.reply(response) : interaction.reply(response);
+                    return message ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const adminList = await Promise.all(
@@ -149,12 +149,12 @@ module.exports = {
                 );
 
                 const response = getLang("adminList", adminList.join("\n"));
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
 
             default: {
                 const response = getLang("invalidAction");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
         }
     }

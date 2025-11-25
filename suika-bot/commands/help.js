@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -189,7 +188,7 @@ module.exports = {
                 
                 if (page < 1 || page > totalPage) {
                     const response = getLang("pageNotFound", page);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const startIndex = (page - 1) * numberOfOnePage;
@@ -201,10 +200,9 @@ module.exports = {
                     return `**${num}.** ${item.data}`;
                 }).join("\n");
 
-                const embed = new EmbedBuilder()
-                    .setTitle("📚 Help Menu")
-                    .setDescription(getLang("help", description, page, totalPage, commands.size, prefix))
-                    .setColor(0x00AE86)
+                const embed = {}
+                    // Title: "📚 Help Menu"
+                    // Description: getLang("help", description, page, totalPage, commands.size, prefix*/ //(0x00AE86)
                     .setFooter({ text: `Use ${prefix}sorthelp to change display style` })
                     .setTimestamp();
 
@@ -259,7 +257,7 @@ module.exports = {
 
                 const messageOptions = { embeds: [embed], components: rows };
 
-                return isSlash ? interaction.reply(messageOptions) : message.reply(messageOptions);
+                return isSlash ? ctx.reply(messageOptions) : ctx.reply(messageOptions);
             }
             else if (sortHelp == "category") {
                 const categoryMap = {};
@@ -281,10 +279,9 @@ module.exports = {
                     description += `\n\n**📁 ${categoryName}**\n${commandList}`;
                 }
 
-                const embed = new EmbedBuilder()
-                    .setTitle("📚 Help Menu")
-                    .setDescription(getLang("help2", description.trim(), commands.size, prefix))
-                    .setColor(0x00AE86)
+                const embed = {}
+                    // Title: "📚 Help Menu"
+                    // Description: getLang("help2", description.trim(, commands.size, prefix)*/ //(0x00AE86)
                     .setFooter({ text: `Use ${prefix}sorthelp to change display style` })
                     .setTimestamp();
 
@@ -312,12 +309,12 @@ module.exports = {
                             .setEmoji('🧑‍💻')
                     );
 
-                return isSlash ? interaction.reply({ embeds: [embed], components: [linksRow] }) : message.reply({ embeds: [embed], components: [linksRow] });
+                return isSlash ? ctx.reply({ embeds: [embed], components: [linksRow] }) : ctx.reply({ embeds: [embed], components: [linksRow] });
             }
         }
         else if (!command && commandArg) {
             const response = getLang("commandNotFound", commandArg);
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
         else {
             const configCommand = command.config;
@@ -375,10 +372,10 @@ module.exports = {
                 );
             }
 
-            const embed = new EmbedBuilder()
-                .setTitle(`📖 ${configCommand.name}`)
-                .setDescription(formSendMessage.body)
-                .setColor(0x00AE86)
+            const embed = {}
+                // Title: `📖 ${configCommand.name}`
+                // Description: formSendMessage.body
+                
                 .setTimestamp();
 
             const linksRow = new ActionRowBuilder()
@@ -405,7 +402,7 @@ module.exports = {
                         .setEmoji('🧑‍💻')
                 );
 
-            return isSlash ? interaction.reply({ embeds: [embed], components: [linksRow] }) : message.reply({ embeds: [embed], components: [linksRow] });
+            return isSlash ? ctx.reply({ embeds: [embed], components: [linksRow] }) : ctx.reply({ embeds: [embed], components: [linksRow] });
         }
     },
 
@@ -416,7 +413,7 @@ module.exports = {
         if (action !== 'help') return;
         
         if (interaction.user.id !== authorizedUserID) {
-            return interaction.reply({ 
+            return ctx.reply({ 
                 content: "❌ Only the user who requested the help menu can use these buttons!", 
                 ephemeral: true 
             });
@@ -466,10 +463,9 @@ module.exports = {
             return `**${num}.** ${item.data}`;
         }).join("\n");
 
-        const embed = new EmbedBuilder()
-            .setTitle("📚 Help Menu")
-            .setDescription(getLang("help", description, page, totalPage, commands.size, prefix))
-            .setColor(0x00AE86)
+        const embed = {}
+            // Title: "📚 Help Menu"
+            // Description: getLang("help", description, page, totalPage, commands.size, prefix*/ //(0x00AE86)
             .setFooter({ text: `Use ${prefix}sorthelp to change display style` })
             .setTimestamp();
 

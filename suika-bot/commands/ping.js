@@ -30,8 +30,8 @@ module.exports = {
 
     onStart: async ({ message, interaction, client, getLang }) => {
         const sent = message ? 
-            await message.reply(getLang("pinging")) : 
-            await interaction.reply({ content: getLang("pinging"), fetchReply: true });
+            await ctx.reply(getLang("pinging")) : 
+            await ctx.reply({ content: getLang("pinging"), fetchReply: true });
         
         const latency = sent.createdTimestamp - (message?.createdTimestamp || interaction.createdTimestamp);
         const apiLatency = Math.round(client.ws.ping);

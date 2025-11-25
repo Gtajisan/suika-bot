@@ -120,17 +120,16 @@ module.exports = {
             if (!key) {
                 const guideImageUrl = 'https://i.ibb.co/BZ2Qgs1/image.png';
                 
-                const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
-                const guideEmbed = new EmbedBuilder()
-                    .setColor('#5865F2')
-                    .setTitle('📝 Custom Rank Card Guide')
-                    .setDescription('Here\'s how to customize your rank card:')
-                    .setImage(guideImageUrl)
+                                const guideEmbed = {}
+                    
+                    // Title: '📝 Custom Rank Card Guide'
+                    // Description: 'Here\'s how to customize your rank card:'
+                    // Image: guideImageUrl
                     .setFooter({ text: 'Use the options shown in the image above' });
                 
                 return isSlash 
                     ? interaction.editReply({ embeds: [guideEmbed] })
-                    : message.reply({ embeds: [guideEmbed] });
+                    : ctx.reply({ embeds: [guideEmbed] });
             }
 
             const userData = await usersData.get(user.id);
@@ -159,7 +158,7 @@ module.exports = {
                 if (!value && attachments.length === 0 && key !== 'reset') {
                     return isSlash 
                         ? interaction.editReply(getLang("missingValue"))
-                        : message.reply(getLang("missingValue"));
+                        : ctx.reply(getLang("missingValue"));
                 }
 
                 if (value === 'reset') {
@@ -169,18 +168,18 @@ module.exports = {
                     if (!matchUrl) {
                         return isSlash 
                             ? interaction.editReply(getLang("invalidImage"))
-                            : message.reply(getLang("invalidImage"));
+                            : ctx.reply(getLang("invalidImage"));
                     }
                     if (notSupportImage.includes(key)) {
                         return isSlash 
                             ? interaction.editReply(getLang("notSupportImage", key))
-                            : message.reply(getLang("notSupportImage", key));
+                            : ctx.reply(getLang("notSupportImage", key));
                     }
 
                     // Send uploading message
                     const uploadMsg = isSlash 
                         ? await interaction.editReply("⏳ Uploading image to ImgBB for permanent storage...")
-                        : await message.reply("⏳ Uploading image to ImgBB for permanent storage...");
+                        : await ctx.reply("⏳ Uploading image to ImgBB for permanent storage...");
 
                     try {
                         const axios = require('axios');
@@ -197,20 +196,20 @@ module.exports = {
                         console.error('Upload error:', err);
                         return isSlash 
                             ? interaction.editReply("❌ Failed to upload image. The URL may be invalid or unreachable. Try using a Discord CDN URL or upload the image directly.")
-                            : message.reply("❌ Failed to upload image. The URL may be invalid or unreachable. Try using a Discord CDN URL or upload the image directly.");
+                            : ctx.reply("❌ Failed to upload image. The URL may be invalid or unreachable. Try using a Discord CDN URL or upload the image directly.");
                     }
                 }
                 else if (attachments.length > 0) {
                     if (notSupportImage.includes(key)) {
                         return isSlash 
                             ? interaction.editReply(getLang("notSupportImage", key))
-                            : message.reply(getLang("notSupportImage", key));
+                            : ctx.reply(getLang("notSupportImage", key));
                     }
 
                     // Send uploading message
                     const uploadMsg = isSlash 
                         ? await interaction.editReply("⏳ Uploading image to ImgBB for permanent storage...")
-                        : await message.reply("⏳ Uploading image to ImgBB for permanent storage...");
+                        : await ctx.reply("⏳ Uploading image to ImgBB for permanent storage...");
 
                     try {
                         const axios = require('axios');
@@ -227,7 +226,7 @@ module.exports = {
                         console.error('Upload error:', err);
                         return isSlash 
                             ? interaction.editReply("❌ Failed to upload image. The image may be too large or invalid.")
-                            : message.reply("❌ Failed to upload image. The image may be too large or invalid.");
+                            : ctx.reply("❌ Failed to upload image. The image may be too large or invalid.");
                     }
                 }
                 else {
@@ -235,7 +234,7 @@ module.exports = {
                     if (!colors) {
                         return isSlash 
                             ? interaction.editReply(getLang("invalidColor"))
-                            : message.reply(getLang("invalidColor"));
+                            : ctx.reply(getLang("invalidColor"));
                     }
                     value = colors.length === 1 ? colors[0] : colors;
                 }
@@ -320,21 +319,21 @@ module.exports = {
                 const response = getLang("success");
                 return isSlash 
                     ? interaction.editReply({ content: response, files: [attachment] })
-                    : message.reply({ content: response, files: [attachment] });
+                    : ctx.reply({ content: response, files: [attachment] });
 
             }
             else if (["alphasubcolor", "alphasubcard"].includes(key)) {
                 if (!value) {
                     return isSlash 
                         ? interaction.editReply(getLang("missingValue"))
-                        : message.reply(getLang("missingValue"));
+                        : ctx.reply(getLang("missingValue"));
                 }
 
                 const alphaValue = parseFloat(value);
                 if (isNaN(alphaValue) || alphaValue < 0 || alphaValue > 1) {
                     return isSlash 
                         ? interaction.editReply(getLang("invalidAlpha"))
-                        : message.reply(getLang("invalidAlpha"));
+                        : ctx.reply(getLang("invalidAlpha"));
                 }
 
                 customRankCard.alpha_subcard = alphaValue;
@@ -383,7 +382,7 @@ module.exports = {
                 const response = getLang("success");
                 return isSlash 
                     ? interaction.editReply({ content: response, files: [attachment] })
-                    : message.reply({ content: response, files: [attachment] });
+                    : ctx.reply({ content: response, files: [attachment] });
 
             }
             else if (key === "reset") {
@@ -397,30 +396,29 @@ module.exports = {
                 const response = getLang("reseted");
                 return isSlash 
                     ? interaction.editReply(response)
-                    : message.reply(response);
+                    : ctx.reply(response);
             }
             else {
                 const guideImageUrl = 'https://i.ibb.co/BZ2Qgs1/image.png';
                 
-                const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
-                const guideEmbed = new EmbedBuilder()
-                    .setColor('#5865F2')
-                    .setTitle('📝 Custom Rank Card Guide')
-                    .setDescription('Here\'s how to customize your rank card:')
-                    .setImage(guideImageUrl)
+                                const guideEmbed = {}
+                    
+                    // Title: '📝 Custom Rank Card Guide'
+                    // Description: 'Here\'s how to customize your rank card:'
+                    // Image: guideImageUrl
                     .setFooter({ text: 'Use the options shown in the image above' });
                 
                 return isSlash 
                     ? interaction.editReply({ embeds: [guideEmbed] })
-                    : message.reply({ embeds: [guideEmbed] });
+                    : ctx.reply({ embeds: [guideEmbed] });
             }
 
         } catch (error) {
             console.error('Customrankcard error:', error);
             const response = "❌ An error occurred while customizing your rank card.";
             return interaction 
-                ? (interaction.deferred ? interaction.editReply(response) : interaction.reply(response))
-                : message.reply(response);
+                ? (interaction.deferred ? interaction.editReply(response) : ctx.reply(response))
+                : ctx.reply(response);
         }
     }
 };

@@ -62,7 +62,7 @@ module.exports = {
         if (!mode) {
             const currentStatus = config.bot.onlyadmin ? "ON ✅" : "OFF ❌";
             const response = getLang("currentStatus", currentStatus, prefix || "!");
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
 
         const modeLower = mode.toLowerCase();
@@ -70,7 +70,7 @@ module.exports = {
         if (modeLower === 'on' || modeLower === 'enable' || modeLower === 'true' || modeLower === '1') {
             if (config.bot.onlyadmin === true) {
                 const response = getLang("alreadyEnabled");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
 
             config.bot.onlyadmin = true;
@@ -80,17 +80,17 @@ module.exports = {
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                 
                 const response = getLang("enableSuccess");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 const response = getLang("saveError", error.message);
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
         }
         
         else if (modeLower === 'off' || modeLower === 'disable' || modeLower === 'false' || modeLower === '0') {
             if (config.bot.onlyadmin === false) {
                 const response = getLang("alreadyDisabled");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
 
             config.bot.onlyadmin = false;
@@ -100,17 +100,17 @@ module.exports = {
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
                 
                 const response = getLang("disableSuccess");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 const response = getLang("saveError", error.message);
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
         }
         
         else {
             const currentStatus = config.bot.onlyadmin ? "ON ✅" : "OFF ❌";
             const response = getLang("currentStatus", currentStatus, prefix || "!");
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
     }
 };

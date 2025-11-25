@@ -1,6 +1,5 @@
 
 const axios = require('axios');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -84,7 +83,7 @@ module.exports = {
         try {
             if (!url) {
                 const response = getLang("noUrl");
-                return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             // Validate URL
@@ -93,22 +92,21 @@ module.exports = {
 
             if (!isInstagram && !isFacebook) {
                 const response = getLang("invalidUrl");
-                return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
-            const loadingEmbed = new EmbedBuilder()
-                .setDescription(getLang("loading"))
-                .setColor(0x1DB954)
+            const loadingEmbed = {}
+                // Description: getLang("loading"*/ //(0x1DB954)
                 .setFooter({ text: user.username });
 
             let sentMessage;
             if (isSlash) {
-                await interaction.reply({ embeds: [loadingEmbed] });
+                await ctx.reply({ embeds: [loadingEmbed] });
                 sentMessage = await interaction.fetchReply();
                 sentMessage.isSlash = true;
                 sentMessage.interaction = interaction;
             } else {
-                sentMessage = await message.reply({ embeds: [loadingEmbed] });
+                sentMessage = await ctx.reply({ embeds: [loadingEmbed] });
                 sentMessage.isSlash = false;
             }
 
@@ -117,9 +115,8 @@ module.exports = {
             const response = await axios.get(apiUrl);
 
             if (!response.data.success || !response.data.data.status || !response.data.data.data || response.data.data.data.length === 0) {
-                const errorEmbed = new EmbedBuilder()
-                    .setDescription(getLang("noVideoFound"))
-                    .setColor(0xED4245);
+                const errorEmbed = {}
+                    // Description: getLang("noVideoFound"*/ //(0xED4245);
                 
                 if (sentMessage.isSlash) {
                     return sentMessage.interaction.editReply({ embeds: [errorEmbed] });
@@ -144,9 +141,8 @@ module.exports = {
             // Check file size
             if (videoResponse.data.length > 25 * 1024 * 1024) {
                 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('../adapters/discord-to-telegram.js');
-                const errorEmbed = new EmbedBuilder()
-                    .setDescription(getLang("fileTooLarge") + "\n\n**Download directly:**")
-                    .setColor(0xED4245);
+                const errorEmbed = {}
+                    // Description: getLang("fileTooLarge" + "\n\n**Download directly:**"*/ //(0xED4245);
                 
                 const button = new ButtonBuilder()
                     .setLabel('Click Here to Download')
@@ -178,14 +174,13 @@ module.exports = {
                 name: `${platform}_video.mp4` 
             });
 
-            const successEmbed = new EmbedBuilder()
-                .setDescription(getLang("success"))
-                .setColor(0x00FF00)
+            const successEmbed = {}
+                // Description: getLang("success"*/ //(0x00FF00)
                 .setFooter({ text: user.username })
                 .setTimestamp();
 
             if (thumbnail) {
-                successEmbed.setThumbnail(thumbnail);
+                successEmbed// Thumbnail: thumbnail;
             }
 
             if (sentMessage.isSlash) {
@@ -216,9 +211,9 @@ module.exports = {
             }
 
             const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('../adapters/discord-to-telegram.js');
-            const errorEmbed = new EmbedBuilder()
-                .setDescription(errorMessage + "\n\n**Try downloading directly:**")
-                .setColor(0xED4245);
+            const errorEmbed = {}
+                // Description: errorMessage + "\n\n**Try downloading directly:**"
+                ;
 
             let components = [];
             // Try to get download URL if available
@@ -250,10 +245,10 @@ module.exports = {
                 if (interaction.replied || interaction.deferred) {
                     await interaction.editReply({ embeds: [errorEmbed], components });
                 } else {
-                    await interaction.reply({ embeds: [errorEmbed], components, ephemeral: true });
+                    await ctx.reply({ embeds: [errorEmbed], components, ephemeral: true });
                 }
             } else {
-                await message.reply({ embeds: [errorEmbed], components });
+                await ctx.reply({ embeds: [errorEmbed], components });
             }
         }
     }

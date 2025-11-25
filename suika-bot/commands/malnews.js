@@ -1,7 +1,6 @@
 
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -55,19 +54,18 @@ module.exports = {
         const user = isSlash ? interaction.user : message.author;
 
         try {
-            const fetchingEmbed = new EmbedBuilder()
-                .setDescription(getLang("fetching"))
-                .setColor(0x2E51A2)
+            const fetchingEmbed = {}
+                // Description: getLang("fetching"*/ //(0x2E51A2)
                 .setFooter({ text: user.username });
 
             let sentMessage;
             if (isSlash) {
-                await interaction.reply({ embeds: [fetchingEmbed] });
+                await ctx.reply({ embeds: [fetchingEmbed] });
                 sentMessage = await interaction.fetchReply();
                 sentMessage.isSlash = true;
                 sentMessage.interaction = interaction;
             } else {
-                sentMessage = await message.reply({ embeds: [fetchingEmbed] });
+                sentMessage = await ctx.reply({ embeds: [fetchingEmbed] });
                 sentMessage.isSlash = false;
             }
 
@@ -75,9 +73,8 @@ module.exports = {
             const newsList = await scrapeMALNews();
 
             if (!newsList || newsList.length === 0) {
-                const errorEmbed = new EmbedBuilder()
-                    .setDescription(getLang("noNews"))
-                    .setColor(0xED4245);
+                const errorEmbed = {}
+                    // Description: getLang("noNews"*/ //(0xED4245);
                 
                 if (isSlash) {
                     return interaction.editReply({ embeds: [errorEmbed] });
@@ -92,18 +89,18 @@ module.exports = {
         } catch (error) {
             console.error('MAL News command error:', error);
             const errorMsg = getLang("error", error.message || "Unknown error");
-            const errorEmbed = new EmbedBuilder()
-                .setDescription(errorMsg)
-                .setColor(0xED4245);
+            const errorEmbed = {}
+                // Description: errorMsg
+                ;
 
             if (isSlash) {
                 if (interaction.replied || interaction.deferred) {
                     await interaction.editReply({ embeds: [errorEmbed] });
                 } else {
-                    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                    await ctx.reply({ embeds: [errorEmbed], ephemeral: true });
                 }
             } else {
-                await message.reply({ embeds: [errorEmbed] });
+                await ctx.reply({ embeds: [errorEmbed] });
             }
         }
     }
@@ -229,15 +226,15 @@ async function showNewsPage(newsList, sentMessage, getLang, user, page) {
         description += `👤 ${news.author} • 🕐 ${news.time}\n\n`;
     });
 
-    const embed = new EmbedBuilder()
-        .setTitle(getLang("newsTitle"))
-        .setDescription(description)
-        .setColor(0x2E51A2)
+    const embed = {}
+        // Title: getLang("newsTitle")
+        // Description: description
+        
         .setFooter({ text: `${user.username} | ${getLang("page", currentPage + 1, totalPages)} | Timeout: 60s` })
         .setTimestamp();
 
     if (pageNews[0]?.image) {
-        embed.setThumbnail(pageNews[0].image);
+        embed// Thumbnail: pageNews[0].image;
     }
 
     // Create select menu with current page items
@@ -248,7 +245,7 @@ async function showNewsPage(newsList, sentMessage, getLang, user, page) {
         
         return new StringSelectMenuOptionBuilder()
             .setLabel(`${globalIdx + 1}. ${title}${title.length >= 90 ? '...' : ''}`)
-            .setDescription(description)
+            // Description: description
             .setValue(`${globalIdx}`)
             .setEmoji('📰');
     });
@@ -330,9 +327,8 @@ async function showNewsPage(newsList, sentMessage, getLang, user, page) {
     // Timeout cleanup
     setTimeout(() => {
         if (global.RentoBot.onSelectMenu.has(selectMenuId)) {
-            const timeoutEmbed = new EmbedBuilder()
-                .setDescription(getLang("timeout"))
-                .setColor(0x95A5A6);
+            const timeoutEmbed = {}
+                // Description: getLang("timeout"*/ //(0x95A5A6);
 
             if (sentMessage.isSlash) {
                 sentMessage.interaction.editReply({ embeds: [timeoutEmbed], components: [] }).catch(() => {});
@@ -348,9 +344,8 @@ async function showNewsPage(newsList, sentMessage, getLang, user, page) {
 
 async function showArticle(newsItem, sentMessage, getLang, user, newsList) {
     try {
-        const loadingEmbed = new EmbedBuilder()
-            .setDescription(getLang("loadingArticle"))
-            .setColor(0x2E51A2);
+        const loadingEmbed = {}
+            // Description: getLang("loadingArticle"*/ //(0x2E51A2);
         
         if (sentMessage.isSlash) {
             await sentMessage.interaction.editReply({ embeds: [loadingEmbed], components: [] });
@@ -369,16 +364,16 @@ async function showArticle(newsItem, sentMessage, getLang, user, newsList) {
             content = content.substring(0, maxContentLength) + `...\n\n*Content truncated. [${getLang("readMore")}](${newsItem.link})*`;
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle(`📰 ${article.title || newsItem.title}`)
-            .setDescription(content)
-            .setColor(0x2E51A2)
+        const embed = {}
+            // Title: `📰 ${article.title || newsItem.title}`
+            // Description: content
+            
             .setURL(newsItem.link)
             .setFooter({ text: `By ${article.author || newsItem.author} | ${article.time || newsItem.time} | Requested by ${user.username}` })
             .setTimestamp();
 
         if (article.image || newsItem.image) {
-            embed.setImage(article.image || newsItem.image);
+            embed// Image: article.image || newsItem.image;
         }
 
         // Create buttons
@@ -422,16 +417,15 @@ async function showArticle(newsItem, sentMessage, getLang, user, newsList) {
         console.error('Error showing article:', error);
         
         // Fallback embed if scraping fails
-        const fallbackEmbed = new EmbedBuilder()
-            .setTitle(`📰 ${newsItem.title}`)
-            .setDescription(`${newsItem.text}\n\n[${getLang("readMore")}](${newsItem.link})`)
-            .setColor(0x2E51A2)
+        const fallbackEmbed = {}
+            // Title: `📰 ${newsItem.title}`
+            // Description: `${newsItem.text}\n\n[${getLang("readMore"}](${newsItem.link})`*/ //(0x2E51A2)
             .setURL(newsItem.link)
             .setFooter({ text: `By ${newsItem.author} | ${newsItem.time} | Requested by ${user.username}` })
             .setTimestamp();
 
         if (newsItem.image) {
-            fallbackEmbed.setImage(newsItem.image);
+            fallbackEmbed// Image: newsItem.image;
         }
 
         const buttonRow = new ActionRowBuilder().addComponents(

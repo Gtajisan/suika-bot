@@ -89,12 +89,12 @@ module.exports = {
 
         if (!member.permissions.has(PermissionFlagsBits.Administrator)) {
             const response = getLang("noPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (!guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
             const response = getLang("botNoPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const action = isInteraction ? interaction.options.getString('action') : args[0];
@@ -107,23 +107,23 @@ module.exports = {
 
             if (!targetUser) {
                 const response = getLang("noUser");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             if (targetUser.id === member.id) {
                 const response = getLang("cantBanSelf");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             if (targetUser.id === guild.members.me.id) {
                 const response = getLang("cantBanBot");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             const targetMember = await guild.members.fetch(targetUser.id).catch(() => null);
             if (targetMember && targetMember.permissions.has(PermissionFlagsBits.Administrator)) {
                 const response = getLang("cantBanAdmin");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             try {
@@ -161,10 +161,10 @@ module.exports = {
                 await guildsData.set(guild.id, guildData.data, 'data');
 
                 const response = getLang("banSuccess", targetUser.tag, reason);
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 const response = getLang("banError", error.message);
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
         } else if (action.toLowerCase() === 'unban') {
             const userId = isInteraction ? 
@@ -173,7 +173,7 @@ module.exports = {
 
             if (!userId) {
                 const response = getLang("noUserUnban");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             try {
@@ -186,21 +186,21 @@ module.exports = {
                 }
 
                 const response = getLang("unbanSuccess", userId);
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 if (error.code === 10026) {
                     const response = getLang("notBanned");
-                    return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                    return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                 }
                 const response = getLang("unbanError", error.message);
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
         } else if (action.toLowerCase() === 'list') {
             try {
                 const bans = await guild.bans.fetch();
                 if (bans.size === 0) {
                     const response = getLang("noBans");
-                    return isInteraction ? interaction.reply(response) : message.reply(response);
+                    return isInteraction ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const banList = Array.from(bans.values())
@@ -208,10 +208,10 @@ module.exports = {
                     .join('\n\n');
 
                 const response = getLang("bannedList", banList);
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 const response = getLang("listError", error.message);
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
         }
     }

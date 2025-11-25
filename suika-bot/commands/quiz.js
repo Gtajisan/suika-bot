@@ -1,5 +1,4 @@
 
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -71,7 +70,7 @@ module.exports = {
             subject = subject.toLowerCase();
             if (!availableSubjects.includes(subject)) {
                 const response = getLang("invalidSubject");
-                return message ? message.reply(response) : interaction.reply({ content: response, ephemeral: true });
+                return message ? ctx.reply(response) : ctx.reply({ content: response, ephemeral: true });
             }
             isSubjectSpecified = true;
         } else {
@@ -89,7 +88,7 @@ module.exports = {
         } catch (error) {
             console.error(`Error loading quiz data from ${subject}:`, error);
             const response = getLang("errorLoading");
-            return message ? message.reply(response) : interaction.reply({ content: response, ephemeral: true });
+            return message ? ctx.reply(response) : ctx.reply({ content: response, ephemeral: true });
         }
 
         // Get random question
@@ -124,16 +123,16 @@ async function sendQuiz(message, interaction, questionData, subject, userId, use
     // Create question embed with options
     const questionWithOptions = `${questionData.question}\n\n**A:** ${questionData.A}\n**B:** ${questionData.B}\n**C:** ${questionData.C}\n**D:** ${questionData.D}`;
     const questionText = getLang("question", subject.charAt(0).toUpperCase() + subject.slice(1), questionWithOptions);
-    const embed = new EmbedBuilder()
-        .setDescription(questionText)
-        .setColor(0x5865F2)
+    const embed = {}
+        // Description: questionText
+        
         .setFooter({ text: `Subject: ${subject} | Answer within 30 seconds` })
         .setTimestamp();
 
     // Send the quiz
     const reply = isSlash ? 
-        await interaction.reply({ embeds: [embed], components: [answerRow, quitRow], fetchReply: true }) : 
-        await message.reply({ embeds: [embed], components: [answerRow, quitRow] });
+        await ctx.reply({ embeds: [embed], components: [answerRow, quitRow], fetchReply: true }) : 
+        await ctx.reply({ embeds: [embed], components: [answerRow, quitRow] });
 
     // Cleanup function to remove all button handlers
     const cleanupHandlers = () => {
@@ -176,14 +175,12 @@ async function sendQuiz(message, interaction, questionData, subject, userId, use
                 exp: currentData.exp + expReward
             });
 
-            resultEmbed = new EmbedBuilder()
-                .setDescription(getLang("correct", coinReward, expReward))
-                .setColor(0x57F287)
+            resultEmbed = {}
+                // Description: getLang("correct", coinReward, expReward*/ //(0x57F287)
                 .setTimestamp();
         } else {
-            resultEmbed = new EmbedBuilder()
-                .setDescription(getLang("incorrect", `${correctAnswer}: ${questionData[correctAnswer]}`))
-                .setColor(0xED4245)
+            resultEmbed = {}
+                // Description: getLang("incorrect", `${correctAnswer}: ${questionData[correctAnswer]}`*/ //(0xED4245)
                 .setTimestamp();
         }
 
@@ -211,9 +208,9 @@ async function sendQuiz(message, interaction, questionData, subject, userId, use
         await btnInteraction.deferUpdate();
         cleanupHandlers();
 
-        const quitEmbed = new EmbedBuilder()
-            .setDescription('❌ **Quiz Ended**\n\nYou have quit the quiz.')
-            .setColor(0x95A5A6)
+        const quitEmbed = {}
+            // Description: '❌ **Quiz Ended**\n\nYou have quit the quiz.'
+            
             .setTimestamp();
 
         await btnInteraction.editReply({ embeds: [quitEmbed], components: [] });
@@ -286,9 +283,9 @@ function setupPlayAgainHandler(userId, usersData, getLang, isSubjectSpecified, o
             // Create new question embed with options
             const newQuestionWithOptions = `${newQuestionData.question}\n\n**A:** ${newQuestionData.A}\n**B:** ${newQuestionData.B}\n**C:** ${newQuestionData.C}\n**D:** ${newQuestionData.D}`;
             const newQuestionText = getLang("question", newSubject.charAt(0).toUpperCase() + newSubject.slice(1), newQuestionWithOptions);
-            const newEmbed = new EmbedBuilder()
-                .setDescription(newQuestionText)
-                .setColor(0x5865F2)
+            const newEmbed = {}
+                // Description: newQuestionText
+                
                 .setFooter({ text: `Subject: ${newSubject} | Answer within 30 seconds` })
                 .setTimestamp();
 
@@ -331,14 +328,12 @@ function setupPlayAgainHandler(userId, usersData, getLang, isSubjectSpecified, o
                         exp: currentData.exp + expReward
                     });
 
-                    resultEmbed = new EmbedBuilder()
-                        .setDescription(getLang("correct", coinReward, expReward))
-                        .setColor(0x57F287)
+                    resultEmbed = {}
+                        // Description: getLang("correct", coinReward, expReward*/ //(0x57F287)
                         .setTimestamp();
                 } else {
-                    resultEmbed = new EmbedBuilder()
-                        .setDescription(getLang("incorrect", `${correctAnswer}: ${newQuestionData[correctAnswer]}`))
-                        .setColor(0xED4245)
+                    resultEmbed = {}
+                        // Description: getLang("incorrect", `${correctAnswer}: ${newQuestionData[correctAnswer]}`*/ //(0xED4245)
                         .setTimestamp();
                 }
 
@@ -365,9 +360,9 @@ function setupPlayAgainHandler(userId, usersData, getLang, isSubjectSpecified, o
                 await btnInteraction.deferUpdate();
                 cleanupHandlers();
 
-                const quitEmbed = new EmbedBuilder()
-                    .setDescription('❌ **Quiz Ended**\n\nYou have quit the quiz.')
-                    .setColor(0x95A5A6)
+                const quitEmbed = {}
+                    // Description: '❌ **Quiz Ended**\n\nYou have quit the quiz.'
+                    
                     .setTimestamp();
 
                 await btnInteraction.editReply({ embeds: [quitEmbed], components: [] });

@@ -1,5 +1,4 @@
 const axios = require('axios');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -88,29 +87,29 @@ module.exports = {
         try {
             if (!url) {
                 const msg = getLang("noUrl");
-                return isSlash ? interaction.reply({ content: msg, ephemeral: true }) : message.reply(msg);
+                return isSlash ? ctx.reply({ content: msg, ephemeral: true }) : ctx.reply(msg);
             }
 
             if (!url.includes("capcut.com")) {
                 const msg = getLang("invalidUrl");
-                return isSlash ? interaction.reply({ content: msg, ephemeral: true }) : message.reply(msg);
+                return isSlash ? ctx.reply({ content: msg, ephemeral: true }) : ctx.reply(msg);
             }
 
-            const loadingEmbed = new EmbedBuilder()
-                .setColor(0x3498db)
-                .setTitle("🎬 CapCut Downloader")
-                .setDescription(getLang("loading"))
+            const loadingEmbed = {}
+                
+                // Title: "🎬 CapCut Downloader"
+                // Description: getLang("loading")
                 .setFooter({ text: `Requested by ${user.username}` })
                 .setTimestamp();
 
             let sentMessage;
             if (isSlash) {
-                await interaction.reply({ embeds: [loadingEmbed] });
+                await ctx.reply({ embeds: [loadingEmbed] });
                 sentMessage = await interaction.fetchReply();
                 sentMessage.isSlash = true;
                 sentMessage.interaction = interaction;
             } else {
-                sentMessage = await message.reply({ embeds: [loadingEmbed] });
+                sentMessage = await ctx.reply({ embeds: [loadingEmbed] });
                 sentMessage.isSlash = false;
             }
 
@@ -119,9 +118,9 @@ module.exports = {
             const { data } = await axios.get(apiUrl);
 
             if (!data.success || !data.data || !data.data.medias?.length) {
-                const errorEmbed = new EmbedBuilder()
-                    .setColor(0xED4245)
-                    .setDescription(getLang("noVideoFound"));
+                const errorEmbed = {}
+                    
+                    // Description: getLang("noVideoFound");
                 
                 if (sentMessage.isSlash) {
                     return sentMessage.interaction.editReply({ embeds: [errorEmbed] });
@@ -140,7 +139,7 @@ module.exports = {
                 
                 return new StringSelectMenuOptionBuilder()
                     .setLabel(media.quality || `Quality ${index + 1}`)
-                    .setDescription("Select to download")
+                    // Description: "Select to download"
                     .setValue(`${index}`)
                     .setEmoji(emoji);
             });
@@ -156,11 +155,10 @@ module.exports = {
                 .map((m, i) => `**${i + 1}.** ${m.quality || `Quality ${i + 1}`}`)
                 .join('\n');
 
-            const selectEmbed = new EmbedBuilder()
-                .setTitle("🎬 CapCut Video")
-                .setDescription(`${getLang("selectQuality")}\n\n**Title:** ${info.title || "CapCut Video"}\n**Author:** ${info.author || "Unknown"}\n\n**Available qualities:**\n${qualityList}`)
-                .setThumbnail(info.thumbnail)
-                .setColor(0x3498db)
+            const selectEmbed = {}
+                // Title: "🎬 CapCut Video"
+                // Description: `${getLang("selectQuality"}\n\n**Title:** ${info.title || "CapCut Video"}\n**Author:** ${info.author || "Unknown"}\n\n**Available qualities:**\n${qualityList}`)
+                // Thumbnail: info.thumbnail*/ //(0x3498db
                 .setFooter({ text: `${user.username} | Timeout: 60s` })
                 .setTimestamp();
 
@@ -188,9 +186,8 @@ module.exports = {
             // Timeout cleanup
             setTimeout(() => {
                 if (global.RentoBot.onSelectMenu.has(selectMenuId)) {
-                    const timeoutEmbed = new EmbedBuilder()
-                        .setDescription(getLang("timeout"))
-                        .setColor(0x95A5A6);
+                    const timeoutEmbed = {}
+                        // Description: getLang("timeout"*/ //(0x95A5A6);
 
                     if (sentMessage.isSlash) {
                         sentMessage.interaction.editReply({ embeds: [timeoutEmbed], components: [] }).catch(() => {});
@@ -207,19 +204,19 @@ module.exports = {
             if (error.response?.data?.message) errMsg = getLang("apiError", error.response.data.message);
             else if (error.message) errMsg = getLang("apiError", error.message);
 
-            const errorEmbed = new EmbedBuilder()
-                .setColor(0xED4245)
-                .setTitle("❌ CapCut Download Failed")
-                .setDescription(errMsg)
+            const errorEmbed = {}
+                
+                // Title: "❌ CapCut Download Failed"
+                // Description: errMsg
                 .setFooter({ text: `Requested by ${user.username}` });
 
             if (isSlash) {
                 if (interaction.replied || interaction.deferred)
                     await interaction.editReply({ embeds: [errorEmbed] });
                 else
-                    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                    await ctx.reply({ embeds: [errorEmbed], ephemeral: true });
             } else {
-                await message.reply({ embeds: [errorEmbed] });
+                await ctx.reply({ embeds: [errorEmbed] });
             }
         }
     }
@@ -229,9 +226,9 @@ module.exports = {
 
 async function downloadVideo(media, info, sentMessage, getLang, user) {
     try {
-        const downloadingEmbed = new EmbedBuilder()
-            .setColor(0x3498db)
-            .setDescription(getLang("downloading"))
+        const downloadingEmbed = {}
+            
+            // Description: getLang("downloading")
             .setFooter({ text: `Requested by ${user.username}` });
 
         if (sentMessage.isSlash) {
@@ -248,9 +245,9 @@ async function downloadVideo(media, info, sentMessage, getLang, user) {
 
         if (videoResponse.data.length > 25 * 1024 * 1024) {
             const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('../adapters/discord-to-telegram.js');
-            const errorEmbed = new EmbedBuilder()
-                .setColor(0xED4245)
-                .setDescription(getLang("fileTooLarge") + "\n\n**Download directly:**");
+            const errorEmbed = {}
+                
+                // Description: getLang("fileTooLarge" + "\n\n**Download directly:**");
             
             const button = new ButtonBuilder()
                 .setLabel('Click Here to Download')
@@ -274,11 +271,11 @@ async function downloadVideo(media, info, sentMessage, getLang, user) {
 
         const attachment = { attachment: videoPath, name: "capcut_video.mp4" };
 
-        const successEmbed = new EmbedBuilder()
-            .setColor(0x2ecc71)
-            .setTitle("✅ CapCut Video Downloaded")
-            .setDescription(`**Title:** ${info.title || "CapCut Video"}\n**Author:** ${info.author || "Unknown"}\n**Quality:** ${media.quality}`)
-            .setThumbnail(info.thumbnail)
+        const successEmbed = {}
+            
+            // Title: "✅ CapCut Video Downloaded"
+            // Description: `**Title:** ${info.title || "CapCut Video"}\n**Author:** ${info.author || "Unknown"}\n**Quality:** ${media.quality}`
+            // Thumbnail: info.thumbnail
             .setURL(info.url)
             .setFooter({ text: `Requested by ${user.username}` })
             .setTimestamp();
@@ -301,9 +298,9 @@ async function downloadVideo(media, info, sentMessage, getLang, user) {
         console.error("Download Error:", error);
         const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('../adapters/discord-to-telegram.js');
         
-        const errorEmbed = new EmbedBuilder()
-            .setColor(0xED4245)
-            .setDescription(getLang("apiError", error.message || "Unknown error") + "\n\n**Download directly:**");
+        const errorEmbed = {}
+            
+            // Description: getLang("apiError", error.message || "Unknown error" + "\n\n**Download directly:**");
         
         const button = new ButtonBuilder()
             .setLabel('Click Here to Download')

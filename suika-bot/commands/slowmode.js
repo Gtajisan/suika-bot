@@ -117,12 +117,12 @@ module.exports = {
 
         if (!member.permissions.has(PermissionFlagsBits.ManageChannels)) {
             const response = getLang("noPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (!guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
             const response = getLang("botNoPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const durationStr = isInteraction ? 
@@ -132,14 +132,14 @@ module.exports = {
         if (!durationStr) {
             const currentSlowmode = targetChannel.rateLimitPerUser;
             const response = getLang("currentSlowmode", formatDuration(currentSlowmode));
-            return isInteraction ? interaction.reply(response) : message.reply(response);
+            return isInteraction ? ctx.reply(response) : ctx.reply(response);
         }
 
         const duration = parseDuration(durationStr);
         
         if (duration === null) {
             const response = getLang("invalidDuration");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         try {
@@ -147,14 +147,14 @@ module.exports = {
 
             if (duration === 0) {
                 const response = getLang("slowmodeDisabled", targetChannel.toString());
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             } else {
                 const response = getLang("slowmodeSet", formatDuration(duration), targetChannel.toString());
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             }
         } catch (error) {
             const response = getLang("slowmodeError", error.message);
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
     }
 };

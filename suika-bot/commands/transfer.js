@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -80,20 +79,20 @@ module.exports = {
 
         if (!targetUser) {
             return isSlash ? 
-                interaction.reply({ content: getLang("noUser"), ephemeral: true }) : 
-                message.reply(getLang("noUser"));
+                ctx.reply({ content: getLang("noUser"), ephemeral: true }) : 
+                ctx.reply(getLang("noUser"));
         }
 
         if (targetUser.bot) {
             return isSlash ? 
-                interaction.reply({ content: getLang("botTransfer"), ephemeral: true }) : 
-                message.reply(getLang("botTransfer"));
+                ctx.reply({ content: getLang("botTransfer"), ephemeral: true }) : 
+                ctx.reply(getLang("botTransfer"));
         }
 
         if (targetUser.id === sender.id) {
             return isSlash ? 
-                interaction.reply({ content: getLang("selfTransfer"), ephemeral: true }) : 
-                message.reply(getLang("selfTransfer"));
+                ctx.reply({ content: getLang("selfTransfer"), ephemeral: true }) : 
+                ctx.reply(getLang("selfTransfer"));
         }
 
         let amount = isSlash ? interaction.options.getInteger('amount') : parseInt(args[1]);
@@ -101,27 +100,27 @@ module.exports = {
 
         if (!amount || isNaN(amount)) {
             return isSlash ? 
-                interaction.reply({ content: getLang("invalidAmount"), ephemeral: true }) : 
-                message.reply(getLang("invalidAmount"));
+                ctx.reply({ content: getLang("invalidAmount"), ephemeral: true }) : 
+                ctx.reply(getLang("invalidAmount"));
         }
 
         if (amount <= 0) {
             return isSlash ? 
-                interaction.reply({ content: getLang("negativeAmount"), ephemeral: true }) : 
-                message.reply(getLang("negativeAmount"));
+                ctx.reply({ content: getLang("negativeAmount"), ephemeral: true }) : 
+                ctx.reply(getLang("negativeAmount"));
         }
 
         if (source === "wallet" || source === "w") {
             if (userData.money < amount) {
                 return isSlash ? 
-                    interaction.reply({ content: getLang("insufficientWallet", userData.money.toLocaleString()), ephemeral: true }) : 
-                    message.reply(getLang("insufficientWallet", userData.money.toLocaleString()));
+                    ctx.reply({ content: getLang("insufficientWallet", userData.money.toLocaleString()), ephemeral: true }) : 
+                    ctx.reply(getLang("insufficientWallet", userData.money.toLocaleString()));
             }
         } else if (source === "bank" || source === "b") {
             if (userData.bank < amount) {
                 return isSlash ? 
-                    interaction.reply({ content: getLang("insufficientBank", userData.bank.toLocaleString()), ephemeral: true }) : 
-                    message.reply(getLang("insufficientBank", userData.bank.toLocaleString()));
+                    ctx.reply({ content: getLang("insufficientBank", userData.bank.toLocaleString()), ephemeral: true }) : 
+                    ctx.reply(getLang("insufficientBank", userData.bank.toLocaleString()));
             }
             source = "bank";
         } else {
@@ -140,14 +139,13 @@ module.exports = {
                     .setStyle(ButtonStyle.Danger)
             );
 
-        const embed = new EmbedBuilder()
-            .setDescription(getLang("confirm", sender.username, targetUser.username, amount.toLocaleString(), source))
-            .setColor(0xFEE75C)
+        const embed = {}
+            // Description: getLang("confirm", sender.username, targetUser.username, amount.toLocaleString(, source)*/ //(0xFEE75C)
             .setTimestamp();
 
         const reply = isSlash ? 
-            await interaction.reply({ embeds: [embed], components: [row], fetchReply: true }) : 
-            await message.reply({ embeds: [embed], components: [row] });
+            await ctx.reply({ embeds: [embed], components: [row], fetchReply: true }) : 
+            await ctx.reply({ embeds: [embed], components: [row] });
 
         const buttonHandler = async (btnInteraction) => {
             if (btnInteraction.user.id !== sender.id) {
@@ -171,15 +169,13 @@ module.exports = {
                     money: targetUserData.money + amount
                 });
 
-                const successEmbed = new EmbedBuilder()
-                    .setDescription(getLang("success", amount.toLocaleString(), targetUser.username))
-                    .setColor(0x57F287);
+                const successEmbed = {}
+                    // Description: getLang("success", amount.toLocaleString(, targetUser.username)*/ //(0x57F287);
 
                 await btnInteraction.update({ embeds: [successEmbed], components: [] });
             } else {
-                const cancelEmbed = new EmbedBuilder()
-                    .setDescription(getLang("cancelled"))
-                    .setColor(0xED4245);
+                const cancelEmbed = {}
+                    // Description: getLang("cancelled"*/ //(0xED4245);
 
                 await btnInteraction.update({ embeds: [cancelEmbed], components: [] });
             }
@@ -196,9 +192,8 @@ module.exports = {
                 global.RentoBot.onButton.delete('transfer_confirm');
                 global.RentoBot.onButton.delete('transfer_cancel');
 
-                const timeoutEmbed = new EmbedBuilder()
-                    .setDescription(getLang("timeout"))
-                    .setColor(0xED4245);
+                const timeoutEmbed = {}
+                    // Description: getLang("timeout"*/ //(0xED4245);
 
                 try {
                     if (isSlash) {

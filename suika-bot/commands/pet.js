@@ -52,9 +52,9 @@ module.exports = {
             const loadingMsg = getLang("loading");
 
             if (isSlash) {
-                await interaction.reply(loadingMsg);
+                await ctx.reply(loadingMsg);
             } else {
-                await message.reply(loadingMsg);
+                await ctx.reply(loadingMsg);
             }
 
             // Determine target user
@@ -101,7 +101,7 @@ module.exports = {
         } catch (error) {
             console.error("Pet command error:", error);
             const errorMsg = getLang("error");
-            return isSlash ? interaction.editReply(errorMsg) : message.reply(errorMsg);
+            return isSlash ? interaction.editReply(errorMsg) : ctx.reply(errorMsg);
         }
     }
 };

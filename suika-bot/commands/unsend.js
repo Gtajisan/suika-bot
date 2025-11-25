@@ -58,7 +58,7 @@ module.exports = {
 
         if (guild && !guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
             const response = getLang("noPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         try {
@@ -87,7 +87,7 @@ module.exports = {
                     }
                     const response = getLang("deleted", 1);
                     if (isInteraction) {
-                        return interaction.reply({ content: response, ephemeral: true });
+                        return ctx.reply({ content: response, ephemeral: true });
                     }
                     return;
                 }
@@ -101,7 +101,7 @@ module.exports = {
 
             if (botMessages.length === 0) {
                 const response = getLang("noMessages");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             if (isInteraction) {
@@ -138,10 +138,10 @@ module.exports = {
                 if (interaction.deferred) {
                     return interaction.editReply(response);
                 } else {
-                    return interaction.reply({ content: response, ephemeral: true });
+                    return ctx.reply({ content: response, ephemeral: true });
                 }
             } else {
-                return message.reply(response);
+                return ctx.reply(response);
             }
         }
     }

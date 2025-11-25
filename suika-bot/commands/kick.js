@@ -67,12 +67,12 @@ module.exports = {
 
         if (!member.permissions.has(PermissionFlagsBits.KickMembers)) {
             const response = getLang("noPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (!guild.members.me.permissions.has(PermissionFlagsBits.KickMembers)) {
             const response = getLang("botNoPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const targetUser = isInteraction ? 
@@ -85,39 +85,39 @@ module.exports = {
 
         if (!targetUser) {
             const response = getLang("noUser");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetUser.id === member.id) {
             const response = getLang("cantKickSelf");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetUser.id === guild.members.me.id) {
             const response = getLang("cantKickBot");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const targetMember = await guild.members.fetch(targetUser.id).catch(() => null);
         
         if (!targetMember) {
             const response = "❌ User is not in this server!";
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetMember.permissions.has(PermissionFlagsBits.Administrator)) {
             const response = getLang("cantKickAdmin");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetMember.roles.highest.position >= member.roles.highest.position) {
             const response = getLang("higherRole");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetMember.roles.highest.position >= guild.members.me.roles.highest.position) {
             const response = getLang("botHigherRole");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         try {
@@ -140,10 +140,10 @@ module.exports = {
 
             await targetMember.kick(`${reason} - Kicked by ${member.user.tag}`);
             const response = getLang("kickSuccess", targetUser.tag, reason);
-            return isInteraction ? interaction.reply(response) : message.reply(response);
+            return isInteraction ? ctx.reply(response) : ctx.reply(response);
         } catch (error) {
             const response = getLang("kickError", error.message);
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
     }
 };

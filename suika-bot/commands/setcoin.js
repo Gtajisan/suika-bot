@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -79,7 +78,7 @@ module.exports = {
 
         const reply = (content, embed) => {
             const options = embed ? { embeds: [embed], ephemeral: isSlash } : { content, ephemeral: isSlash };
-            return isSlash ? interaction.reply(options) : message.reply(options);
+            return isSlash ? ctx.reply(options) : ctx.reply(options);
         };
 
         // Parse arguments
@@ -127,15 +126,15 @@ module.exports = {
                 await usersData.set(targetUser.id, { bank: newBank });
             }
 
-            const embed = new EmbedBuilder()
-                .setColor(type === "wallet" ? 0x57F287 : 0x5865F2)
-                .setTitle("💰 Balance Updated")
+            const embed = {}
+                
+                // Title: "💰 Balance Updated"
                 .setDescription(
                     type === "wallet"
                         ? getLang("successWallet", targetUser.tag, newMoney.toLocaleString())
                         : getLang("successBank", targetUser.tag, newBank.toLocaleString())
                 )
-                .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                // Thumbnail: targetUser.displayAvatarURL({ dynamic: true })
                 .setFooter({ text: `Action: ${action.toUpperCase()} | Type: ${type.toUpperCase()}` })
                 .setTimestamp();
 

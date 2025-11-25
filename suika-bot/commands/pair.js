@@ -1,6 +1,5 @@
 
 const axios = require('axios');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -52,9 +51,9 @@ module.exports = {
             const loadingMsg = getLang("loading");
             
             if (isSlash) {
-                await interaction.reply(loadingMsg);
+                await ctx.reply(loadingMsg);
             } else {
-                sentMessage = await message.reply(loadingMsg);
+                sentMessage = await ctx.reply(loadingMsg);
             }
 
             // Get guild
@@ -121,14 +120,14 @@ module.exports = {
             }
 
             // Create embed
-            const embed = new EmbedBuilder()
-                .setTitle(getLang("shipTitle"))
-                .setDescription(getLang("couple", user1.username, user2.username))
-                .addFields({
+            const embed = {}
+                // Title: getLang("shipTitle")
+                // Description: getLang("couple", user1.username, user2.username)
+                // Fields: 
+            /*{
                     name: '📊 ' + getLang("compatibility", compatibility),
                     value: generateProgressBar(compatibility)
-                })
-                .setColor(getColorByCompatibility(compatibility))
+                }*/ //(getColorByCompatibility(compatibility))
                 .setFooter({ text: `${user1.tag} × ${user2.tag}` })
                 .setTimestamp();
 
@@ -139,15 +138,15 @@ module.exports = {
 
             // Add image if available
             if (shipImageBuffer) {
-                embed.setImage('attachment://ship.png');
+                embed// Image: 'attachment://ship.png';
                 replyOptions.files = [{
                     attachment: shipImageBuffer,
                     name: 'ship.png'
                 }];
             } else {
                 // Set user avatars as thumbnail and image if API fails
-                embed.setThumbnail(avatar1);
-                embed.setImage(avatar2);
+                embed// Thumbnail: avatar1;
+                embed// Image: avatar2;
             }
 
             if (isSlash) {
@@ -165,12 +164,12 @@ module.exports = {
                     if (interaction.replied || interaction.deferred) {
                         return await interaction.editReply({ content: errorMsg, embeds: [], files: [] });
                     }
-                    return await interaction.reply({ content: errorMsg, ephemeral: true });
+                    return await ctx.reply({ content: errorMsg, ephemeral: true });
                 } else {
                     if (sentMessage) {
                         return await sentMessage.edit({ content: errorMsg, embeds: [], files: [] });
                     }
-                    return await message.reply(errorMsg);
+                    return await ctx.reply(errorMsg);
                 }
             } catch (replyError) {
                 console.error("[PAIR] Error sending error message:", replyError);

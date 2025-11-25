@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -60,20 +59,20 @@ module.exports = {
 
         if (!target) {
             return isSlash ? 
-                interaction.reply({ content: getLang("noUser"), ephemeral: true }) : 
-                message.reply(getLang("noUser"));
+                ctx.reply({ content: getLang("noUser"), ephemeral: true }) : 
+                ctx.reply(getLang("noUser"));
         }
 
         if (target.bot) {
             return isSlash ? 
-                interaction.reply({ content: getLang("botRob"), ephemeral: true }) : 
-                message.reply(getLang("botRob"));
+                ctx.reply({ content: getLang("botRob"), ephemeral: true }) : 
+                ctx.reply(getLang("botRob"));
         }
 
         if (target.id === robber.id) {
             return isSlash ? 
-                interaction.reply({ content: getLang("selfRob"), ephemeral: true }) : 
-                message.reply(getLang("selfRob"));
+                ctx.reply({ content: getLang("selfRob"), ephemeral: true }) : 
+                ctx.reply(getLang("selfRob"));
         }
 
         const now = Date.now();
@@ -85,28 +84,28 @@ module.exports = {
             const minutes = Math.floor(timeLeft / 60000);
             const seconds = Math.floor((timeLeft % 60000) / 1000);
             return isSlash ? 
-                interaction.reply({ content: getLang("cooldown", `${minutes}m ${seconds}s`), ephemeral: true }) : 
-                message.reply(getLang("cooldown", `${minutes}m ${seconds}s`));
+                ctx.reply({ content: getLang("cooldown", `${minutes}m ${seconds}s`), ephemeral: true }) : 
+                ctx.reply(getLang("cooldown", `${minutes}m ${seconds}s`));
         }
 
         if (userData.money < 200) {
             return isSlash ? 
-                interaction.reply({ content: getLang("robberPoor"), ephemeral: true }) : 
-                message.reply(getLang("robberPoor"));
+                ctx.reply({ content: getLang("robberPoor"), ephemeral: true }) : 
+                ctx.reply(getLang("robberPoor"));
         }
 
         const targetData = await usersData.get(target.id);
 
         if (targetData.data.policeProtection && targetData.data.policeProtection > now) {
             return isSlash ? 
-                interaction.reply({ content: getLang("policeProtection", target.username), ephemeral: true }) : 
-                message.reply(getLang("policeProtection", target.username));
+                ctx.reply({ content: getLang("policeProtection", target.username), ephemeral: true }) : 
+                ctx.reply(getLang("policeProtection", target.username));
         }
 
         if (targetData.money < 500) {
             return isSlash ? 
-                interaction.reply({ content: getLang("targetPoor", target.username), ephemeral: true }) : 
-                message.reply(getLang("targetPoor", target.username));
+                ctx.reply({ content: getLang("targetPoor", target.username), ephemeral: true }) : 
+                ctx.reply(getLang("targetPoor", target.username));
         }
 
         const successChance = 0.40;
@@ -125,12 +124,11 @@ module.exports = {
                 money: targetData.money - stolenAmount
             });
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("success", stolenAmount.toLocaleString(), target.username, (userData.money + stolenAmount).toLocaleString()))
-                .setColor(0x57F287)
+            const embed = {}
+                // Description: getLang("success", stolenAmount.toLocaleString(, target.username, (userData.money + stolenAmount).toLocaleString())*/ //(0x57F287)
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         } else {
             const fine = Math.floor(Math.random() * 400) + 200;
             const actualFine = Math.min(fine, userData.money);
@@ -140,12 +138,11 @@ module.exports = {
                 data: { ...userData.data, lastRob: now }
             });
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("fail", actualFine.toLocaleString(), (userData.money - actualFine).toLocaleString()))
-                .setColor(0xED4245)
+            const embed = {}
+                // Description: getLang("fail", actualFine.toLocaleString(, (userData.money - actualFine).toLocaleString())*/ //(0xED4245)
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
     }
 };

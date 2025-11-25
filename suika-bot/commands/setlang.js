@@ -76,7 +76,7 @@ module.exports = {
             const currentLang = userData.settings?.language || "en";
             const response = getLang("current", currentLang)
                 .replace(/{prefix}/g, prefix);
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
 
         const langCodeLower = langCode.toLowerCase();
@@ -84,13 +84,13 @@ module.exports = {
         if (langCodeLower === "list") {
             const response = getLang("list")
                 .replace(/{prefix}/g, prefix);
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
 
         if (!supportedLanguages.includes(langCodeLower)) {
             const response = getLang("invalid")
                 .replace(/{prefix}/g, prefix);
-            return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const userID = isSlash ? interaction.user.id : message.author.id;
@@ -105,6 +105,6 @@ module.exports = {
 
         const langName = langCodeLower === 'en' ? getLang("english") : getLang("nepali");
         const response = getLang("success", langCodeLower, langName);
-        return isSlash ? interaction.reply(response) : message.reply(response);
+        return isSlash ? ctx.reply(response) : ctx.reply(response);
     }
 };

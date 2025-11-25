@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -112,19 +111,19 @@ module.exports = {
                         })
                         .join('\n\n');
 
-                    const embed = new EmbedBuilder()
-                        .setTitle(`🏰 All Servers (${client.guilds.cache.size} total)`)
-                        .setDescription(guilds.length > 0 ? guilds : 'No servers found')
-                        .setColor(0x3498db)
+                    const embed = {}
+                        // Title: `🏰 All Servers (${client.guilds.cache.size} total`)
+                        // Description: guilds.length > 0 ? guilds : 'No servers found'
+                        
                         .setTimestamp();
 
-                    return isInteraction ? interaction.reply({ embeds: [embed], ephemeral: true }) : message.reply({ embeds: [embed] });
+                    return isInteraction ? ctx.reply({ embeds: [embed], ephemeral: true }) : ctx.reply({ embeds: [embed] });
                 }
 
                 case 'search': {
                     if (!query) {
                         const response = "❌ Please provide a search query";
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const searchResults = client.guilds.cache
@@ -135,35 +134,35 @@ module.exports = {
 
                     if (!searchResults) {
                         const response = getLang("noResults", query);
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
-                    const embed = new EmbedBuilder()
-                        .setTitle(`🔍 Search Results: "${query}"`)
-                        .setDescription(searchResults)
-                        .setColor(0x3498db)
+                    const embed = {}
+                        // Title: `🔍 Search Results: "${query}"`
+                        // Description: searchResults
+                        
                         .setTimestamp();
 
-                    return isInteraction ? interaction.reply({ embeds: [embed], ephemeral: true }) : message.reply({ embeds: [embed] });
+                    return isInteraction ? ctx.reply({ embeds: [embed], ephemeral: true }) : ctx.reply({ embeds: [embed] });
                 }
 
                 case 'info': {
                     if (!query) {
                         const response = getLang("invalidGuild");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const guild = client.guilds.cache.get(query);
                     if (!guild) {
                         const response = getLang("guildNotFound");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const guildData = await guildsData.get(guild.id);
                     const owner = await guild.fetchOwner().catch(() => null);
 
-                    const embed = new EmbedBuilder()
-                        .setTitle(`🏰 ${guild.name}`)
+                    const embed = {}
+                        // Title: `🏰 ${guild.name}`
                         .setDescription(
                             `**ID:** \`${guild.id}\`\n` +
                             `**Owner:** ${owner?.user?.tag || 'Unknown'}\n` +
@@ -172,17 +171,16 @@ module.exports = {
                             `**Prefix:** \`${guildData.prefix}\`\n` +
                             `**Banned:** ${guildData.banned.status ? `Yes - ${guildData.banned.reason}` : 'No'}`
                         )
-                        .setThumbnail(guild.iconURL({ dynamic: true, size: 256 }))
-                        .setColor(guildData.banned.status ? 0xff0000 : 0x00ff00)
+                        // Thumbnail: guild.iconURL({ dynamic: true, size: 256 }*/ //(guildData.banned.status ? 0xff0000 : 0x00ff00)
                         .setTimestamp();
 
-                    return isInteraction ? interaction.reply({ embeds: [embed], ephemeral: true }) : message.reply({ embeds: [embed] });
+                    return isInteraction ? ctx.reply({ embeds: [embed], ephemeral: true }) : ctx.reply({ embeds: [embed] });
                 }
 
                 case 'ban': {
                     if (!query) {
                         const response = getLang("invalidGuild");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const guildData = await guildsData.get(query);
@@ -190,7 +188,7 @@ module.exports = {
 
                     if (guildData.banned.status) {
                         const response = getLang("alreadyBanned");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     await guildsData.set(query, {
@@ -207,20 +205,20 @@ module.exports = {
                         await guild.leave().catch(() => {});
                     }
 
-                    return isInteraction ? interaction.reply(response) : message.reply(response);
+                    return isInteraction ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 case 'unban': {
                     if (!query) {
                         const response = getLang("invalidGuild");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const guildData = await guildsData.get(query);
 
                     if (!guildData.banned.status) {
                         const response = getLang("notBanned");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     await guildsData.set(query, {
@@ -232,37 +230,37 @@ module.exports = {
                     });
 
                     const response = getLang("unbanned", 'Guild', query);
-                    return isInteraction ? interaction.reply(response) : message.reply(response);
+                    return isInteraction ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 case 'leave': {
                     if (!query) {
                         const response = getLang("invalidGuild");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const guild = client.guilds.cache.get(query);
                     if (!guild) {
                         const response = getLang("guildNotFound");
-                        return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                        return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                     }
 
                     const guildName = guild.name;
                     await guild.leave();
 
                     const response = getLang("leftServer", guildName, query);
-                    return isInteraction ? interaction.reply(response) : message.reply(response);
+                    return isInteraction ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 default: {
                     const response = "Invalid action. Use: list, search, info, ban, unban, or leave";
-                    return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                    return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                 }
             }
         } catch (error) {
             console.error('Guild management error:', error);
             const response = `❌ Error: ${error.message}`;
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
     }
 };

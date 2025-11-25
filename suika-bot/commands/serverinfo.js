@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -56,7 +55,7 @@ module.exports = {
 
         if (!guild) {
             const errorMsg = getLang("noServer");
-            return message ? message.reply(errorMsg) : interaction.reply(errorMsg);
+            return message ? ctx.reply(errorMsg) : ctx.reply(errorMsg);
         }
 
         const owner = await guild.fetchOwner();
@@ -75,8 +74,8 @@ module.exports = {
             4: "Very High"
         };
 
-        const embed = new EmbedBuilder()
-            .setTitle(getLang("title"))
+        const embed = {}
+            // Title: getLang("title")
             .setDescription(
                 getLang("name", guild.name) + "\n" +
                 getLang("id", guild.id) + "\n" +
@@ -89,11 +88,10 @@ module.exports = {
                 getLang("boostLevel", guild.premiumTier) + "\n" +
                 getLang("verificationLevel", verificationLevels[guild.verificationLevel])
             )
-            .setThumbnail(guild.iconURL({ dynamic: true, size: 256 }))
-            .setColor(0x5865F2)
+            // Thumbnail: guild.iconURL({ dynamic: true, size: 256 }*/ //(0x5865F2)
             .setFooter({ text: `Server ID: ${guild.id}` })
             .setTimestamp();
 
-        return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+        return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

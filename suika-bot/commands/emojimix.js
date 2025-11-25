@@ -73,8 +73,8 @@ module.exports = {
             if (!emoji1 || !emoji2) {
                 const response = getLang("noEmoji");
                 return isSlash 
-                    ? interaction.reply({ content: response, ephemeral: true })
-                    : message.reply(response);
+                    ? ctx.reply({ content: response, ephemeral: true })
+                    : ctx.reply(response);
             }
 
             // Clamp size
@@ -88,8 +88,8 @@ module.exports = {
             if (!cp1 || !cp2) {
                 const response = getLang("invalid");
                 return isSlash
-                    ? interaction.reply({ content: response, ephemeral: true })
-                    : message.reply(response);
+                    ? ctx.reply({ content: response, ephemeral: true })
+                    : ctx.reply(response);
             }
 
             const imageUrl = `https://emojik.vercel.app/s/${encodeURIComponent(emoji1)}_${encodeURIComponent(emoji2)}?size=${size}`;
@@ -104,15 +104,15 @@ module.exports = {
             const responseText = getLang("success", emoji1, emoji2);
 
             return isSlash
-                ? interaction.reply({ content: responseText, files: [attachment] })
-                : message.reply({ content: responseText, files: [attachment] });
+                ? ctx.reply({ content: responseText, files: [attachment] })
+                : ctx.reply({ content: responseText, files: [attachment] });
 
         } catch (error) {
             console.error("❌ EmojiMix Error:", error.message);
             const errMsg = `❌ An error occurred: ${error.message}`;
             return interaction
-                ? interaction.reply({ content: errMsg, ephemeral: true })
-                : message.reply(errMsg);
+                ? ctx.reply({ content: errMsg, ephemeral: true })
+                : ctx.reply(errMsg);
         }
     }
 };

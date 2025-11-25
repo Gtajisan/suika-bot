@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -68,8 +67,8 @@ module.exports = {
 
         if (sortedUsers.length === 0) {
             return isSlash ? 
-                interaction.reply({ content: getLang("noData"), ephemeral: true }) : 
-                message.reply(getLang("noData"));
+                ctx.reply({ content: getLang("noData"), ephemeral: true }) : 
+                ctx.reply(getLang("noData"));
         }
 
         const itemsPerPage = 10;
@@ -110,9 +109,8 @@ module.exports = {
             const typeTitle = type === "level" || type === "l" ? "Level" : 
                             type === "wealth" || type === "w" ? "Wealth" : "Money";
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("title", typeTitle, page + 1, totalPages) + "\n\n" + description)
-                .setColor(0xFFD700)
+            const embed = {}
+                // Description: getLang("title", typeTitle, page + 1, totalPages + "\n\n" + description*/ //(0xFFD700)
                 .setTimestamp();
 
             return embed;
@@ -121,7 +119,7 @@ module.exports = {
         const embed = await generateEmbed(currentPage);
 
         if (totalPages <= 1) {
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
 
         const row = new ActionRowBuilder()
@@ -139,8 +137,8 @@ module.exports = {
             );
 
         const reply = isSlash ? 
-            await interaction.reply({ embeds: [embed], components: [row], fetchReply: true }) : 
-            await message.reply({ embeds: [embed], components: [row] });
+            await ctx.reply({ embeds: [embed], components: [row], fetchReply: true }) : 
+            await ctx.reply({ embeds: [embed], components: [row] });
 
         const buttonHandler = async (btnInteraction) => {
             if (btnInteraction.user.id !== user.id) {

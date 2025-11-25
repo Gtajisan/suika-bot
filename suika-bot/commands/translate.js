@@ -65,7 +65,7 @@ module.exports = {
                 content = args.join(" ");
                 
                 if (!content) {
-                    return message.reply(getLang("noText"));
+                    return ctx.reply(getLang("noText"));
                 }
 
                 let lastIndexSeparator = content.lastIndexOf("->");
@@ -81,16 +81,16 @@ module.exports = {
 
             if (!content) {
                 const response = getLang("noText");
-                return message ? message.reply(response) : interaction.reply(response);
+                return message ? ctx.reply(response) : ctx.reply(response);
             }
 
             const { text, lang } = await translate(content.trim(), langCodeTrans.trim());
             const response = `${text}\n\n${getLang("translateTo", lang, langCodeTrans)}`;
 
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         } catch (error) {
             const errorMsg = getLang("error", error.message);
-            return message ? message.reply(errorMsg) : interaction.reply(errorMsg);
+            return message ? ctx.reply(errorMsg) : ctx.reply(errorMsg);
         }
     }
 };

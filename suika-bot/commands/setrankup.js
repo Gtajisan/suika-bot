@@ -1,5 +1,4 @@
 
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -111,7 +110,7 @@ module.exports = {
             const msg = guildData.data.levelUpMessage || "Not set";
 
             const response = getLang("currentSettings", status, channel, msg);
-            return isInteraction ? interaction.reply(response) : message.reply(response);
+            return isInteraction ? ctx.reply(response) : ctx.reply(response);
         }
 
         switch (subCommand) {
@@ -124,7 +123,7 @@ module.exports = {
                     
                 if (!messageText) {
                     const response = getLang("noMessage");
-                    return isInteraction ? interaction.reply({ content: response, flags: 64 }) : message.reply(response);
+                    return isInteraction ? ctx.reply({ content: response, flags: 64 }) : ctx.reply(response);
                 }
 
                 await guildsData.set(message?.guildId || interaction.guildId, {
@@ -135,7 +134,7 @@ module.exports = {
                 });
 
                 const response = getLang("messageSet", messageText);
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             }
 
             case "channel":
@@ -146,7 +145,7 @@ module.exports = {
                     
                 if (!channel) {
                     const response = getLang("noChannel");
-                    return isInteraction ? interaction.reply({ content: response, flags: 64 }) : message.reply(response);
+                    return isInteraction ? ctx.reply({ content: response, flags: 64 }) : ctx.reply(response);
                 }
 
                 await guildsData.set(message?.guildId || interaction.guildId, {
@@ -157,7 +156,7 @@ module.exports = {
                 });
 
                 const response = getLang("channelSet", channel.toString());
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             }
 
             case "on":
@@ -170,7 +169,7 @@ module.exports = {
                 });
 
                 const response = getLang("enabled");
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             }
 
             case "off":
@@ -183,12 +182,12 @@ module.exports = {
                 });
 
                 const response = getLang("disabled");
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             }
 
             default: {
                 const response = "Invalid subcommand. Use `message`, `channel`, `on`, `off`, or `show`";
-                return isInteraction ? interaction.reply({ content: response, flags: 64 }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, flags: 64 }) : ctx.reply(response);
             }
         }
     }

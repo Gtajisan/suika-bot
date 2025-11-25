@@ -56,7 +56,7 @@ module.exports = {
       if (isSlash) {
         await interaction.editReply({ files: [attachment] });
       } else {
-        await message.reply({ files: [attachment] });
+        await ctx.reply({ files: [attachment] });
       }
 
       // Clean up
@@ -72,7 +72,7 @@ module.exports = {
       if (isSlash) {
         await interaction.editReply(errorMsg);
       } else {
-        await message.reply(errorMsg);
+        await ctx.reply(errorMsg);
       }
     }
   }

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -64,16 +63,16 @@ module.exports = {
         // Build response message
         let response = getLang("afkSet", reason ? getLang("withReason", reason) : "");
         
-        const embed = new EmbedBuilder()
-            .setColor(0xFFA500)
-            .setDescription(response)
+        const embed = {}
+            
+            // Description: response
             .setFooter({ text: "Send any message to remove AFK status" })
             .setTimestamp();
 
         if (isInteraction) {
-            await interaction.reply({ embeds: [embed] });
+            await ctx.reply({ embeds: [embed] });
         } else {
-            await message.reply({ embeds: [embed] });
+            await ctx.reply({ embeds: [embed] });
         }
     },
 
@@ -94,12 +93,12 @@ module.exports = {
                     since: null
                 }, 'settings.afk');
 
-                const embed = new EmbedBuilder()
-                    .setColor(0x00FF00)
-                    .setDescription(getLang("afkRemoved"))
+                const embed = {}
+                    
+                    // Description: getLang("afkRemoved")
                     .setTimestamp();
 
-                await message.reply({ embeds: [embed] });
+                await ctx.reply({ embeds: [embed] });
             }
         } catch (error) {
             console.error("Error checking AFK status for author:", error);
@@ -130,13 +129,13 @@ module.exports = {
                             notification += getLang("since", since);
                         }
 
-                        const embed = new EmbedBuilder()
-                            .setColor(0xFFA500)
-                            .setDescription(notification)
-                            .setThumbnail(mentionedUser.displayAvatarURL({ dynamic: true }))
+                        const embed = {}
+                            
+                            // Description: notification
+                            // Thumbnail: mentionedUser.displayAvatarURL({ dynamic: true })
                             .setTimestamp();
 
-                        await message.reply({ embeds: [embed] });
+                        await ctx.reply({ embeds: [embed] });
                     }
                 } catch (error) {
                     console.error(`Error checking AFK status for ${mentionedUser.username}:`, error);

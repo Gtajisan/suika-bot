@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -162,12 +161,12 @@ module.exports = {
         
         const reply = (content) => {
             if (isSlash) {
-                return interaction.reply({ 
+                return ctx.reply({ 
                     content, 
                     flags: 64
                 });
             }
-            return message.reply(content);
+            return ctx.reply(content);
         };
 
         const type = isSlash 

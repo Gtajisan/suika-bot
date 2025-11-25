@@ -106,12 +106,12 @@ module.exports = {
                 const userData = await usersData.get(senderID);
                 if (userData.data?.confessEnabled) {
                     const response = getLang("alreadyEnabled");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 await usersData.set(senderID, true, 'data.confessEnabled');
                 const response = getLang("confessEnabled");
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'off': {
@@ -119,57 +119,57 @@ module.exports = {
                 const userData = await usersData.get(senderID);
                 if (!userData.data?.confessEnabled) {
                     const response = getLang("alreadyDisabled");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 await usersData.set(senderID, false, 'data.confessEnabled');
                 const response = getLang("confessDisabled");
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'start': {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 // Check if target has enabled confessions
                 const targetUserData = await usersData.get(targetUser.id);
                 if (!targetUserData.data?.confessEnabled) {
                     const response = getLang("confessNotEnabled", targetUser.tag, prefix);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (global.confessTargets.has(targetUser.id)) {
                     const response = getLang("alreadyTarget", targetUser.tag);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 global.confessTargets.add(targetUser.id);
                 const response = getLang("targetAdded", targetUser.tag);
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'stop': {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (!global.confessTargets.has(targetUser.id)) {
                     const response = getLang("notTarget", targetUser.tag);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 global.confessTargets.delete(targetUser.id);
                 const response = getLang("targetRemoved", targetUser.tag);
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             case 'list': {
                 if (global.confessTargets.size === 0) {
                     const response = getLang("noTargets");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 const targetList = await Promise.all(
@@ -184,30 +184,30 @@ module.exports = {
                 );
 
                 const response = getLang("targetList", targetList.join("\n"));
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
 
             default: {
                 if (!targetUser) {
                     const response = getLang("noUser");
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 // Check if target has enabled confessions
                 const targetUserData = await usersData.get(targetUser.id);
                 if (!targetUserData.data?.confessEnabled) {
                     const response = getLang("confessNotEnabled", targetUser.tag, prefix);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 if (global.confessTargets.has(targetUser.id)) {
                     const response = getLang("alreadyTarget", targetUser.tag);
-                    return isSlash ? interaction.reply(response) : message.reply(response);
+                    return isSlash ? ctx.reply(response) : ctx.reply(response);
                 }
 
                 global.confessTargets.add(targetUser.id);
                 const response = getLang("targetAdded", targetUser.tag);
-                return isSlash ? interaction.reply(response) : message.reply(response);
+                return isSlash ? ctx.reply(response) : ctx.reply(response);
             }
         }
     },
@@ -226,7 +226,7 @@ module.exports = {
             
             if (flirtMessage) {
                 try {
-                    await message.reply(`💕 ${flirtMessage}`);
+                    await ctx.reply(`💕 ${flirtMessage}`);
                 } catch (error) {
                     console.error("Failed to send confession:", error);
                 }

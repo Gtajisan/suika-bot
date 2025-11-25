@@ -50,10 +50,10 @@ module.exports = {
 
             // Initial reply
             if (isSlash) {
-                await interaction.reply(getLang("analyzing"));
+                await ctx.reply(getLang("analyzing"));
                 sentMessage = await interaction.fetchReply();
             } else {
-                sentMessage = await message.reply(getLang("analyzing"));
+                sentMessage = await ctx.reply(getLang("analyzing"));
             }
 
             const CACHE_DIR = path.join(__dirname, 'tmp');
@@ -136,9 +136,9 @@ module.exports = {
             if (interaction) {
                 return interaction.replied || interaction.deferred
                     ? interaction.editReply(errorMsg)
-                    : interaction.reply(errorMsg);
+                    : ctx.reply(errorMsg);
             } else {
-                return message.reply(errorMsg);
+                return ctx.reply(errorMsg);
             }
         }
     }

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -43,7 +42,7 @@ module.exports = {
             const timeLeft = cooldown - (now - lastWork);
             const minutes = Math.floor(timeLeft / 60000);
             const response = getLang("cooldown", `${minutes}m`);
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
 
         const jobs = [
@@ -63,13 +62,12 @@ module.exports = {
                 )
             );
 
-        const embed = new EmbedBuilder()
-            .setDescription(getLang("working"))
-            .setColor(0x5865F2);
+        const embed = {}
+            // Description: getLang("working"*/ //(0x5865F2);
 
         const reply = message ? 
-            await message.reply({ embeds: [embed], components: [row] }) : 
-            await interaction.reply({ embeds: [embed], components: [row], fetchReply: true });
+            await ctx.reply({ embeds: [embed], components: [row] }) : 
+            await ctx.reply({ embeds: [embed], components: [row], fetchReply: true });
 
         const buttonHandler = async (btnInteraction) => {
             if (btnInteraction.user.id !== (message?.author.id || interaction.user.id)) {
@@ -85,9 +83,8 @@ module.exports = {
                 data: { ...userData.data, lastWork: now }
             });
 
-            const resultEmbed = new EmbedBuilder()
-                .setDescription(getLang("earned", job.name, earned))
-                .setColor(0x57F287);
+            const resultEmbed = {}
+                // Description: getLang("earned", job.name, earned*/ //(0x57F287);
 
             await btnInteraction.update({ embeds: [resultEmbed], components: [] });
             global.RentoBot.onButton.delete(btnInteraction.customId);

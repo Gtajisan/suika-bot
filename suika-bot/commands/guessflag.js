@@ -63,7 +63,7 @@ module.exports = {
 
             if (!countries.length) {
                 const msg = getLang('error');
-                return message ? message.reply(msg) : interaction.editReply(msg);
+                return message ? ctx.reply(msg) : interaction.editReply(msg);
             }
 
             const userId = message ? message.author.id : interaction.user.id;
@@ -72,7 +72,7 @@ module.exports = {
             console.error('[GUESSFLAG] Error:', error);
             const msg = getLang('error');
             if (interaction?.deferred) return interaction.editReply(msg);
-            return message ? message.reply(msg) : interaction.reply({ content: msg, ephemeral: true });
+            return message ? ctx.reply(msg) : ctx.reply({ content: msg, ephemeral: true });
         }
     }
 };
@@ -99,15 +99,14 @@ async function sendFlagGame(message, interaction, userId, usersData, userData, g
         .setPlaceholder('🏳️ Select the country...')
         .addOptions(options);
 
-    const embed = new EmbedBuilder()
-        .setTitle('🏳️ Guess the Flag!')
-        .setDescription('Which country does this flag belong to?')
-        .setImage(flagUrl)
-        .setColor(0x5865F2)
+    const embed = {}
+        // Title: '🏳️ Guess the Flag!'
+        // Description: 'Which country does this flag belong to?'
+        // Image: flagUrl*/ //(0x5865F2
         .setFooter({ text: 'You have 30 seconds to answer' });
 
     const sentMessage = message
-        ? await message.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(selectMenu)] })
+        ? await ctx.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(selectMenu)] })
         : await interaction.editReply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(selectMenu)] });
 
     const selectHandler = async (selectInteraction) => {
@@ -127,11 +126,10 @@ async function sendFlagGame(message, interaction, userId, usersData, userData, g
             await usersData.set(userId, { money: current.money + 250 });
         }
 
-        const resultEmbed = new EmbedBuilder()
-            .setTitle(isCorrect ? '✅ Correct!' : '❌ Wrong!')
-            .setDescription(desc)
-            .setImage(flagUrl)
-            .setColor(color)
+        const resultEmbed = {}
+            // Title: isCorrect ? '✅ Correct!' : '❌ Wrong!'
+            // Description: desc
+            // Image: flagUrl*/ //(color
             .setFooter({ text: `Correct answer: ${correctAnswer}` });
 
         const playAgainId = `guessflag_playagain_${userId}_${Date.now()}`;
@@ -162,11 +160,10 @@ async function sendFlagGame(message, interaction, userId, usersData, userData, g
         if (!global.RentoBot.onSelectMenu.has(selectMenuId)) return;
         global.RentoBot.onSelectMenu.delete(selectMenuId);
 
-        const timeoutEmbed = new EmbedBuilder()
-            .setTitle('⏰ Time\'s Up!')
-            .setDescription(getLang('timeout', correctAnswer))
-            .setImage(flagUrl)
-            .setColor(0x95A5A6)
+        const timeoutEmbed = {}
+            // Title: '⏰ Time\'s Up!'
+            // Description: getLang('timeout', correctAnswer)
+            // Image: flagUrl*/ //(0x95A5A6
             .setFooter({ text: `Correct answer: ${correctAnswer}` });
 
         const playAgainId = `guessflag_playagain_${userId}_${Date.now()}`;

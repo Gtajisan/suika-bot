@@ -3,7 +3,6 @@ const path = require('path');
 const log = require('../logger/log.js');
 const { Markup } = require('telegraf');
 
-// Store loaded event handlers
 global.SuikaBot = global.SuikaBot || {};
 global.SuikaBot.eventCommands = new Map();
 
@@ -16,7 +15,6 @@ async function setupMessageHandler(ctx) {
         const args = text.split(/\s+/);
         const commandName = args[0].toLowerCase();
 
-        // Remove prefix if exists
         let command = null;
         if (commandName.startsWith('/')) {
             const cmdKey = commandName.slice(1);
@@ -26,9 +24,8 @@ async function setupMessageHandler(ctx) {
 
         if (!command) return;
 
-        // Check cooldown
         const userId = ctx.from.id;
-        const cooldownKey = `${userId}-${command.config.name}`;
+        const cooldownKey = userId + "-" + command.config.name;
         
         if (command.config.countDown) {
             const cooldown = global.client.cache[cooldownKey];
@@ -38,7 +35,6 @@ async function setupMessageHandler(ctx) {
             global.client.cache[cooldownKey] = Date.now() + (command.config.countDown * 1000);
         }
 
-        // Execute command
         await command.onStart({
             ctx,
             message,
@@ -50,7 +46,7 @@ async function setupMessageHandler(ctx) {
                 let text = langData[key] || key;
                 
                 params.forEach((param, index) => {
-                    text = text.replace(`%${index + 1}`, param);
+                    text = text.replace('%' + (index + 1), param);
                 });
                 
                 return text;
@@ -58,9 +54,9 @@ async function setupMessageHandler(ctx) {
         });
 
     } catch (error) {
-        log.error(`Error in message handler: ${error.message}`);
+        log.error("Error in message handler: " + error.message);
         ctx.reply('Error: An error occurred while processing your command.').catch(err => 
-            log.error(`Failed to send error message: ${err.message}`)
+            log.error("Failed to send error message: " + err.message)
         );
     }
 }
@@ -68,48 +64,64 @@ async function setupMessageHandler(ctx) {
 async function loadCustomEvents() {
     try {
         const eventsPath = path.join(__dirname, '../events');
-        
-        // Check if events folder exists
-        if (!fs.existsSync(eventsPath)) {
-            log.warn('Events folder not found, skipping custom event loading');
-            return 0;
-        }
-
-        const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
-        let loadedCount = 0;
+        const scriptsEventsPath = path.join(__dirname, '../scripts/events');
         
         const bot = global.SuikaBot.bot;
+        let loadedCount = 0;
+        
+        // Load from events/ folder
+        if (fs.existsSync(eventsPath)) {
+            const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
+            
+            for (const file of eventFiles) {
+                try {
+                    const eventModule = require(path.join(eventsPath, file));
+                    const eventName = eventModule.eventName;
 
-        for (const file of eventFiles) {
-            try {
-                const eventModule = require(path.join(eventsPath, file));
-                const eventName = eventModule.eventName;
+                    if (!eventName) {
+                        log.warn("Event file " + file + " missing eventName property");
+                        continue;
+                    }
 
-                if (!eventName) {
-                    log.warn(`Event file ${file} missing eventName property`);
-                    continue;
-                }
-
-                // Register event with Telegraf
-                if (eventName === 'message' || eventName === 'text') {
                     bot.on(eventName, eventModule.run);
-                } else {
-                    bot.on(eventName, eventModule.run);
+                    global.SuikaBot.eventCommands.set(eventName, eventModule);
+                    log.info("Loaded event: " + eventName + " from " + file);
+                    loadedCount++;
+
+                } catch (error) {
+                    log.error("Failed to load event " + file + ": " + error.message);
                 }
+            }
+        }
+        
+        // Load from scripts/events/ folder
+        if (fs.existsSync(scriptsEventsPath)) {
+            const scriptFiles = fs.readdirSync(scriptsEventsPath).filter(f => f.endsWith('.js'));
+            
+            for (const file of scriptFiles) {
+                try {
+                    const eventModule = require(path.join(scriptsEventsPath, file));
+                    const eventName = eventModule.eventName;
 
-                // Track in event commands map
-                global.SuikaBot.eventCommands.set(eventName, eventModule);
-                log.info(`Loaded event: ${eventName} from ${file}`);
-                loadedCount++;
+                    if (!eventName) {
+                        log.warn("Script file " + file + " missing eventName property");
+                        continue;
+                    }
 
-            } catch (error) {
-                log.error(`Failed to load event ${file}: ${error.message}`);
+                    bot.on(eventName, eventModule.run);
+                    global.SuikaBot.eventCommands.set(eventName, eventModule);
+                    log.info("Loaded script event: " + eventName + " from " + file);
+                    loadedCount++;
+
+                } catch (error) {
+                    log.error("Failed to load script " + file + ": " + error.message);
+                }
             }
         }
 
         return loadedCount;
     } catch (error) {
-        log.error(`Error loading custom events: ${error.message}`);
+        log.error("Error loading custom events: " + error.message);
         return 0;
     }
 }
@@ -118,10 +130,8 @@ async function loadEvents() {
     try {
         const bot = global.SuikaBot.bot;
 
-        // Text message handler (command routing)
         bot.on('text', setupMessageHandler);
 
-        // Start command
         bot.start((ctx) => {
             ctx.reply(
                 'Welcome to Suika Bot!\n\n' +
@@ -134,57 +144,30 @@ async function loadEvents() {
             );
         });
 
-        // Help command
         bot.command('help', (ctx) => {
-            const helpText = `
-Available Commands:
-
-ECONOMY
-/balance - Check your balance
-/daily - Claim daily reward
-/work - Work for coins
-/bank - Manage bank account
-
-GAMES
-/tictactoe - Play tic-tac-toe
-/quiz - Play quiz
-/slot - Slot machine
-
-STATS
-/stats - Your statistics
-/ping - Check bot status
-/leaderboard - Top users
-
-INFO
-/botinfo - Bot information
-/help - Show this help
-
-Type /command_name to use any command
-            `.trim();
+            const helpText = 'Available Commands:\n\nECONOMY\n/balance - Check your balance\n/daily - Claim daily reward\n/work - Work for coins\n/bank - Manage bank account\n\nGAMES\n/tictactoe - Play tic-tac-toe\n/quiz - Play quiz\n/slot - Slot machine\n\nSTATS\n/stats - Your statistics\n/ping - Check bot status\n/leaderboard - Top users\n\nINFO\n/botinfo - Bot information\n/help - Show this help\n\nType /command_name to use any command';
 
             ctx.reply(helpText);
         });
 
-        // Ping command
         bot.command('ping', (ctx) => {
             const startTime = Date.now();
             ctx.reply('Pong!').then(() => {
                 const endTime = Date.now();
                 const latency = endTime - startTime;
-                ctx.editMessageText(`Pong! (${latency}ms)`);
+                ctx.editMessageText('Pong! (' + latency + 'ms)');
             });
         });
 
-        // Load custom events from events folder
         const customEventsCount = await loadCustomEvents();
 
-        log.info(`Event system initialized`);
-        log.info(`Builtin events: 3 (text, start, help, ping)`);
-        log.info(`Custom events loaded: ${customEventsCount}`);
+        log.info('Event system initialized');
+        log.info('Builtin events: 3 (text, start, help, ping)');
+        log.info('Custom events loaded: ' + customEventsCount);
         
         return true;
     } catch (error) {
-        log.error(`Error loading events: ${error.message}`);
+        log.error("Error loading events: " + error.message);
         return false;
     }
 }

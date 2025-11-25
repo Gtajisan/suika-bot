@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -52,12 +51,12 @@ module.exports = {
             total.toLocaleString()
         );
 
-        const embed = new EmbedBuilder()
-            .setDescription(response)
-            .setColor(0xFFD700)
-            .setThumbnail(targetUser.displayAvatarURL())
+        const embed = {}
+            // Description: response
+            
+            // Thumbnail: targetUser.displayAvatarURL()
             .setTimestamp();
 
-        return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+        return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -67,8 +66,8 @@ module.exports = {
 
         if (!action) {
             return isSlash ? 
-                interaction.reply({ content: getLang("invalidAmount"), ephemeral: true }) : 
-                message.reply(getLang("invalidAmount"));
+                ctx.reply({ content: getLang("invalidAmount"), ephemeral: true }) : 
+                ctx.reply(getLang("invalidAmount"));
         }
 
         if (action === "info") {
@@ -81,12 +80,12 @@ module.exports = {
                 dailyInterest.toLocaleString()
             );
 
-            const embed = new EmbedBuilder()
-                .setDescription(response)
-                .setColor(0x5865F2)
+            const embed = {}
+                // Description: response
+                
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
 
         if (args[1] === "all" || args[1] === "max") {
@@ -95,14 +94,14 @@ module.exports = {
 
         if (!amount || isNaN(amount)) {
             return isSlash ? 
-                interaction.reply({ content: getLang("invalidAmount"), ephemeral: true }) : 
-                message.reply(getLang("invalidAmount"));
+                ctx.reply({ content: getLang("invalidAmount"), ephemeral: true }) : 
+                ctx.reply(getLang("invalidAmount"));
         }
 
         if (amount <= 0) {
             return isSlash ? 
-                interaction.reply({ content: getLang("negativeAmount"), ephemeral: true }) : 
-                message.reply(getLang("negativeAmount"));
+                ctx.reply({ content: getLang("negativeAmount"), ephemeral: true }) : 
+                ctx.reply(getLang("negativeAmount"));
         }
 
         const userID = isSlash ? interaction.user.id : message.author.id;
@@ -110,8 +109,8 @@ module.exports = {
         if (action === "deposit" || action === "dep" || action === "d") {
             if (userData.money < amount) {
                 return isSlash ? 
-                    interaction.reply({ content: getLang("insufficientWallet", userData.money.toLocaleString()), ephemeral: true }) : 
-                    message.reply(getLang("insufficientWallet", userData.money.toLocaleString()));
+                    ctx.reply({ content: getLang("insufficientWallet", userData.money.toLocaleString()), ephemeral: true }) : 
+                    ctx.reply(getLang("insufficientWallet", userData.money.toLocaleString()));
             }
 
             await usersData.set(userID, {
@@ -119,19 +118,18 @@ module.exports = {
                 bank: userData.bank + amount
             });
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("depositSuccess", amount.toLocaleString()))
-                .setColor(0x57F287)
+            const embed = {}
+                // Description: getLang("depositSuccess", amount.toLocaleString()*/ //(0x57F287)
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
 
         if (action === "withdraw" || action === "wd" || action === "w") {
             if (userData.bank < amount) {
                 return isSlash ? 
-                    interaction.reply({ content: getLang("insufficientBank", userData.bank.toLocaleString()), ephemeral: true }) : 
-                    message.reply(getLang("insufficientBank", userData.bank.toLocaleString()));
+                    ctx.reply({ content: getLang("insufficientBank", userData.bank.toLocaleString()), ephemeral: true }) : 
+                    ctx.reply(getLang("insufficientBank", userData.bank.toLocaleString()));
             }
 
             await usersData.set(userID, {
@@ -139,16 +137,15 @@ module.exports = {
                 bank: userData.bank - amount
             });
 
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("withdrawSuccess", amount.toLocaleString()))
-                .setColor(0x57F287)
+            const embed = {}
+                // Description: getLang("withdrawSuccess", amount.toLocaleString()*/ //(0x57F287)
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
 
         return isSlash ? 
-            interaction.reply({ content: "❌ Invalid action! Use deposit, withdraw, or info.", ephemeral: true }) : 
-            message.reply("❌ Invalid action! Use deposit, withdraw, or info.");
+            ctx.reply({ content: "❌ Invalid action! Use deposit, withdraw, or info.", ephemeral: true }) : 
+            ctx.reply("❌ Invalid action! Use deposit, withdraw, or info.");
     }
 };

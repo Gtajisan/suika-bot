@@ -1,6 +1,5 @@
 
 const axios = require('axios');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -89,7 +88,7 @@ module.exports = {
             voice = interaction.options.getString('voice') || 'alloy';
         } else {
             if (args.length === 0) {
-                return message.reply(getLang("noPrompt"));
+                return ctx.reply(getLang("noPrompt"));
             }
 
             const firstArg = args[0].toLowerCase();
@@ -103,21 +102,20 @@ module.exports = {
 
         if (!prompt || prompt.trim().length === 0) {
             const response = getLang("noPrompt");
-            return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (prompt.length > 500) {
             const response = getLang("tooLong");
-            return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         await this.generateAIResponse({ message, interaction, prompt, voice, getLang, user, isSlash });
     },
 
     generateAIResponse: async function ({ message, interaction, prompt, voice, getLang, user, isSlash }) {
-        const loadingEmbed = new EmbedBuilder()
-            .setDescription(getLang("generating"))
-            .setColor(0x5865F2)
+        const loadingEmbed = {}
+            // Description: getLang("generating"*/ //(0x5865F2)
             .setFooter({ text: `Voice: ${voice} | ${user.username}`, iconURL: user.displayAvatarURL() });
 
         let sentMessage;
@@ -126,11 +124,11 @@ module.exports = {
                 await interaction.editReply({ embeds: [loadingEmbed] });
                 sentMessage = { interaction, isSlash: true };
             } else {
-                await interaction.reply({ embeds: [loadingEmbed] });
+                await ctx.reply({ embeds: [loadingEmbed] });
                 sentMessage = { interaction, isSlash: true };
             }
         } else {
-            sentMessage = await message.reply({ embeds: [loadingEmbed] });
+            sentMessage = await ctx.reply({ embeds: [loadingEmbed] });
             sentMessage.isSlash = false;
         }
 
@@ -164,9 +162,8 @@ module.exports = {
                 shimmer: 'Soft, melodic'
             };
 
-            const successEmbed = new EmbedBuilder()
-                .setDescription(getLang("success", `${voice} (${voiceDescriptions[voice]})`, prompt.length > 100 ? prompt.substring(0, 100) + '...' : prompt))
-                .setColor(0x57F287)
+            const successEmbed = {}
+                // Description: getLang("success", `${voice} (${voiceDescriptions[voice]}`, prompt.length > 100 ? prompt.substring(0, 100) + '...' : prompt)*/ //(0x57F287)
                 .setFooter({ text: `Requested by ${user.username}`, iconURL: user.displayAvatarURL() })
                 .setTimestamp();
 
@@ -174,7 +171,7 @@ module.exports = {
             const voiceOptions = availableVoices.map(v => 
                 new StringSelectMenuOptionBuilder()
                     .setLabel(v.charAt(0).toUpperCase() + v.slice(1))
-                    .setDescription(voiceDescriptions[v])
+                    // Description: voiceDescriptions[v]
                     .setValue(v)
                     .setEmoji(v === voice ? '🔊' : '🎙️')
                     .setDefault(v === voice)
@@ -226,9 +223,8 @@ module.exports = {
 
         } catch (error) {
             console.error('Talk command error:', error);
-            const errorEmbed = new EmbedBuilder()
-                .setDescription(getLang("error", error.message || "Unknown error"))
-                .setColor(0xED4245);
+            const errorEmbed = {}
+                // Description: getLang("error", error.message || "Unknown error"*/ //(0xED4245);
 
             if (sentMessage.isSlash) {
                 await sentMessage.interaction.editReply({ embeds: [errorEmbed], components: [] });

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -68,16 +67,16 @@ module.exports = {
             const statusText = currentStatus ? getLang("statusEnabled") : getLang("statusDisabled");
             const response = getLang("status", statusText);
             
-            const embed = new EmbedBuilder()
-                .setColor(currentStatus ? 0x00FF00 : 0xED4245)
-                .setTitle("🔄 Auto Download Settings")
-                .setDescription(response)
+            const embed = {}
+                
+                // Title: "🔄 Auto Download Settings"
+                // Description: response
                 .setFooter({ text: "Use 'autodl on' or 'autodl off' to toggle" })
                 .setTimestamp();
 
             return isInteraction ? 
-                interaction.reply({ embeds: [embed] }) : 
-                message.reply({ embeds: [embed] });
+                ctx.reply({ embeds: [embed] }) : 
+                ctx.reply({ embeds: [embed] });
         }
 
         const newStatus = action === 'on';
@@ -87,14 +86,14 @@ module.exports = {
             const statusWord = newStatus ? "enabled" : "disabled";
             const response = getLang("noChange", statusWord);
             
-            const embed = new EmbedBuilder()
-                .setColor(0xFFA500)
-                .setDescription(response)
+            const embed = {}
+                
+                // Description: response
                 .setTimestamp();
 
             return isInteraction ? 
-                interaction.reply({ embeds: [embed], ephemeral: true }) : 
-                message.reply({ embeds: [embed] });
+                ctx.reply({ embeds: [embed], ephemeral: true }) : 
+                ctx.reply({ embeds: [embed] });
         }
 
         // Update the setting
@@ -102,15 +101,15 @@ module.exports = {
 
         const response = newStatus ? getLang("enabled") : getLang("disabled");
         
-        const embed = new EmbedBuilder()
-            .setColor(newStatus ? 0x00FF00 : 0xED4245)
-            .setTitle(newStatus ? "✅ Auto Download Enabled" : "❌ Auto Download Disabled")
-            .setDescription(response)
+        const embed = {}
+            
+            // Title: newStatus ? "✅ Auto Download Enabled" : "❌ Auto Download Disabled"
+            // Description: response
             .setFooter({ text: "Setting saved successfully" })
             .setTimestamp();
 
         return isInteraction ? 
-            interaction.reply({ embeds: [embed] }) : 
-            message.reply({ embeds: [embed] });
+            ctx.reply({ embeds: [embed] }) : 
+            ctx.reply({ embeds: [embed] });
     }
 };

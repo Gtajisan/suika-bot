@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -81,8 +80,8 @@ module.exports = {
 
         const status = member ? member.presence?.status || "offline" : "N/A";
 
-        const embed = new EmbedBuilder()
-            .setTitle(getLang("title"))
+        const embed = {}
+            // Title: getLang("title")
             .setDescription(
                 getLang("username", targetUser.tag) + "\n" +
                 getLang("id", targetUser.id) + "\n" +
@@ -92,11 +91,10 @@ module.exports = {
                 (guild ? getLang("joined", joinedAt) + "\n" : "") +
                 (guild ? getLang("roles", roles) : "")
             )
-            .setThumbnail(targetUser.displayAvatarURL({ dynamic: true, size: 256 }))
-            .setColor(member?.displayHexColor || 0x5865F2)
+            // Thumbnail: targetUser.displayAvatarURL({ dynamic: true, size: 256 }*/ //(member?.displayHexColor || 0x5865F2)
             .setFooter({ text: `User ID: ${targetUser.id}` })
             .setTimestamp();
 
-        return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+        return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

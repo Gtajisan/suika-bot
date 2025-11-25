@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -68,7 +67,7 @@ module.exports = {
         
         const reply = (content, embed) => {
             const options = embed ? { embeds: [embed], ephemeral: isSlash } : { content, ephemeral: isSlash };
-            return isSlash ? interaction.reply(options) : message.reply(options);
+            return isSlash ? ctx.reply(options) : ctx.reply(options);
         };
 
         const action = isSlash ? interaction.options.getString("action") : args[0]?.toLowerCase();
@@ -121,11 +120,11 @@ module.exports = {
             await usersData.set(targetUser.id, { exp: Math.max(0, newExp) });
             const newLevel = global.utils.calculateLevel(newExp);
 
-            const embed = new EmbedBuilder()
-                .setColor(0xfee75c)
-                .setTitle("📈 EXP Updated")
-                .setDescription(getLang("success", targetUser.tag, newExp.toLocaleString(), newLevel))
-                .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+            const embed = {}
+                
+                // Title: "📈 EXP Updated"
+                // Description: getLang("success", targetUser.tag, newExp.toLocaleString(, newLevel))
+                // Thumbnail: targetUser.displayAvatarURL({ dynamic: true })
                 .setFooter({
                     text: `Action: ${action.toUpperCase()} | Level: ${newLevel}`
                 })

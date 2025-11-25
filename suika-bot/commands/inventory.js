@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 const SHOP_ITEMS = [
     { id: "trophy", name: "🏆 Trophy", price: 5000, description: "A shiny trophy for your collection" },
@@ -66,13 +65,12 @@ module.exports = {
         const inventoryEntries = Object.entries(inventory).filter(([_, count]) => count > 0);
 
         if (inventoryEntries.length === 0) {
-            const embed = new EmbedBuilder()
-                .setDescription(getLang("empty", targetUser.username))
-                .setColor(0x5865F2)
-                .setThumbnail(targetUser.displayAvatarURL())
+            const embed = {}
+                // Description: getLang("empty", targetUser.username*/ //(0x5865F2)
+                // Thumbnail: targetUser.displayAvatarURL()
                 .setTimestamp();
 
-            return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+            return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         }
 
         let description = getLang("title", targetUser.username);
@@ -94,12 +92,12 @@ module.exports = {
 
         description += getLang("totalValue", totalValue.toLocaleString());
 
-        const embed = new EmbedBuilder()
-            .setDescription(description)
-            .setColor(0x5865F2)
-            .setThumbnail(targetUser.displayAvatarURL())
+        const embed = {}
+            // Description: description
+            
+            // Thumbnail: targetUser.displayAvatarURL()
             .setTimestamp();
 
-        return isSlash ? interaction.reply({ embeds: [embed] }) : message.reply({ embeds: [embed] });
+        return isSlash ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
     }
 };

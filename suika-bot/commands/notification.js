@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -51,21 +50,21 @@ module.exports = {
 
         if (!notificationMessage) {
             const response = getLang("noMessage");
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
 
         const statusMsg = message ? 
-            await message.reply(getLang("sending")) : 
-            await interaction.reply({ content: getLang("sending"), fetchReply: true });
+            await ctx.reply(getLang("sending")) : 
+            await ctx.reply({ content: getLang("sending"), fetchReply: true });
 
         const guilds = client.guilds.cache;
         let successCount = 0;
         let failCount = 0;
 
-        const embed = new EmbedBuilder()
-            .setTitle(getLang("notificationTitle"))
-            .setDescription(notificationMessage)
-            .setColor(0x00AE86)
+        const embed = {}
+            // Title: getLang("notificationTitle")
+            // Description: notificationMessage
+            
             .setFooter({ text: getLang("footer") })
             .setTimestamp();
 

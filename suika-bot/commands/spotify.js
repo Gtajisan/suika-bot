@@ -3,7 +3,6 @@ const axios = require("axios");
 const { createWriteStream, unlinkSync } = require("fs");
 const { tmpdir } = require("os");
 const { join } = require("path");
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
   config: {
@@ -90,22 +89,21 @@ module.exports = {
     try {
       if (!query) {
         const response = getLang("noInput");
-        return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+        return isSlash ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
       }
 
-      const loadingEmbed = new EmbedBuilder()
-        .setDescription(getLang("loading"))
-        .setColor(0x1DB954)
+      const loadingEmbed = {}
+        // Description: getLang("loading"*/ //(0x1DB954)
         .setFooter({ text: user.username });
 
       let sentMessage;
       if (isSlash) {
-        await interaction.reply({ embeds: [loadingEmbed] });
+        await ctx.reply({ embeds: [loadingEmbed] });
         sentMessage = await interaction.fetchReply();
         sentMessage.isSlash = true;
         sentMessage.interaction = interaction;
       } else {
-        sentMessage = await message.reply({ embeds: [loadingEmbed] });
+        sentMessage = await ctx.reply({ embeds: [loadingEmbed] });
         sentMessage.isSlash = false;
       }
 
@@ -117,9 +115,8 @@ module.exports = {
 
       const songs = infoRes.data?.songs;
       if (!songs || songs.length === 0) {
-        const errorEmbed = new EmbedBuilder()
-          .setDescription(getLang("noMediaFound"))
-          .setColor(0xED4245);
+        const errorEmbed = {}
+          // Description: getLang("noMediaFound"*/ //(0xED4245);
         
         if (sentMessage.isSlash) {
           return sentMessage.interaction.editReply({ embeds: [errorEmbed] });
@@ -142,7 +139,7 @@ module.exports = {
       const options = songs.slice(0, 25).map((song, index) => 
         new StringSelectMenuOptionBuilder()
           .setLabel(`${song.title.substring(0, 90)}${song.title.length > 90 ? '...' : ''}`)
-          .setDescription(`${song.artist.substring(0, 90)} - ${song.duration}`)
+          // Description: `${song.artist.substring(0, 90} - ${song.duration}`)
           .setValue(`${index}`)
           .setEmoji('🎵')
       );
@@ -154,10 +151,9 @@ module.exports = {
 
       const row = new ActionRowBuilder().addComponents(selectMenu);
 
-      const chooseEmbed = new EmbedBuilder()
-        .setTitle("🎵 Spotify Search Results")
-        .setDescription(`${getLang("chooseTrack", songs.length)}\n\n${trackList}`)
-        .setColor(0x1DB954)
+      const chooseEmbed = {}
+        // Title: "🎵 Spotify Search Results"
+        // Description: `${getLang("chooseTrack", songs.length}\n\n${trackList}`*/ //(0x1DB954)
         .setFooter({ text: `${user.username} | Select from dropdown or reply with a number (1-${songs.length}) • Timeout: 60s` })
         .setTimestamp();
 
@@ -192,9 +188,8 @@ module.exports = {
           const choice = parseInt(replyMsg.content.trim());
 
           if (isNaN(choice) || choice < 1 || choice > songs.length) {
-            const errorEmbed = new EmbedBuilder()
-              .setDescription(getLang("invalidChoice", songs.length))
-              .setColor(0xED4245);
+            const errorEmbed = {}
+              // Description: getLang("invalidChoice", songs.length*/ //(0xED4245);
 
             await replyMsg.reply({ embeds: [errorEmbed] }).catch(() => {});
             setTimeout(() => replyMsg.delete().catch(() => {}), 3000);
@@ -212,9 +207,8 @@ module.exports = {
       // Timeout cleanup
       setTimeout(() => {
         if (global.RentoBot.onReply.has(sentMessage.id)) {
-          const timeoutEmbed = new EmbedBuilder()
-            .setDescription(getLang("timeout"))
-            .setColor(0x95A5A6);
+          const timeoutEmbed = {}
+            // Description: getLang("timeout"*/ //(0x95A5A6);
 
           if (sentMessage.isSlash) {
             sentMessage.interaction.editReply({ embeds: [timeoutEmbed], components: [] }).catch(() => {});
@@ -227,16 +221,15 @@ module.exports = {
       }, 60000);
     } catch (error) {
       console.error("Spotify command error:", error);
-      const errorEmbed = new EmbedBuilder()
-        .setDescription(`${getLang("error")}\n\`${error.message}\``)
-        .setColor(0xED4245);
+      const errorEmbed = {}
+        // Description: `${getLang("error"}\n\`${error.message}\``*/ //(0xED4245);
 
       if (isSlash) {
         const reply = await interaction.fetchReply().catch(() => null);
         if (reply) await interaction.editReply({ embeds: [errorEmbed] });
-        else await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+        else await ctx.reply({ embeds: [errorEmbed], ephemeral: true });
       } else {
-        await message.reply({ embeds: [errorEmbed] });
+        await ctx.reply({ embeds: [errorEmbed] });
       }
     }
   },
@@ -247,9 +240,8 @@ async function downloadTrack(track, sentMessage, getLang, user) {
   let tempFilePath = null;
 
   try {
-    const downloadingEmbed = new EmbedBuilder()
-      .setDescription(getLang("downloading", track.title, track.artist))
-      .setColor(0x1DB954)
+    const downloadingEmbed = {}
+      // Description: getLang("downloading", track.title, track.artist*/ //(0x1DB954)
       .setFooter({ text: user.username })
       .setTimestamp();
 
@@ -282,11 +274,10 @@ async function downloadTrack(track, sentMessage, getLang, user) {
     });
 
     // Success Embed
-    const successEmbed = new EmbedBuilder()
-      .setDescription(getLang("success", track.title, track.artist))
-      .setColor(0x57F287)
+    const successEmbed = {}
+      // Description: getLang("success", track.title, track.artist*/ //(0x57F287)
       .setFooter({ text: user.username })
-      .setThumbnail(data.data.thumbnail)
+      // Thumbnail: data.data.thumbnail
       .setTimestamp();
 
     if (sentMessage.isSlash) {
@@ -305,9 +296,8 @@ async function downloadTrack(track, sentMessage, getLang, user) {
     console.error("Download track error:", error);
     const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('../adapters/discord-to-telegram.js');
     
-    const errorEmbed = new EmbedBuilder()
-      .setDescription(`${getLang("downloadFailed")}\n\`${error.message}\`\n\n**Listen on Spotify:**`)
-      .setColor(0xED4245);
+    const errorEmbed = {}
+      // Description: `${getLang("downloadFailed"}\n\`${error.message}\`\n\n**Listen on Spotify:**`*/ //(0xED4245);
 
     const button = new ButtonBuilder()
       .setLabel('Open in Spotify')

@@ -2,7 +2,6 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 const { execSync } = require('child_process');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 /**
  * Compare two version strings
@@ -80,8 +79,8 @@ module.exports = {
             // Send checking message
             const checkingMsg = getLang("checking");
             const checkingResponse = isSlash 
-                ? await interaction.reply({ content: checkingMsg, fetchReply: true })
-                : await message.reply(checkingMsg);
+                ? await ctx.reply({ content: checkingMsg, fetchReply: true })
+                : await ctx.reply(checkingMsg);
             
             // Check for updates
             const currentVersion = require('../../package.json').version;
@@ -142,10 +141,10 @@ module.exports = {
                 deleteList ? getLang("fileWillDelete", deleteList + deleteListMore) : ""
             );
             
-            const embed = new EmbedBuilder()
-                .setTitle("🔄 Bot Update Available")
-                .setDescription(updatePrompt)
-                .setColor(0xFFA500)
+            const embed = {}
+                // Title: "🔄 Bot Update Available"
+                // Description: updatePrompt
+                
                 .setTimestamp()
                 .setFooter({ text: "React with ✅ to confirm update" });
             
@@ -197,7 +196,7 @@ module.exports = {
             const userId = customId.split('_')[2];
             
             if (interaction.user.id !== userId) {
-                return interaction.reply({
+                return ctx.reply({
                     content: "❌ Only the user who requested the update can confirm it!",
                     ephemeral: true
                 });

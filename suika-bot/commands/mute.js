@@ -137,12 +137,12 @@ module.exports = {
 
         if (!member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             const response = getLang("noPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (!guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             const response = getLang("botNoPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const action = isInteraction ? interaction.options.getString('action') : (args[0] || 'mute');
@@ -153,29 +153,29 @@ module.exports = {
 
         if (!targetUser) {
             const response = getLang("noUser");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const targetMember = await guild.members.fetch(targetUser.id).catch(() => null);
         
         if (!targetMember) {
             const response = "❌ User is not in this server!";
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetUser.id === member.id) {
             const response = getLang("cantMuteSelf");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetUser.id === guild.members.me.id) {
             const response = getLang("cantMuteBot");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetMember.permissions.has(PermissionFlagsBits.Administrator)) {
             const response = getLang("cantMuteAdmin");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const config = global.RentoBot?.config;
@@ -183,12 +183,12 @@ module.exports = {
         
         if (!isOwner && targetMember.roles.highest.position >= member.roles.highest.position) {
             const response = getLang("higherRole");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (targetMember.roles.highest.position >= guild.members.me.roles.highest.position) {
             const response = getLang("botHigherRole");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (action.toLowerCase() === 'unmute') {
@@ -212,14 +212,14 @@ module.exports = {
                 }
 
                 const response = getLang("unmuteSuccess", targetUser.tag);
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 if (targetMember.communicationDisabledUntilTimestamp === null) {
                     const response = getLang("notMuted");
-                    return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                    return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
                 }
                 const response = getLang("unmuteError", error.message);
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
         } else {
             const durationStr = isInteraction ? 
@@ -232,13 +232,13 @@ module.exports = {
 
             if (!durationStr) {
                 const response = getLang("noDuration");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             const duration = module.exports.parseDuration(durationStr);
             if (!duration) {
                 const response = getLang("invalidDuration");
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
 
             try {
@@ -263,10 +263,10 @@ module.exports = {
                 }
 
                 const response = getLang("muteSuccess", targetUser.tag, module.exports.formatDuration(duration), reason);
-                return isInteraction ? interaction.reply(response) : message.reply(response);
+                return isInteraction ? ctx.reply(response) : ctx.reply(response);
             } catch (error) {
                 const response = getLang("muteError", error.message);
-                return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+                return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
             }
         }
     }

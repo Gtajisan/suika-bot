@@ -1,6 +1,5 @@
 const axios = require('axios');
 const fs = require('fs-extra');
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 const path = require('path');
 
 const pathData = path.join(__dirname, 'assets', 'hubble', 'nasa.json');
@@ -94,7 +93,7 @@ module.exports = {
                     }
                 } catch (err) {
                     const errorMsg = "Failed to load Hubble data. Please try again later.";
-                    return message ? message.reply(errorMsg) : interaction.editReply(errorMsg);
+                    return message ? ctx.reply(errorMsg) : interaction.editReply(errorMsg);
                 }
             }
 
@@ -109,13 +108,13 @@ module.exports = {
             const dateText = checkValidDate(dateInput || "");
             if (!dateInput || !dateText) {
                 const response = getLang('invalidDate');
-                return message ? message.reply(response) : interaction.editReply(response);
+                return message ? ctx.reply(response) : interaction.editReply(response);
             }
 
             const data = hubbleData.find(e => e.date.startsWith(dateText));
             if (!data) {
                 const response = getLang('noImage');
-                return message ? message.reply(response) : interaction.editReply(response);
+                return message ? ctx.reply(response) : interaction.editReply(response);
             }
 
             const { image, name, caption, url } = data;
@@ -126,19 +125,19 @@ module.exports = {
                 name: image
             });
 
-            const embed = new EmbedBuilder()
-                .setTitle(`🔭 ${name}`)
-                .setDescription(caption)
-                .addFields(
+            const embed = {}
+                // Title: `🔭 ${name}`
+                // Description: caption
+                // Fields: 
+            /*
                     { name: '📅 Date', value: dateText, inline: true },
                     { name: '🔗 Source', value: `[NASA Hubble](${url})`, inline: true }
                 )
-                .setImage(`attachment://${image}`)
-                .setColor(0x1E3A8A)
+                // Image: `attachment://${image}`*/ //(0x1E3A8A
                 .setTimestamp();
 
             if (message) {
-                return message.reply({
+                return ctx.reply({
                     embeds: [embed],
                     files: [attachment]
                 });
@@ -151,12 +150,12 @@ module.exports = {
         } catch (error) {
             const errorMsg = getLang('error', error.message);
             if (message) {
-                return message.reply(errorMsg);
+                return ctx.reply(errorMsg);
             } else {
                 if (interaction.deferred) {
                     return interaction.editReply(errorMsg);
                 } else {
-                    return interaction.reply(errorMsg);
+                    return ctx.reply(errorMsg);
                 }
             }
         }

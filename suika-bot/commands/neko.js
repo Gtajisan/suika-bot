@@ -41,9 +41,9 @@ module.exports = {
             const loadingMsg = getLang("loading");
             
             if (isSlash) {
-                await interaction.reply(loadingMsg);
+                await ctx.reply(loadingMsg);
             } else {
-                await message.reply(loadingMsg);
+                await ctx.reply(loadingMsg);
             }
 
             const result = await nekoImg();
@@ -66,10 +66,10 @@ module.exports = {
                 if (interaction.replied || interaction.deferred) {
                     await interaction.editReply(errorMsg);
                 } else {
-                    await interaction.reply(errorMsg);
+                    await ctx.reply(errorMsg);
                 }
             } else {
-                await message.reply(errorMsg);
+                await ctx.reply(errorMsg);
             }
         }
     }

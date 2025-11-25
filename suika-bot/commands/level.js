@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -61,18 +60,18 @@ module.exports = {
             const progressBar = createProgressBar(progress, 20);
             const card = generateMinimalCard(targetUser, userData, userRank, expNeeded, progressBar);
 
-            const embed = new EmbedBuilder()
-                .setColor(cardColor)
-                .setDescription(card)
-                .setThumbnail(targetUser.displayAvatarURL({ dynamic: true, size: 256 }))
+            const embed = {}
+                
+                // Description: card
+                // Thumbnail: targetUser.displayAvatarURL({ dynamic: true, size: 256 })
                 .setFooter({ text: `Requested by ${message?.author?.tag || interaction.user.tag}` })
                 .setTimestamp();
 
-            return message ? message.reply({ embeds: [embed] }) : interaction.reply({ embeds: [embed] });
+            return message ? ctx.reply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
         } catch (error) {
             console.error('Rankcard error:', error);
             const response = getLang("error");
-            return message ? message.reply(response) : interaction.reply(response);
+            return message ? ctx.reply(response) : ctx.reply(response);
         }
     }
 };

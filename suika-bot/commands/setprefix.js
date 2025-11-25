@@ -52,17 +52,17 @@ module.exports = {
 
         if (!newPrefix) {
             const response = getLang("current", guildData.prefix);
-            return isInteraction ? interaction.reply(response) : message.reply(response);
+            return isInteraction ? ctx.reply(response) : ctx.reply(response);
         }
 
         if (newPrefix.length > 5) {
             const response = getLang("invalid");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         await guildsData.set(guildId, { prefix: newPrefix });
         const response = getLang("success", newPrefix);
-        return isInteraction ? interaction.reply(response) : message.reply(response);
+        return isInteraction ? ctx.reply(response) : ctx.reply(response);
     },
 
     onChat: async ({ message, guildData, getLang }) => {
@@ -72,7 +72,7 @@ module.exports = {
         if (messageContent.includes('prefix')) {
             const currentPrefix = guildData.prefix || global.RentoBot.config.bot.prefix;
             const response = getLang("prefixInfo", currentPrefix);
-            return message.reply(response);
+            return ctx.reply(response);
         }
     }
 };

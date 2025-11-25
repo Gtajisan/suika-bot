@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('../adapters/discord-to-telegram.js');
 
 module.exports = {
     config: {
@@ -46,17 +45,17 @@ module.exports = {
         const quiz = questions[Math.floor(Math.random() * questions.length)];
         const questionText = getLang("question", quiz.q);
 
-        const embed = new EmbedBuilder()
-            .setDescription(questionText)
-            .setColor(0x5865F2);
+        const embed = {}
+            // Description: questionText
+            ;
 
         const userId = message?.author.id || interaction.user.id;
         let botMessage;
 
         if (message) {
-            botMessage = await message.reply({ embeds: [embed] });
+            botMessage = await ctx.reply({ embeds: [embed] });
         } else {
-            botMessage = await interaction.reply({ embeds: [embed], fetchReply: true });
+            botMessage = await ctx.reply({ embeds: [embed], fetchReply: true });
         }
 
         global.RentoBot.onReply.set(botMessage.id, {
@@ -78,15 +77,13 @@ module.exports = {
                         exp: currentData.exp + expReward
                     });
 
-                    const resultEmbed = new EmbedBuilder()
-                        .setDescription(getLang("correct", reward, expReward))
-                        .setColor(0x57F287);
+                    const resultEmbed = {}
+                        // Description: getLang("correct", reward, expReward*/ //(0x57F287);
 
                     replyMsg.reply({ embeds: [resultEmbed] });
                 } else {
-                    const resultEmbed = new EmbedBuilder()
-                        .setDescription(getLang("incorrect", quiz.a))
-                        .setColor(0xED4245);
+                    const resultEmbed = {}
+                        // Description: getLang("incorrect", quiz.a*/ //(0xED4245);
 
                     replyMsg.reply({ embeds: [resultEmbed] });
                 }
@@ -97,9 +94,8 @@ module.exports = {
 
         setTimeout(() => {
             if (global.RentoBot.onReply.has(botMessage.id)) {
-                const timeoutEmbed = new EmbedBuilder()
-                    .setDescription(getLang("timeout", quiz.a))
-                    .setColor(0xFEE75C);
+                const timeoutEmbed = {}
+                    // Description: getLang("timeout", quiz.a*/ //(0xFEE75C);
 
                 if (message) {
                     message.channel.send({ embeds: [timeoutEmbed] });

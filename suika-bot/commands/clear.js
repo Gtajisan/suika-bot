@@ -69,17 +69,17 @@ module.exports = {
 
         if (!guild) {
             const response = "❌ This command can only be used in servers!";
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (!member || !member.permissions.has(PermissionFlagsBits.ManageMessages)) {
             const response = getLang("noPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (!guild.members.me || !guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
             const response = getLang("botNoPermission");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const amount = isInteraction ? 
@@ -88,12 +88,12 @@ module.exports = {
 
         if (!amount) {
             const response = getLang("noAmount");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         if (isNaN(amount) || amount < 1 || amount > 100) {
             const response = getLang("invalidAmount");
-            return isInteraction ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+            return isInteraction ? ctx.reply({ content: response, ephemeral: true }) : ctx.reply(response);
         }
 
         const targetUser = isInteraction ? 
@@ -125,7 +125,7 @@ module.exports = {
 
             if (recentMessages.length === 0) {
                 const response = messagesToDelete.length > 0 ? getLang("tooOld") : getLang("noMessages");
-                return isInteraction ? interaction.editReply(response) : message.reply(response);
+                return isInteraction ? interaction.editReply(response) : ctx.reply(response);
             }
 
             const deleted = await channel.bulkDelete(recentMessages, true);
@@ -137,7 +137,7 @@ module.exports = {
             if (isInteraction) {
                 await interaction.editReply(response);
             } else {
-                const reply = await message.reply(response);
+                const reply = await ctx.reply(response);
                 setTimeout(() => reply.delete().catch(() => {}), 5000);
             }
         } catch (error) {
@@ -146,10 +146,10 @@ module.exports = {
                 if (interaction.deferred) {
                     return interaction.editReply(response);
                 } else {
-                    return interaction.reply({ content: response, ephemeral: true });
+                    return ctx.reply({ content: response, ephemeral: true });
                 }
             } else {
-                return message.reply(response);
+                return ctx.reply(response);
             }
         }
     }

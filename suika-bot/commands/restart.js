@@ -38,10 +38,10 @@ module.exports = {
         
         let statusMessage;
         if (isInteraction) {
-            await interaction.reply({ content: response });
+            await ctx.reply({ content: response });
             statusMessage = await interaction.fetchReply();
         } else {
-            statusMessage = await message.reply(response);
+            statusMessage = await ctx.reply(response);
         }
 
         const userId = isInteraction ? interaction.user.id : message.author.id;

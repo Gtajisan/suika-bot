@@ -53,22 +53,22 @@ module.exports = {
             const userData = await usersData.get(userID);
             const currentStyle = userData.settings?.sortHelp || "name";
             const response = getLang("usage", currentStyle).replace("{prefix}", prefix);
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
 
         if (styleArg === "name" || styleArg === "list") {
             await usersData.set(userID, "name", "settings.sortHelp");
             const response = getLang("savedName");
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
         else if (styleArg === "category") {
             await usersData.set(userID, "category", "settings.sortHelp");
             const response = getLang("savedCategory");
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
         else {
             const response = getLang("invalidStyle");
-            return isSlash ? interaction.reply(response) : message.reply(response);
+            return isSlash ? ctx.reply(response) : ctx.reply(response);
         }
     }
 };
