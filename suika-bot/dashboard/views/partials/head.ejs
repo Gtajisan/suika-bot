@@ -1,0 +1,43 @@
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<% 
+const botName = (typeof botClient !== 'undefined' && botClient && botClient.user) ? botClient.user.username : 'RentoBot';
+const botAvatar = (typeof botClient !== 'undefined' && botClient && botClient.user && botClient.user.displayAvatarURL) ? botClient.user.displayAvatarURL() : '/favicon.ico';
+const pageTitle = typeof title !== 'undefined' ? title : botName;
+const pageDescription = typeof description !== 'undefined' ? description : `${botName} - A powerful Discord bot with moderation, leveling, economy, and fun features to enhance your server experience.`;
+const pageUrl = typeof url !== 'undefined' ? url : 'https://your-domain.com';
+%>
+
+<title><%= pageTitle %></title>
+<meta name="description" content="<%= pageDescription %>">
+<meta name="keywords" content="discord bot, <%= botName %>, discord moderation, discord economy, discord leveling, discord fun commands">
+<meta name="author" content="<%= botName %> Team">
+<meta name="robots" content="index, follow">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="<%= botAvatar %>">
+<link rel="apple-touch-icon" href="<%= botAvatar %>">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="<%= pageUrl %>">
+<meta property="og:title" content="<%= pageTitle %>">
+<meta property="og:description" content="<%= pageDescription %>">
+<meta property="og:image" content="<%= botAvatar %>">
+<meta property="og:site_name" content="<%= botName %>">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="<%= pageUrl %>">
+<meta property="twitter:title" content="<%= pageTitle %>">
+<meta property="twitter:description" content="<%= pageDescription %>">
+<meta property="twitter:image" content="<%= botAvatar %>">
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#5865f2">
+
+<!-- Stylesheet -->
+<link rel="stylesheet" href="/css/style.css">

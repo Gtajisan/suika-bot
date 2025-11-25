@@ -32,15 +32,24 @@ async function setupMessageHandler(ctx) {
             global.client.cache[cooldownKey] = Date.now() + (command.config.countDown * 1000);
         }
 
+        // Ensure command has required methods
+        if (!command.onStart) {
+            log.error(`Command ${command.config.name} missing onStart method`);
+            return ctx.reply('❌ Command not properly configured.');
+        }
+
+        const user = await global.db.usersData.get(userId);
+
         await command.onStart({
             ctx,
             message,
             args: args.slice(1),
             usersData: global.db.usersData,
             bot: global.SuikaBot.bot,
+            user,
             getLang: (key, ...params) => {
                 const lang = global.SuikaBot.config.bot.defaultLang || 'en';
-                const langData = command.langs[lang] || command.langs['en'];
+                const langData = command.langs && command.langs[lang] ? command.langs[lang] : (command.langs && command.langs['en'] ? command.langs['en'] : {});
                 let text = langData[key] || key;
                 
                 params.forEach((param, index) => {
@@ -53,9 +62,14 @@ async function setupMessageHandler(ctx) {
 
     } catch (error) {
         log.error(`Error in message handler: ${error.message}`);
-        ctx.reply('❌ An error occurred while processing your command.').catch(err => 
-            log.error(`Failed to send error message: ${err.message}`)
-        );
+        log.error(`Stack: ${error.stack}`);
+        try {
+            ctx.reply('❌ An error occurred while processing your command.').catch(err => 
+                log.error(`Failed to send error message: ${err.message}`)
+            );
+        } catch (e) {
+            log.error(`Failed to handle error: ${e.message}`);
+        }
     }
 }
 
@@ -78,23 +92,43 @@ async function loadEvents() {
         });
 
         bot.command('help', (ctx) => {
-            const helpText = `📚 Available Commands:
+            const helpText = `📚 Suika Bot - All Commands (${global.SuikaBot.commands.size} total)
 
 💰 Economy
 /balance - Check your balance
 /daily - Claim daily reward
-/bank - View bank info
+/bank - Bank management
+/work - Earn money
+/rob - Steal from others
+/transfer - Send money
+/shop - Buy items
+/inventory - Check items
 
-📊 Info
-/ping - Check bot status
-/stats - View bot statistics
+📊 Stats & Info
+/ping - Bot latency
 /botinfo - Bot information
+/myinfo - Your profile
+/leaderboard - Top users
+/uptime - Bot uptime
+/level - Your level
+/stats - Your statistics
 
-⚙️ Admin
-/reload - Reload commands (admin only)
-/status - Bot status (admin only)
+🎮 Games
+/tictactoe - Play tic-tac-toe
+/quiz - Answer questions
+/slot - Slot machine
+/guess - Guess the number
 
-Use /command to use any command`;
+🎨 Fun
+/anime - Anime info
+/meme - Random meme
+/hug - Hug someone
+/slap - Slap someone
+
+⚙️ Admin (Owner only)
+/admin - Manage admins
+
+Use /help <command> for more info`;
 
             ctx.reply(helpText);
         });

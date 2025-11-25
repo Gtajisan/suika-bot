@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', { 
+        title: title,
+        description: 'Login to RentoBot admin dashboard to manage your Discord bot settings and configurations.',
+        url: '/login',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('partials/nav', { 
+        title: title,
+        isAuthenticated: false,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+
+    <div class="login-container">
+        <div class="login-card">
+            <h2>Admin Login</h2>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div style="background-color: rgba(240, 71, 71, 0.2); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                    <%= error %>
+                </div>
+            <% } %>
+            
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

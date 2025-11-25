@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Discord Bot</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/nav', { active: 'dashboard', user: user }) %>
+    
+    <div class="container">
+        <h1>Dashboard</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🏰</div>
+                <div class="stat-info">
+                    <h3>Total Guilds</h3>
+                    <p class="stat-number"><%= stats.totalGuilds %></p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3>Total Users</h3>
+                    <p class="stat-number"><%= stats.totalUsers %></p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                    <h3>Commands</h3>
+                    <p class="stat-number"><%= stats.totalCommands %></p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-info">
+                    <h3>Uptime</h3>
+                    <p class="stat-number"><%= stats.uptime %></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bot-info">
+            <h2>Bot Information</h2>
+            <div class="bot-details">
+                <% if (stats.botAvatar) { %>
+                    <img src="<%= stats.botAvatar %>" alt="Bot Avatar" class="bot-avatar">
+                <% } %>
+                <div>
+                    <p><strong>Bot Username:</strong> <%= stats.botUsername %></p>
+                    <p><strong>Status:</strong> <span class="status-online">Online</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+</body>
+</html>

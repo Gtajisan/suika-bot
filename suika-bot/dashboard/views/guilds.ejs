@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guilds - Discord Bot Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/nav', { active: 'guilds', user: user }) %>
+    
+    <div class="container">
+        <h1>Guild Management</h1>
+        
+        <div class="search-box">
+            <form method="GET" action="/guilds">
+                <input type="text" name="search" placeholder="Search by Guild ID or Name..." value="<%= search %>">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Guild ID</th>
+                        <th>Name</th>
+                        <th>Prefix</th>
+                        <th>Members</th>
+                        <th>Language</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (guilds.length === 0) { %>
+                        <tr>
+                            <td colspan="7" class="text-center">No guilds found</td>
+                        </tr>
+                    <% } else { %>
+                        <% guilds.forEach(guild => { %>
+                            <tr>
+                                <td><%= guild.guildID %></td>
+                                <td><%= guild.guildName || 'Unknown' %></td>
+                                <td><%= guild.prefix %></td>
+                                <td><%= guild.memberCount %></td>
+                                <td><%= guild.settings?.language || 'en' %></td>
+                                <td>
+                                    <% if (guild.banned.status) { %>
+                                        <span class="badge badge-danger">Banned</span>
+                                    <% } else { %>
+                                        <span class="badge badge-success">Active</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="editGuild('<%= guild.guildID %>')">Edit</button>
+                                    <% if (guild.banned.status) { %>
+                                        <button class="btn btn-sm btn-success" onclick="unbanGuild('<%= guild.guildID %>')">Unban</button>
+                                    <% } else { %>
+                                        <button class="btn btn-sm btn-danger" onclick="banGuild('<%= guild.guildID %>')">Ban</button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Edit Guild</h2>
+            <form id="editForm">
+                <input type="hidden" id="editGuildId">
+                <div class="form-group">
+                    <label>Prefix</label>
+                    <input type="text" id="editPrefix" required>
+                </div>
+                <div class="form-group">
+                    <label>Language</label>
+                    <select id="editLanguage">
+                        <option value="en">English</option>
+                        <option value="vi">Vietnamese</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function editGuild(guildId) {
+            fetch(`/guilds/edit/${guildId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('editGuildId').value = guildId;
+                        document.getElementById('editPrefix').value = data.guild.prefix;
+                        document.getElementById('editLanguage').value = data.guild.settings?.language || 'en';
+                        document.getElementById('editModal').style.display = 'block';
+                    }
+                });
+        }
+        
+        function banGuild(guildId) {
+            const reason = prompt('Enter ban reason:');
+            if (reason !== null) {
+                fetch(`/guilds/ban/${guildId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                });
+            }
+        }
+        
+        function unbanGuild(guildId) {
+            if (confirm('Are you sure you want to unban this guild?')) {
+                fetch(`/guilds/unban/${guildId}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        location.reload();
+                    });
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const guildId = document.getElementById('editGuildId').value;
+            const data = {
+                prefix: document.getElementById('editPrefix').value,
+                language: document.getElementById('editLanguage').value
+            };
+            
+            fetch(`/guilds/edit/${guildId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        });
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+    <%- include('partials/footer') %>
+</body>
+</html>

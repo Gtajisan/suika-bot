@@ -1,23 +1,31 @@
-const fs = require("fs");
-const path = require("path");
+const { colors } = require("../func/colors");
+const moment = require("moment-timezone");
+const config = require("../loadConfig");
 
-const LOG_DIR = path.join(__dirname, "..", "logs");
-if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR);
+function getTime() {
+    const timezone = config.bot.timezone || "Asia/Kathmandu";
+    return moment().tz(timezone).format("HH:mm:ss");
 }
 
-function log(type, message) {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[${timestamp}] [${type}] ${message}`;
-    console.log(logMessage);
-
-    const logFile = path.join(LOG_DIR, "bot.log");
-    fs.appendFileSync(logFile, logMessage + "\n");
+function info(prefix, message) {
+    console.log(`${colors.cyan}[${getTime()}]${colors.reset} ${colors.blue}[${prefix}]${colors.reset} ${message}`);
 }
 
-module.exports = {
-    info: (msg) => log("INFO", msg),
-    error: (msg) => log("ERROR", msg),
-    warn: (msg) => log("WARN", msg),
-    debug: (msg) => log("DEBUG", msg)
-};
+function success(prefix, message) {
+    console.log(`${colors.cyan}[${getTime()}]${colors.reset} ${colors.green}[${prefix}]${colors.reset} ${message}`);
+}
+
+function error(prefix, message) {
+    console.log(`${colors.cyan}[${getTime()}]${colors.reset} ${colors.red}[${prefix}]${colors.reset} ${message}`);
+}
+
+function warn(prefix, message) {
+    console.log(`${colors.cyan}[${getTime()}]${colors.reset} ${colors.yellow}[${prefix}]${colors.reset} ${message}`);
+}
+
+function err(prefix, message) {
+    console.error(`${colors.cyan}[${getTime()}]${colors.reset} ${colors.red}[${prefix}]${colors.reset} ${message}`);
+}
+
+module.exports = { info, success, error, warn, err };
+module.exports.debug = module.exports.debug || module.exports.info;

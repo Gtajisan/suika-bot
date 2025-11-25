@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', {
+        title: title,
+        description: 'RentoBot Admin Dashboard - Manage your bot, view statistics, and configure settings.',
+        url: '/admin',
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+</head>
+<body>
+    <%- include('../partials/nav', {
+        title: title,
+        isAuthenticated: true,
+        botClient: typeof botClient !== 'undefined' ? botClient : null
+    }) %>
+
+    <div class="admin-container container">
+        <div class="admin-header">
+            <h1>Admin Control Panel</h1>
+            <p style="color: var(--text-secondary);">Manage your bot's database and system settings</p>
+        </div>
+
+        <div class="admin-nav">
+            <a href="/admin" class="active">Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/guilds">Servers</a>
+        </div>
+
+        <div class="stats-grid" style="max-width: 100%;">
+            <div class="stat-card">
+                <div class="icon">👥</div>
+                <div class="value"><%= stats.totalUsers %></div>
+                <div class="label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📊</div>
+                <div class="value"><%= stats.totalGuilds %></div>
+                <div class="label">Total Servers</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⚡</div>
+                <div class="value"><%= stats.totalCommands %></div>
+                <div class="label">Total Commands</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                <a href="/admin/users" class="action-item">
+                    <span class="action-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
+                <a href="/admin/guilds" class="action-item">
+                    <span class="action-icon">📊</span>
+                    <span>Manage Servers</span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/footer') %>
+</body>
+</html>

@@ -28,3 +28,7 @@ args = "cd /home/runner/workspace/suika-bot && npm start"
 
 [workflows.workflow.metadata]
 outputType = "console"
+
+[nix]
+channel = "stable-25_05"
+packages = ["util-linux", "pkg-config"]

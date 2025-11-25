@@ -1,0 +1,267 @@
+const axios = require("axios");
+const moment = require("moment-timezone");
+const Canvas = require("canvas");
+const fs = require("fs-extra");
+const config = require("../../loadConfig");
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
+
+Canvas.registerFont(
+    __dirname + "/assets/font/BeVietnamPro-SemiBold.ttf", {
+    family: "BeVietnamPro-SemiBold"
+});
+Canvas.registerFont(
+    __dirname + "/assets/font/BeVietnamPro-Regular.ttf", {
+    family: "BeVietnamPro-Regular"
+});
+
+module.exports = {
+    config: {
+        name: "weather",
+        version: "2.0",
+        author: "Samir",
+        countDown: 5,
+        role: 0,
+        description: {
+            en: "View the current weather forecast",
+            ne: "हालको मौसम पूर्वानुमान हेर्नुहोस्"
+        },
+        category: "tools",
+        guide: {
+            en: "{prefix}weather <location>\nExample: {prefix}weather New York",
+            ne: "{prefix}weather <स्थान>\nउदाहरण: {prefix}weather New York"
+        },
+        slash: true,
+        options: [
+            {
+                name: "location",
+                description: "Location to get weather for",
+                type: 3,
+                required: true
+            }
+        ]
+    },
+
+    langs: {
+        en: {
+            syntaxError: "Please enter a location",
+            notFound: "Location not found: %1",
+            error: "An error has occurred: %1"
+        },
+        ne: {
+            syntaxError: "कृपया स्थान प्रविष्ट गर्नुहोस्",
+            notFound: "स्थान फेला परेन: %1",
+            error: "त्रुटि देखा परेको छ: %1"
+        }
+    },
+
+    onStart: async function ({ message, interaction, args, getLang }) {
+        const apikey = "2a196fdd1ff6d0bd265d46e5d4f646e6";
+        const isSlash = !!interaction;
+
+        const area = isSlash ? 
+            interaction.options.getString('location') : 
+            args.join(" ");
+
+        if (!area) {
+            const response = getLang("syntaxError");
+            return isSlash ? interaction.reply({ content: response, ephemeral: true }) : message.reply(response);
+        }
+
+        try {
+            const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(area)}&units=metric&appid=${apikey}`);
+            const data = response.data;
+
+            const name = data.name;
+            const country = data.sys.country;
+            const weatherMain = data.weather[0].main;
+            const weatherDescription = data.weather[0].description;
+            const weatherIcon = data.weather[0].icon;
+            const temperature = data.main.temp.toFixed(1);
+            const feelsLike = data.main.feels_like.toFixed(1);
+            const minTemperature = data.main.temp_min.toFixed(1);
+            const maxTemperature = data.main.temp_max.toFixed(1);
+            const humidity = data.main.humidity;
+            const windSpeed = data.wind.speed.toFixed(1);
+            const windDeg = data.wind.deg;
+            const pressure = data.main.pressure;
+            const visibility = (data.visibility / 1000).toFixed(1);
+            const cloudiness = data.clouds.all;
+            const timezone = data.timezone;
+            const sunrise = moment.unix(data.sys.sunrise).utcOffset(timezone / 60).format("hh:mm A");
+            const sunset = moment.unix(data.sys.sunset).utcOffset(timezone / 60).format("hh:mm A");
+            const coords = `${data.coord.lat}, ${data.coord.lon}`;
+
+            // Calculate wind direction
+            const getWindDirection = (deg) => {
+                const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+                const index = Math.round(deg / 22.5) % 16;
+                return directions[index];
+            };
+
+            const windDirection = windDeg !== undefined ? getWindDirection(windDeg) : "N/A";
+
+            // Get UV Index and Air Quality (requires additional API calls)
+            let uvIndex = "N/A";
+            let airQuality = "N/A";
+
+            try {
+                const uvResponse = await axios.get(`https://api.openweathermap.org/data/2.5/uvi?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${apikey}`);
+                uvIndex = uvResponse.data.value.toFixed(1);
+            } catch (err) {
+                console.log("UV Index unavailable");
+            }
+
+            try {
+                const airResponse = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${apikey}`);
+                const aqi = airResponse.data.list[0].main.aqi;
+                const aqiLevels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
+                airQuality = aqiLevels[aqi - 1] || "N/A";
+            } catch (err) {
+                console.log("Air Quality unavailable");
+            }
+
+            // Get rain/snow data if available
+            let precipitation = "";
+            if (data.rain) {
+                const rain1h = data.rain["1h"] || 0;
+                const rain3h = data.rain["3h"] || 0;
+                if (rain1h > 0) precipitation += `🌧️ **Rain (1h):** ${rain1h}mm\n`;
+                if (rain3h > 0) precipitation += `🌧️ **Rain (3h):** ${rain3h}mm\n`;
+            }
+            if (data.snow) {
+                const snow1h = data.snow["1h"] || 0;
+                const snow3h = data.snow["3h"] || 0;
+                if (snow1h > 0) precipitation += `❄️ **Snow (1h):** ${snow1h}mm\n`;
+                if (snow3h > 0) precipitation += `❄️ **Snow (3h):** ${snow3h}mm\n`;
+            }
+
+            // Create detailed weather embed
+            const embed = new EmbedBuilder()
+                .setColor(temperature > 25 ? 0xFF6B35 : temperature > 15 ? 0xFFA500 : 0x4A90E2)
+                .setTitle(`🌤️ Weather in ${name}, ${country}`)
+                .setDescription(`**${weatherMain}** - ${weatherDescription.charAt(0).toUpperCase() + weatherDescription.slice(1)}`)
+                .setThumbnail(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)
+                .addFields(
+                    { 
+                        name: '🌡️ Temperature', 
+                        value: `**Current:** ${temperature}°C\n**Feels Like:** ${feelsLike}°C\n**Min:** ${minTemperature}°C\n**Max:** ${maxTemperature}°C`, 
+                        inline: true 
+                    },
+                    { 
+                        name: '💨 Wind', 
+                        value: `**Speed:** ${windSpeed} m/s\n**Direction:** ${windDirection}${windDeg !== undefined ? ` (${windDeg}°)` : ''}`, 
+                        inline: true 
+                    },
+                    { 
+                        name: '💧 Humidity & Pressure', 
+                        value: `**Humidity:** ${humidity}%\n**Pressure:** ${pressure} hPa`, 
+                        inline: true 
+                    },
+                    { 
+                        name: '☁️ Conditions', 
+                        value: `**Cloudiness:** ${cloudiness}%\n**Visibility:** ${visibility} km`, 
+                        inline: true 
+                    },
+                    { 
+                        name: '🌅 Sun Times', 
+                        value: `**Sunrise:** ${sunrise}\n**Sunset:** ${sunset}`, 
+                        inline: true 
+                    },
+                    { 
+                        name: '🌍 Additional Info', 
+                        value: `**UV Index:** ${uvIndex}\n**Air Quality:** ${airQuality}`, 
+                        inline: true 
+                    }
+                )
+                .setFooter({ text: `Coordinates: ${coords} | Data provided by OpenWeatherMap` })
+                .setTimestamp();
+
+            // Add precipitation field if available
+            if (precipitation) {
+                embed.addFields({ name: '🌧️ Precipitation', value: precipitation, inline: false });
+            }
+
+            // Get 5-day forecast
+            const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(area)}&units=metric&appid=${apikey}`);
+            const forecastData = forecastResponse.data;
+
+            // Get daily forecast (one per day at noon)
+            const dailyForecasts = [];
+            const processedDates = new Set();
+
+            for (const item of forecastData.list) {
+                const date = moment(item.dt * 1000).format("YYYY-MM-DD");
+                const hour = moment(item.dt * 1000).format("HH");
+
+                if (!processedDates.has(date) && hour === "12") {
+                    dailyForecasts.push(item);
+                    processedDates.add(date);
+                    if (dailyForecasts.length >= 7) break;
+                }
+            }
+
+            // If we don't have enough noon forecasts, fill with any available
+            if (dailyForecasts.length < 7) {
+                const processedDates2 = new Set(processedDates);
+                for (const item of forecastData.list) {
+                    const date = moment(item.dt * 1000).format("YYYY-MM-DD");
+                    if (!processedDates2.has(date)) {
+                        dailyForecasts.push(item);
+                        processedDates2.add(date);
+                        if (dailyForecasts.length >= 7) break;
+                    }
+                }
+            }
+
+            // Create weather image
+            const bg = await Canvas.loadImage(__dirname + "/assets/image/bgWeather.jpg");
+            const { width, height } = bg;
+            const canvas = Canvas.createCanvas(width, height);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(bg, 0, 0, width, height);
+
+            let X = 100;
+            ctx.fillStyle = "#ffffff";
+
+            for (const item of dailyForecasts.slice(0, 7)) {
+                const iconCode = item.weather[0].icon;
+                const icon = await Canvas.loadImage(`http://openweathermap.org/img/wn/${iconCode}@2x.png`);
+                ctx.drawImage(icon, X, 210, 80, 80);
+
+                ctx.font = "30px BeVietnamPro-SemiBold";
+                const maxC = `${item.main.temp_max.toFixed(0)}°C`;
+                ctx.fillText(maxC, X, 366);
+
+                ctx.font = "30px BeVietnamPro-Regular";
+                const minC = `${item.main.temp_min.toFixed(0)}°C`;
+                const day = moment(item.dt * 1000).format("DD");
+                ctx.fillText(minC, X, 445);
+                ctx.fillText(day, X + 20, 140);
+
+                X += 135;
+            }
+
+            const pathSaveImg = `${__dirname}/tmp/weather_${name}_${Date.now()}.jpg`;
+            fs.ensureDirSync(`${__dirname}/tmp`);
+            fs.writeFileSync(pathSaveImg, canvas.toBuffer());
+
+            const attachment = new AttachmentBuilder(pathSaveImg, { name: `weather_${name}.jpg` });
+
+            const replyOptions = {
+                embeds: [embed],
+                files: [attachment]
+            };
+
+            if (isSlash) {
+                await interaction.reply(replyOptions);
+            } else {
+                await message.reply(replyOptions);
+            }
+            fs.unlinkSync(pathSaveImg);
+
+        } catch (err) {
+            const errorMsg = getLang("error", err.response?.data?.message || err.message);
+            return isSlash ? interaction.reply({ content: errorMsg, ephemeral: true }) : message.reply(errorMsg);
+        }
+    }
+};
