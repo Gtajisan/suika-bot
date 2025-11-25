@@ -3,62 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Discord Bot</title>
+    <title>Dashboard - <%= config.dashboard.title %></title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/nav', { active: 'dashboard', user: user }) %>
-    
-    <div class="container">
-        <h1>Dashboard</h1>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">SUIKA BOT</a>
+            <div class="navbar-menu">
+                <a href="/">Home</a>
+                <a href="/dashboard" class="active">Dashboard</a>
+                <a href="/commands">Commands</a>
+                <a href="/features">Features</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <h1>Bot Dashboard</h1>
         
+        <% if(error) { %>
+        <div class="error-msg">Error: <%= error %></div>
+        <% } %>
+
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">🏰</div>
+                <div class="stat-icon">U</div>
                 <div class="stat-info">
-                    <h3>Total Guilds</h3>
-                    <p class="stat-number"><%= stats.totalGuilds %></p>
+                    <h3><%= stats.users || 0 %></h3>
+                    <p>Total Users</p>
                 </div>
             </div>
-            
             <div class="stat-card">
-                <div class="stat-icon">👥</div>
+                <div class="stat-icon">C</div>
                 <div class="stat-info">
-                    <h3>Total Users</h3>
-                    <p class="stat-number"><%= stats.totalUsers %></p>
+                    <h3><%= stats.commands || 98 %></h3>
+                    <p>Commands</p>
                 </div>
             </div>
-            
             <div class="stat-card">
-                <div class="stat-icon">⚡</div>
+                <div class="stat-icon">T</div>
                 <div class="stat-info">
-                    <h3>Commands</h3>
-                    <p class="stat-number"><%= stats.totalCommands %></p>
+                    <h3><%= stats.uptime ? (Math.floor(stats.uptime / 3600) + 'h ' + Math.floor((stats.uptime % 3600) / 60) + 'm') : 'N/A' %></h3>
+                    <p>Uptime</p>
                 </div>
             </div>
-            
             <div class="stat-card">
-                <div class="stat-icon">⏱️</div>
+                <div class="stat-icon">$</div>
                 <div class="stat-info">
-                    <h3>Uptime</h3>
-                    <p class="stat-number"><%= stats.uptime %></p>
+                    <h3>$<%= stats.totalMoney ? Math.floor(stats.totalMoney).toLocaleString() : 0 %></h3>
+                    <p>Total Money</p>
                 </div>
             </div>
         </div>
-        
-        <div class="bot-info">
-            <h2>Bot Information</h2>
-            <div class="bot-details">
-                <% if (stats.botAvatar) { %>
-                    <img src="<%= stats.botAvatar %>" alt="Bot Avatar" class="bot-avatar">
+
+        <section class="leaderboard-section">
+            <h2>Top Users Leaderboard</h2>
+            <% if(topUsers && topUsers.length > 0) { %>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User ID</th>
+                        <th>Wallet</th>
+                        <th>Bank</th>
+                        <th>Level</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% topUsers.forEach((user, i) => { %>
+                    <tr>
+                        <td class="rank">#<%= i + 1 %></td>
+                        <td><code><%= user.telegramId || user.id || 'N/A' %></code></td>
+                        <td class="money">$<%= (user.money || 0).toLocaleString() %></td>
+                        <td class="money">$<%= (user.bank || 0).toLocaleString() %></td>
+                        <td class="level">Lvl <%= user.level || 1 %></td>
+                        <td class="total"><strong>$<%= ((user.money || 0) + (user.bank || 0)).toLocaleString() %></strong></td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <p class="no-data">No users yet</p>
+            <% } %>
+        </section>
+
+        <section class="join-groups">
+            <h2>Join Community</h2>
+            <div class="groups-link-grid">
+                <% if(config.dashboard.groups.main) { %>
+                <a href="<%= config.dashboard.groups.main %>" class="group-link-card" target="_blank">
+                    <h3>Main Group</h3>
+                    <p>Join our community</p>
+                </a>
                 <% } %>
-                <div>
-                    <p><strong>Bot Username:</strong> <%= stats.botUsername %></p>
-                    <p><strong>Status:</strong> <span class="status-online">Online</span></p>
-                </div>
+                <% if(config.dashboard.groups.support) { %>
+                <a href="<%= config.dashboard.groups.support %>" class="group-link-card" target="_blank">
+                    <h3>Support</h3>
+                    <p>Get help anytime</p>
+                </a>
+                <% } %>
+                <% if(config.dashboard.groups.updates) { %>
+                <a href="<%= config.dashboard.groups.updates %>" class="group-link-card" target="_blank">
+                    <h3>Updates</h3>
+                    <p>Latest news</p>
+                </a>
+                <% } %>
             </div>
-        </div>
+        </section>
     </div>
-    <%- include('partials/footer') %>
+
+    <footer class="footer">
+        <p>&copy; 2025 <%= config.dashboard.title %> | Made by Gtajisan</p>
+    </footer>
 </body>
 </html>

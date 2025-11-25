@@ -17,3 +17,9 @@ function startProject() {
 }
 
 startProject();
+
+// Start dashboard (optional)
+if (process.env.DASHBOARD === 'true') {
+    const { startDashboard } = require('./dashboard/app.js');
+    startDashboard();
+}

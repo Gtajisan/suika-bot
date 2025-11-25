@@ -1,73 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('partials/head', { 
-        title: title,
-        description: 'Discover RentoBot features: advanced moderation tools, leveling system, economy commands, fun interactions, and more for your Discord server.',
-        url: '/features',
-        botClient: typeof botClient !== 'undefined' ? botClient : null
-    }) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - <%= config.dashboard.title %></title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/nav', { 
-        title: title,
-        isAuthenticated: typeof user !== 'undefined' && user,
-        botClient: typeof botClient !== 'undefined' ? botClient : null
-    }) %>
-    
-    <div class="dashboard-section">
-        <div class="container">
-            <div class="section-header" style="text-align: center;">
-                <h2>Powerful Tools for Every Server</h2>
-                <p>RentoBot brings anime fun, powerful utilities, and media tools into your Discord server. Everything you need to boost engagement and productivity in one place.</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🎭</div>
-                    <h3>Anime Commands</h3>
-                    <p>Express yourself with anime-themed interactions</p>
-                    <ul>
-                        <li>Send anime hugs, kisses, slaps, and more</li>
-                        <li>Get random neko images</li>
-                        <li>Fun anime reactions to engage with friends</li>
-                        <li>Perfect for anime communities</li>
-                    </ul>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⬇️</div>
-                    <h3>Downloader Tools</h3>
-                    <p>Download and share media easily</p>
-                    <ul>
-                        <li>Download Instagram videos directly in chat</li>
-                        <li>Save Spotify tracks for quick sharing</li>
-                        <li>Fast and reliable media downloader</li>
-                    </ul>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎮</div>
-                    <h3>Fun & Games</h3>
-                    <p>Keep the community entertained</p>
-                    <ul>
-                        <li>Apply fun effects to avatars</li>
-                        <li>Search movies directly from IMDb</li>
-                        <li>Interactive commands to spark activity</li>
-                    </ul>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚙️</div>
-                    <h3>Utility Commands</h3>
-                    <p>Essential tools for your server</p>
-                    <ul>
-                        <li>Check server and user information</li>
-                        <li>Message count tracking</li>
-                        <li>Real-time bot ping check</li>
-                        <li>Helpful /help command for all commands</li>
-                    </ul>
-                </div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🍈 <%= config.dashboard.title %></a>
+            <div class="navbar-menu">
+                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/commands">Commands</a>
+                <a href="/features" class="active">Features</a>
             </div>
         </div>
+    </nav>
+
+    <div class="container">
+        <h1>✨ Bot Features</h1>
+        
+        <div class="features-grid-large">
+            <% config.dashboard.features.forEach(feature => { %>
+            <div class="feature-card-large">
+                <div class="feature-icon-large"><%= feature.icon %></div>
+                <h3><%= feature.title %></h3>
+                <p><%= feature.description %></p>
+            </div>
+            <% }); %>
+        </div>
+
+        <section class="features-list">
+            <h2>📋 Detailed Features</h2>
+            <ul>
+                <li>💰 <strong>Economy System:</strong> Earn coins, manage wallets, and transfer money</li>
+                <li>📊 <strong>Leveling:</strong> Gain XP and level up through activity</li>
+                <li>🎮 <strong>Games:</strong> Play tic-tac-toe, quiz, slots, and more</li>
+                <li>🤖 <strong>AI Chat:</strong> Chat with AI for answers and fun conversations</li>
+                <li>🎨 <strong>Image Generation:</strong> Generate images with AI (Flux, Midjourney, etc.)</li>
+                <li>🛡️ <strong>Moderation:</strong> Ban, kick, warn, and manage users</li>
+                <li>📈 <strong>Statistics:</strong> Track user stats and leaderboards</li>
+                <li>🌐 <strong>Multi-Language:</strong> English and Nepali support</li>
+                <li>⚙️ <strong>Customizable:</strong> Configure through config.json</li>
+                <li>🔧 <strong>Admin Tools:</strong> Full control over bot settings</li>
+            </ul>
+        </section>
     </div>
-        <%- include('partials/footer') %>
+
+    <footer class="footer">
+        <p>&copy; 2025 <%= config.dashboard.title %> | Made with ❤️ by Gtajisan</p>
+    </footer>
 </body>
 </html>

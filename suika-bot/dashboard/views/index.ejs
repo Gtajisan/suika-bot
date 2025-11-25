@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= config.dashboard.title %> - Telegram Bot</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">SUIKA BOT</a>
+            <div class="navbar-menu">
+                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/commands">Commands</a>
+                <a href="/features">Features</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to <%= config.dashboard.title %></h1>
+            <p><%= config.dashboard.description %></p>
+            <div class="hero-buttons">
+                <a href="/dashboard" class="btn btn-primary">View Dashboard</a>
+                <a href="/commands" class="btn btn-secondary">See 98 Commands</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <h3>98+</h3>
+                    <p>Commands</p>
+                </div>
+                <div class="stat">
+                    <h3>SQLite</h3>
+                    <p>Database</p>
+                </div>
+                <div class="stat">
+                    <h3>Multilang</h3>
+                    <p>Support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Amazing Features</h2>
+            <div class="features-grid">
+                <% config.dashboard.features.forEach(feature => { %>
+                <div class="feature-card">
+                    <div class="feature-icon"><%= feature.icon %></div>
+                    <h3><%= feature.title %></h3>
+                    <p><%= feature.description %></p>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+
+    <section class="groups">
+        <div class="container">
+            <h2>Join Our Community</h2>
+            <div class="groups-grid">
+                <% if(config.dashboard.groups.main) { %>
+                <a href="<%= config.dashboard.groups.main %>" class="group-card" target="_blank">
+                    <h3>Main Group</h3>
+                    <p>Join our main community group</p>
+                </a>
+                <% } %>
+                <% if(config.dashboard.groups.support) { %>
+                <a href="<%= config.dashboard.groups.support %>" class="group-card" target="_blank">
+                    <h3>Support</h3>
+                    <p>Get help and support</p>
+                </a>
+                <% } %>
+                <% if(config.dashboard.groups.updates) { %>
+                <a href="<%= config.dashboard.groups.updates %>" class="group-card" target="_blank">
+                    <h3>Updates</h3>
+                    <p>Get bot updates and news</p>
+                </a>
+                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 <%= config.dashboard.title %> | Made by Gtajisan</p>
+    </footer>
+</body>
+</html>

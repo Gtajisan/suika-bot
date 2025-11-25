@@ -1,8 +1,11 @@
 const { Telegraf } = require('telegraf');
 const config = require('./loadConfig.js');
 const log = require('./logger/log.js');
+const console2 = require('./logger/console.js');
+const startup = require('./logger/startup.js');
 const errorNotifier = require('./logger/errorNotifier');
-const { initializeDatabase } = require('./database');
+
+const initializeDatabase = require('./database/index.js').initializeDatabase;
 
 process.on('unhandledRejection', error => log.error('Unhandled Rejection: ' + error.message));
 process.on('uncaughtException', error => log.error('Uncaught Exception: ' + error.message));
@@ -15,7 +18,13 @@ global.SuikaBot = {
     aliases: new Map(),
     config,
     bot,
-    db: { allUserData: [], userModel: null, usersData: null }
+    db: { allUserData: [], userModel: null, usersData: null },
+    stats: {
+        messagesProcessed: 0,
+        commandsExecuted: 0,
+        activeUsers: 0,
+        errorsOccurred: 0,
+    }
 };
 
 global.utils = require("./utils.js");
@@ -30,34 +39,78 @@ const loadEvents = require('./handlers/loadEvents.js');
 
 async function initialize() {
     try {
-        console.log('\x1b[36m%s\x1b[0m', '🍈 Initializing Suika Bot...');
+        console2.logo();
+        console2.section('INITIALIZATION STARTED');
         
+        console2.info('Initializing database...');
         const usersData = await initializeDatabase();
         global.db.usersData = usersData;
+        console2.success('Database initialized');
+        console2.blank();
 
+        console2.info('Loading commands...');
         await loadCommands();
-        log.info(`✅ Loaded ${global.SuikaBot.commands.size} commands`);
+        console2.success(`Loaded ${global.SuikaBot.commands.size} commands`);
 
+        const categories = {};
+        for (const cmd of global.SuikaBot.commands.values()) {
+            const cat = cmd.config.category || 'General';
+            categories[cat] = (categories[cat] || 0) + 1;
+        }
+        console2.blank();
+
+        console2.info('Loading event handlers...');
         await loadEvents();
+        console2.success('Event handlers loaded');
+        console2.blank();
 
-        bot.catch((err, ctx) => log.error(`Telegraf error: ${err.message}`));
+        bot.catch((err, ctx) => {
+            console2.error(`Telegraf error: ${err.message}`);
+            global.SuikaBot.stats.errorsOccurred++;
+        });
 
+        console2.info('Launching bot...');
         bot.launch({
             polling: { timeout: 30, limit: 100, allowed_updates: ['message', 'callback_query', 'edited_message'] }
         });
 
         const botInfo = await bot.telegram.getMe();
-        console.log('\x1b[32m%s\x1b[0m', `✅ Suika Bot started successfully!`);
-        console.log('\x1b[33m%s\x1b[0m', `👤 Bot Username: @${botInfo.username}`);
-        console.log('\x1b[33m%s\x1b[0m', `💾 Developer: Gtajisan`);
+        
+        await startup.showStartupMenu(
+            {
+                botName: 'Suika Bot',
+                username: botInfo.username,
+                userId: botInfo.id,
+            },
+            {
+                total: global.SuikaBot.commands.size,
+                categories: categories,
+            },
+            {
+                type: 'SQLite',
+                status: 'Active',
+                path: './data/suika.db',
+                collections: Object.keys(global.db).length,
+            }
+        );
+
     } catch (error) {
-        log.error(`Initialization error: ${error.message}`);
+        console2.error(`Initialization error: ${error.message}`);
         process.exit(1);
     }
 }
 
-process.once('SIGINT', () => { bot.stop('SIGINT'); process.exit(0); });
-process.once('SIGTERM', () => { bot.stop('SIGTERM'); process.exit(0); });
+process.once('SIGINT', () => {
+    console2.warn('Bot is shutting down...');
+    bot.stop('SIGINT');
+    process.exit(0);
+});
+
+process.once('SIGTERM', () => {
+    console2.warn('Bot is shutting down...');
+    bot.stop('SIGTERM');
+    process.exit(0);
+});
 
 initialize();
 module.exports = bot;

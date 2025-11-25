@@ -1,67 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('partials/head', { 
-        title: title,
-        description: 'Explore all available RentoBot commands including moderation, economy, leveling, fun, and utility commands for your Discord server.',
-        url: '/commands',
-        botClient: typeof botClient !== 'undefined' ? botClient : null
-    }) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/nav', { 
-        title: title,
-        isAuthenticated: typeof user !== 'undefined' && user,
-        botClient: typeof botClient !== 'undefined' ? botClient : null
-    }) %>
-   
-    <div class="dashboard-section">
-        <div class="container">
-            <div class="section-header" style="text-align: center;">
-                <h2>Complete Command Reference</h2>
-            </div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🍈 Suika Bot</a>
+            <ul class="navbar-menu">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/commands" class="active">Commands</a></li>
+                <li><a href="/features">Features</a></li>
+            </ul>
+        </div>
+    </nav>
 
-            <div class="commands-search">
-                <input type="text" id="commandSearch" class="search-box" placeholder="Search commands...">
-                <div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;">
-                    <a href="/commands?sort=name" class="sort-btn <%= currentSort === 'name' ? 'active' : '' %>">Sort by Name</a>
-                    <a href="/commands?sort=usage" class="sort-btn <%= currentSort === 'usage' ? 'active' : '' %>">Sort by Usage</a>
-                </div>
+    <div class="container">
+        <h1>⚡ All Commands (<%= commands.length %>)</h1>
+        
+        <div class="commands-grid">
+            <% commands.forEach(cmd => { %>
+            <div class="command-card">
+                <h3>/<%= cmd.name %></h3>
+                <p><%= cmd.description %></p>
+                <% if (cmd.aliases && cmd.aliases.length > 0) { %>
+                <p class="aliases">Aliases: <%= cmd.aliases.join(', ') %></p>
+                <% } %>
+                <span class="badge"><%= cmd.category %></span>
             </div>
-
-            <div class="commands-grid" id="commandsContainer">
-                <% commands.forEach(cmd => { %>
-                    <div class="command-card" data-name="<%= cmd.name %>" data-category="<%= cmd.category %>">
-                        <div class="command-info">
-                            <h4><%= cmd.name %></h4>
-                            <p><%= cmd.description %></p>
-                        </div>
-                        <div class="command-usage"><%= cmd.usage %> usage</div>
-                    </div>
-                <% }); %>
-            </div>
+            <% }); %>
         </div>
     </div>
 
-    <script>
-        const searchInput = document.getElementById('commandSearch');
-        const commandCards = document.querySelectorAll('.command-card');
-
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            
-            commandCards.forEach(card => {
-                const name = card.dataset.name.toLowerCase();
-                const category = card.dataset.category.toLowerCase();
-                
-                if (name.includes(searchTerm) || category.includes(searchTerm)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    </script>
-    <%- include('partials/footer') %>
+    <footer>
+        <p>&copy; 2025 Suika Bot | Made by Gtajisan</p>
+    </footer>
 </body>
 </html>

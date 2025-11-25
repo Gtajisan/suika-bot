@@ -6,7 +6,7 @@ const session = require('express-session');
 const log = require('../logger/log.js');
 
 const app = express();
-const PORT = process.env.DASHBOARD_PORT || 3000;
+const PORT = process.env.DASHBOARD_PORT || 5000;
 
 // Middleware
 app.use(bodyParser.json());
@@ -14,8 +14,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
+
 app.use(session({
-    secret: 'suika-bot-secret',
+    secret: 'suika-bot-secret-2025',
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
@@ -32,7 +39,15 @@ app.use('/commands', require('./routes/commands.js'));
 
 // Home route
 app.get('/', (req, res) => {
-    res.redirect('/dashboard');
+    res.render('index', { title: 'Suika Bot' });
+});
+
+app.get('/about', (req, res) => {
+    res.render('about', { title: 'About Suika Bot' });
+});
+
+app.get('/features', (req, res) => {
+    res.render('features', { title: 'Features' });
 });
 
 // 404 handler
@@ -41,8 +56,8 @@ app.use((req, res) => {
 });
 
 function startDashboard() {
-    app.listen(PORT, () => {
-        log.info(`Dashboard running on http://localhost:${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+        log.info(`🍈 Dashboard running on http://0.0.0.0:${PORT}`);
     });
 }
 

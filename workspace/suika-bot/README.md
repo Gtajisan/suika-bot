@@ -1,431 +1,603 @@
-# 🍈 Suika Bot - Telegram Bot Platform
+# 🍈 SUIKA BOT - TELEGRAM
 
-A powerful, feature-rich Telegram bot built on Node.js with 94 commands, SQLite database, multi-language support, and admin dashboard.
+<div align="center">
 
-**Original Creator:** Rento-Bot  
-**Converted to Telegram by:** Gtajisan  
-**Framework:** Telegraf (Official Telegram API for Node.js)
+### Advanced Telegram Bot with 99+ Commands
+**Economy • Games • Admin Tools • AI Features • Multi-Language**
+
+![Suika Bot](https://img.shields.io/badge/Suika%20Bot-1.0.0-blue?style=for-the-badge)
+![Node.js](https://img.shields.io/badge/Node.js-v20+-green?style=for-the-badge)
+![Telegraf](https://img.shields.io/badge/Telegraf-Latest-blue?style=for-the-badge)
+![SQLite](https://img.shields.io/badge/Database-SQLite-yellow?style=for-the-badge)
+
+</div>
 
 ---
 
-## ✨ Features
+## 📸 Preview
 
-- ✅ **94 Complete Commands** - Economy, games, utilities, admin tools, and more
-- ✅ **SQLite Database** - Fast, reliable local storage like Goat Bot V2
-- ✅ **Multi-Language Support** - English, Nepali, and extensible to more
-- ✅ **Command Aliases** - Multiple names for same command
-- ✅ **User Database** - Tracks wallet, bank, level, experience
-- ✅ **Admin System** - Role-based permission management
-- ✅ **Cooldown System** - Prevents command spam
-- ✅ **Event Handlers** - Responds to various Telegram events
-- ✅ **Error Handling** - Comprehensive error tracking and logging
-- ✅ **Telegram Native** - Full Telegram API integration with Telegraf
+> **Hero Section Placeholder**
+> ```
+> Add screenshot of bot dashboard here
+> Dashboard URL: http://your-domain.com
+> ```
+
+> **Features Showcase Placeholder**
+> ```
+> Add bot commands in action screenshots
+> Anime-style UI mockups
+> Command examples
+> ```
+
+---
+
+## ✨ Features Overview
+
+<table align="center">
+<tr>
+<td align="center" width="33%">
+
+### 💰 Economy System
+- Wallet & Bank
+- Daily Rewards
+- Work Shifts
+- Steal & Rob
+- Transfer Money
+- Shop System
+
+</td>
+<td align="center" width="33%">
+
+### 🎮 Games & Fun
+- Tic-Tac-Toe
+- Quiz Challenges
+- Slot Machine
+- Pair Matching
+- Number Guessing
+- And More!
+
+</td>
+<td align="center" width="33%">
+
+### 🤖 AI Features
+- AI Chat
+- Image Generation
+- Code Compilation
+- Text Translation
+- GitHub Info
+- And More!
+
+</td>
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<td align="center" width="33%">
+
+### 👨‍💼 Admin Tools
+- User Management
+- Group Moderation
+- Ban/Kick/Mute
+- Warning System
+- Slowmode
+- And More!
+
+</td>
+<td align="center" width="33%">
+
+### 📊 User Stats
+- Leaderboard
+- User Profile
+- Experience Level
+- Rich History
+- Statistics
+- And More!
+
+</td>
+<td align="center" width="33%">
+
+### 🌐 Multi-Language
+- English (EN)
+- Nepali (NE)
+- Easy Extension
+- Dynamic Language
+- Multi-Region
+- And More!
+
+</td>
+</tr>
+</table>
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js v14+
-- Telegram Bot Token (get from @BotFather)
+### Step 1: Prerequisites
 
-### Installation
-
-1. **Clone/Copy Project**
 ```bash
-# If cloning fresh
-git clone https://github.com/yourusername/suika-bot.git
-cd suika-bot
+# Check Node.js version (v20+)
+node --version
+
+# Or install Node.js from https://nodejs.org
 ```
 
-2. **Install Dependencies**
+### Step 2: Installation
+
 ```bash
+# Clone or download the project
+git clone https://github.com/yourusername/suika-bot.git
+cd suika-bot
+
+# Install dependencies
 npm install
 ```
 
-3. **Set Telegram Token**
-- Go to Replit Secrets (🔒 icon)
-- Add: `TELEGRAM_BOT_TOKEN` = your token from @BotFather
+### Step 3: Configure Bot
 
-4. **Configure (Optional)**
-```bash
-# Edit config.json for customization
-nano config.json
+Edit `config.json`:
+```json
+{
+  "telegram": {
+    "token": "YOUR_BOT_TOKEN_HERE"
+  },
+  "dashboard": {
+    "title": "Suika Bot",
+    "groups": {
+      "main": "https://t.me/your_group",
+      "support": "https://t.me/your_support"
+    }
+  }
+}
 ```
 
-5. **Start Bot**
+### Step 4: Run Bot
+
 ```bash
 npm start
 ```
 
-Bot will display: `✅ Suika Bot started successfully!`
+**Output:**
+```
+╔════════════════════════════════════╗
+║    SUIKA BOT - TELEGRAM           ║
+║  Powerful Moderation & Games      ║
+╚════════════════════════════════════╝
+
+[INITIALIZATION STARTED]
+════════════════════════
+[INFO] Initializing database...
+[DONE] Database initialized
+[INFO] Loading commands...
+[DONE] Loaded 99 commands
+...
+[DONE] Suika Bot is ready and operational!
+```
 
 ---
 
-## 📋 Available Commands (94 Total)
+## 📋 Command Categories (99 Total)
 
-### 💰 Economy Commands
-- `/balance` or `/bal` - Check wallet & bank
-- `/daily` - Claim daily reward
-- `/work` - Earn money working
-- `/rob` - Steal from other users
-- `/bank` - Manage bank account
-- `/transfer` - Send money to users
-- `/shop` - Buy items in shop
-- `/inventory` - Check purchased items
-- `/addmoney` - Admin: Add money to user
-- `/setcoin` - Admin: Set user money
-- `/setexp` - Admin: Set experience
+### 💰 Economy Commands (11)
 
-### 📊 Stats & Info
-- `/ping` - Check bot latency
-- `/botinfo` - Bot information
-- `/myinfo` - Your profile
-- `/stats` or `/level` - Your statistics
-- `/leaderboard` - Top users ranking
-- `/uptime` - Bot uptime
-- `/user` - Get user info
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/balance` | `/balance` | Check wallet & bank |
+| `/daily` | `/daily` | Claim daily reward |
+| `/work` | `/work` | Work and earn money |
+| `/rob` | `/rob @user` | Rob another user |
+| `/bank` | `/bank deposit 100` | Bank operations |
+| `/transfer` | `/transfer @user 500` | Send money |
+| `/shop` | `/shop` | Buy items |
+| `/inventory` | `/inventory` | Your items |
+| `/leaderboard` | `/leaderboard` | Top users |
+| `/stats` | `/stats` | Your stats |
+| `/user` | `/user @user` | User profile |
 
-### 🎮 Games
-- `/tictactoe` - Play tic-tac-toe
-- `/quiz` - Answer questions
-- `/slot` - Slot machine
-- `/pair` - Matching game
-- `/guess` - Guess the number
+### 🎮 Games & Fun (15)
 
-### 🎨 Fun & Entertainment
-- `/anime` - Anime information
-- `/meme` - Random meme
-- `/hug` - Hug someone
-- `/kiss` - Kiss someone
-- `/slap` - Slap someone
-- `/neko` - Random cat image
-- `/talk` - Talk to bot
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/tictactoe` | `/tictactoe @user` | Play tic-tac-toe |
+| `/quiz` | `/quiz` | Answer questions |
+| `/slot` | `/slot 100` | Slot machine |
+| `/pair` | `/pair` | Matching game |
+| `/guess` | `/guess` | Guess number |
+| `/hug` | `/hug @user` | Hug someone |
+| `/kiss` | `/kiss @user` | Kiss someone |
+| `/slap` | `/slap @user` | Slap someone |
+| `/neko` | `/neko` | Cat image |
+| `/meme` | `/meme` | Random meme |
+| `/anime` | `/anime naruto` | Anime info |
+| `/movie` | `/movie` | Movie search |
+| `/pet` | `/pet` | Pet interaction |
+| `/pair` | `/pair` | Memory game |
+| `/insult` | `/insult @user` | Fun insults |
 
-### 🎵 Media & Utilities
-- `/youtube` or `/ytb` - YouTube video info
-- `/tiktok` - TikTok video info
-- `/spotify` - Spotify song info
-- `/weather` - Weather information
-- `/news` - Latest news
-- `/wiki` - Wikipedia search
-- `/movie` - Movie information
-- `/translate` - Translate text
+### 🤖 AI & Tech (12)
 
-### 👨‍💼 Admin Commands
-- `/admin` - Manage admins
-- `/clear` - Clear messages
-- `/kick` - Kick user
-- `/ban` - Ban user
-- `/mute` - Mute user
-- `/warn` - Warn user
-- `/slowmode` - Set slowmode
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/ai` | `/ai hello` | Chat with AI |
+| `/aigen` | `/aigen flux-v3 cat` | Generate images |
+| `/github` | `/github torvalds` | GitHub user info |
+| `/upscale` | `/upscale 4x` | Image upscaling |
+| `/compile` | `/compile` | Compile code |
+| `/talk` | `/talk` | Talk to bot |
+| `/translate` | `/translate en hi text` | Translate text |
+| `/weather` | `/weather london` | Weather info |
+| `/wiki` | `/wiki` | Wikipedia search |
+| `/news` | `/news` | Latest news |
+| `/spotify` | `/spotify` | Spotify track |
+| `/tiktok` | `/tiktok` | TikTok video |
 
-### ⚙️ Configuration
-- `/config` - Bot configuration
-- `/setprefix` - Change prefix
-- `/setlang` - Set language
-- `/notification` - Notification settings
+### 👨‍💼 Admin Commands (13)
 
-### 🔧 Developer Commands
-- `/eval` - Execute code (dev only)
-- `/shell` - Execute shell commands (dev only)
-- `/restart` - Restart bot (dev only)
-- `/update` - Update bot (dev only)
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/kick` | `/kick @user` | Remove user |
+| `/ban` | `/ban @user` | Ban user |
+| `/mute` | `/mute @user 5m` | Mute user |
+| `/warn` | `/warn @user` | Warn user |
+| `/clear` | `/clear 10` | Delete messages |
+| `/slowmode` | `/slowmode 5` | Slowmode |
+| `/admin` | `/admin add @user` | Manage admins |
+| `/onlyadmin` | `/onlyadmin` | Admin only |
+| `/unlock` | `/unlock` | Unlock chat |
+| `/lock` | `/lock` | Lock chat |
+| `/pin` | `/pin` | Pin message |
+| `/unpin` | `/unpin` | Unpin message |
+| `/announce` | `/announce text` | Make announcement |
+
+### ⚙️ Configuration (8)
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/config` | `/config` | View config |
+| `/setprefix` | `/setprefix !` | Change prefix |
+| `/setlang` | `/setlang en` | Set language |
+| `/notification` | `/notification on` | Toggle notifications |
+| `/setcoin` | `/setcoin @user 1000` | Set user money |
+| `/setexp` | `/setexp @user 500` | Set user XP |
+| `/reset` | `/reset @user` | Reset user data |
+| `/help` | `/help` | Bot help |
+
+### 🔧 Owner/Dev Commands (20+)
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/eval` | `/eval code` | Execute code |
+| `/shell` | `/shell ls -la` | Shell commands |
+| `/restart` | `/restart` | Restart bot |
+| `/update` | `/update` | Update bot |
+| `/clearcache` | `/clearcache` | Clear cache |
+| `/botinfo` | `/botinfo` | Bot info |
+| `/ping` | `/ping` | Check latency |
+| `/uptime` | `/uptime` | Bot uptime |
+| `/myinfo` | `/myinfo` | Your profile |
+| `/status` | `/status` | Full status |
+| And 10+ more... | | |
 
 ---
 
-## 🗄️ Project Structure
+## 📊 Dashboard
+
+### Features
+- **Real-Time Statistics** - Live user count, commands, uptime
+- **Leaderboard** - Top users by wealth
+- **Command Browser** - View all 99 commands
+- **Community Links** - Telegram group links
+- **Responsive Design** - Works on mobile & desktop
+- **Fast & Lightweight** - Optimized performance
+
+### Access Dashboard
+```
+http://0.0.0.0:5000
+```
+
+### Dashboard Routes
+| Route | Purpose |
+|-------|---------|
+| `/` | Home page |
+| `/dashboard` | Main dashboard |
+| `/commands` | Commands list |
+| `/features` | Features |
+| `/api/stats` | JSON stats |
+| `/api/leaderboard` | Top users |
+
+---
+
+## 🗂️ Project Structure
 
 ```
 suika-bot/
-├── commands/                    # 94 Command files
+├── commands/                 # 99 command files
 │   ├── balance.js
 │   ├── daily.js
-│   ├── ping.js
-│   └── ... (91 more)
+│   ├── ai.js
+│   └── ... (96 more)
+├── dashboard/               # Web dashboard
+│   ├── app.js
+│   ├── routes/              # 14 route files
+│   ├── views/               # 14 EJS templates
+│   └── public/css/          # Styling
 ├── database/
-│   ├── index.js                # Database router (MongoDB/SQLite)
-│   ├── sqlite.js               # SQLite implementation
-│   ├── usersData.js            # MongoDB implementation
-│   └── models/
-│       └── User.js             # User schema
+│   ├── index.js             # Database router
+│   ├── sqlite.js            # SQLite driver
+│   └── models/              # Database models
 ├── handlers/
-│   ├── loadCommands.js         # Command loader
-│   └── loadEvents.js           # Event handlers
-├── adapters/
-│   └── discord-to-telegram.js  # Compatibility layer
+│   ├── loadCommands.js      # Command loader
+│   └── loadEvents.js        # Event handlers
 ├── logger/
-│   ├── log.js                  # Logger utility
-│   └── errorNotifier.js        # Error handling
-├── utils/
-│   ├── utils.js                # Common utilities
-│   └── ... (other utils)
-├── scripts/                    # Automation scripts
-├── dashboard/                  # Web dashboard (optional)
-├── Bot.js                      # Main bot file
-├── index.js                    # Entry point
-├── loadConfig.js               # Configuration loader
-├── config.json                 # Configuration file
-├── package.json                # Dependencies
-├── COMMAND_BUILDER.md          # Guide to build commands
-└── README.md                   # This file
+│   ├── console.js           # Advanced console
+│   ├── startup.js           # Startup display
+│   └── log.js               # Logger utility
+├── Bot.js                   # Main bot file
+├── index.js                 # Entry point
+├── config.json              # Configuration
+├── package.json             # Dependencies
+└── README.md                # This file
 ```
 
 ---
 
-## 🗄️ Database
+## 💾 Database
 
 ### SQLite (Default)
+- **File-based** - No setup required
+- **Fast** - Optimized for speed
+- **Local** - Data stored in `/data/suika.db`
+- **Reliable** - ACID transactions
 
-Fast, file-based database stored at `/data/suika.db`
-
-**User Schema:**
-```
-├── telegramId (primary key)
-├── firstName
-├── lastName
-├── username
-├── money (wallet)
-├── bank
-├── level
-├── experience
-├── lastDaily (timestamp)
-├── createdAt (timestamp)
-└── updatedAt (timestamp)
-```
-
-**Access in Commands:**
+### User Data
 ```javascript
-// Get user
-const user = await usersData.get(userId);
-
-// Update user
-await usersData.set(userId, { money: 5000, level: 10 });
-
-// Get all users
-const allUsers = await usersData.getAll();
+{
+  telegramId,      // User ID
+  firstName,       // First name
+  lastName,        // Last name
+  username,        // Telegram username
+  money,           // Wallet balance
+  bank,            // Bank balance
+  level,           // User level
+  experience,      // User XP
+  lastDaily,       // Last daily claim
+  createdAt,       // Account creation
+  updatedAt        // Last update
+}
 ```
 
 ### MongoDB (Optional)
-
-Set `MONGODB_URI` in Replit Secrets to use MongoDB instead of SQLite:
-
-```
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dbname
+```bash
+# Set in config.json or env:
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/dbname
 ```
 
 ---
 
 ## ⚙️ Configuration
 
-Edit `config.json` to customize:
-
+### config.json
 ```json
 {
   "telegram": {
-    "token": "your-token-here"
+    "token": "YOUR_BOT_TOKEN"
   },
   "bot": {
     "prefix": "/",
+    "timezone": "Asia/Kathmandu",
     "defaultLang": "en",
-    "timezone": "UTC",
     "adminBot": [123456789]
   },
-  "database": {
-    "mongodbUri": ""
+  "dashboard": {
+    "title": "Suika Bot",
+    "description": "Powerful Telegram Bot",
+    "groups": {
+      "main": "https://t.me/group",
+      "support": "https://t.me/support",
+      "updates": "https://t.me/updates"
+    },
+    "socials": {
+      "github": "https://github.com/...",
+      "telegram": "https://t.me/...",
+      "instagram": "https://instagram.com/...",
+      "discord": "https://discord.gg/..."
+    }
   }
 }
 ```
 
-**Environment Variables:**
+### Environment Variables
 ```bash
-TELEGRAM_BOT_TOKEN    # Required: Bot token
-MONGODB_URI          # Optional: MongoDB connection
-BOT_PREFIX           # Optional: Command prefix (default: /)
-BOT_TIMEZONE         # Optional: Timezone (default: UTC)
-BOT_ADMIN_ID         # Optional: Admin user ID
+TELEGRAM_BOT_TOKEN    # Bot token (required)
+MONGODB_URI          # MongoDB connection (optional)
+BOT_PREFIX           # Command prefix (default: /)
+BOT_TIMEZONE         # Timezone (default: UTC)
+DASHBOARD_PORT       # Dashboard port (default: 5000)
 ```
 
 ---
 
-## 🛠️ Creating New Commands
+## 🎯 Creating Commands
 
-See **COMMAND_BUILDER.md** for detailed guide.
-
-### Quick Command Template
-
+### Template
 ```javascript
 module.exports = {
     config: {
         name: "mycommand",
-        version: "1.0",
-        author: "Your Name",
-        role: 0,
-        category: "general",
-        description: { en: "My command", ne: "मेरो कमान्ड" },
-        guide: { en: "/mycommand", ne: "/mycommand" }
+        aliases: ["alias1", "alias2"],
+        description: { en: "My command" },
+        category: "fun",
+        countDown: 3
     },
-    langs: {
-        en: { success: "✅ Done" },
-        ne: { success: "✅ पूर्ण" }
-    },
-    onStart: async ({ ctx, getLang }) => {
-        ctx.reply(getLang("success"));
+    run: async (msg, args, bot) => {
+        // Your code here
+        return msg.reply("Hello!");
     }
 };
 ```
 
-Save as `commands/mycommand.js` and restart bot. That's it! ✨
-
----
-
-## 📝 Logging
-
-View bot logs to debug issues:
-
-- **Console Output** - Real-time logs during development
-- **Log Format** - `[HH:MM:SS] [Level] message`
-
-**Log Levels:**
-```
-[INFO]  - General information
-[WARN]  - Warnings
-[ERROR] - Errors
-[DEBUG] - Debug information
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Bot Not Starting
-```
-Error: Cannot find module 'telegraf'
-Solution: Run: npm install
-```
-
-### Missing Telegram Token
-```
-Error: Missing Telegram Bot Token!
-Solution: Add TELEGRAM_BOT_TOKEN to Replit Secrets
-```
-
-### Commands Not Loading
-```
-Check bot logs for command errors
-Ensure commands are in /commands folder
-Verify command export structure
-```
-
-### Database Errors
-```
-SQLite errors: Check /data/suika.db permissions
-MongoDB errors: Verify MONGODB_URI format
-```
+### Save & Restart
+1. Save as `commands/mycommand.js`
+2. Restart bot: `npm start`
+3. Command automatically loads!
 
 ---
 
 ## 📊 Performance
 
-- **Command Load Time** - <100ms
-- **Response Time** - <500ms average
-- **Concurrent Users** - Unlimited (Telegraf handles polling)
-- **Database Queries** - Instant (SQLite optimized)
+| Metric | Value |
+|--------|-------|
+| Commands Load Time | <100ms |
+| Response Time | <500ms |
+| Memory Usage | ~27MB |
+| Database Speed | Instant |
+| Concurrent Users | Unlimited |
 
 ---
 
 ## 🔒 Security
 
-- ✅ Bot token secured in Replit Secrets
-- ✅ Admin roles enforce permission checking
-- ✅ Input validation on all commands
-- ✅ Rate limiting via cooldown system
-- ✅ Error handling prevents crashes
+✅ **Token Security** - Secrets stored safely  
+✅ **Input Validation** - All inputs checked  
+✅ **Rate Limiting** - Cooldown system  
+✅ **Error Handling** - Crashes prevented  
+✅ **Permission Check** - Role-based access  
+✅ **Logging** - Full audit trail  
 
 ---
 
-## 📚 Documentation
+## 📖 Documentation
 
-- **COMMAND_BUILDER.md** - Complete guide to creating commands
-- **commands/*.js** - Real command examples (94 total)
-- **rento_original_DOCS.md** - Original documentation reference
+- **README.md** - This file
+- **SETUP_GUIDE.md** - Detailed setup guide
+- **DASHBOARD.md** - Dashboard documentation
+- **TEST_COMMANDS.md** - Command test report
+- **COMMAND_BUILDER.md** - Build custom commands
+
+---
+
+## 🐛 Troubleshooting
+
+### Bot won't start
+```
+Error: Cannot find module 'telegraf'
+Fix: npm install
+```
+
+### Missing bot token
+```
+Error: Telegram token not found
+Fix: Add token to config.json
+```
+
+### Commands not loading
+```
+Error: Commands failed to load
+Fix: Check commands/ folder structure
+Check for syntax errors in command files
+```
+
+### Database errors
+```
+SQLite: Check /data folder permissions
+MongoDB: Verify connection string
+```
+
+---
+
+## 🎓 Learning Resources
+
+### Telegraf Documentation
+https://telegraf.js.org/
+
+### Command Examples
+- See `/commands` folder (99 working examples)
+- Check COMMAND_BUILDER.md for detailed guide
+
+### Database Guide
+- SQLite: `/database/sqlite.js`
+- MongoDB: `/database/usersData.js`
 
 ---
 
 ## 🤝 Contributing
 
-To add or improve commands:
-
-1. Create command in `commands/` folder
-2. Follow structure from COMMAND_BUILDER.md
-3. Test with bot before committing
-4. Add to README.md commands list
-5. Submit for review
+To contribute:
+1. Fork the repository
+2. Create feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit pull request
 
 ---
 
-## 📄 License
+## 📜 License
 
-Based on original Rento-Bot project. Modified and maintained by Gtajisan.
+Based on original **Rento-Bot** project.  
+Modified and maintained by **Gtajisan**.
 
 ---
 
 ## 👥 Credits
 
-- **Original Creator**: Rento-Bot developers
-- **Telegram Conversion**: Gtajisan
-- **Framework**: Telegraf.js team
-- **Database**: SQLite & MongoDB
-- **Community**: All contributors and users
+| Contributor | Role |
+|------------|------|
+| **Rento-Bot Team** | Original Creator |
+| **Gtajisan** | Telegram Conversion |
+| **Telegraf.js** | Framework |
+| **SQLite Team** | Database |
+| **Community** | Support & Ideas |
 
 ---
 
 ## 🚀 Deployment
 
-### Deploy to Production
+### Deploy on Replit (Free)
+1. Fork on GitHub
+2. Import to Replit
+3. Set bot token in secrets
+4. Click Run
+5. Done! 🎉
 
-1. **Push to GitHub**
-```bash
-git add .
-git commit -m "Deploy Suika Bot v1.0"
-git push origin main
-```
-
-2. **Deploy on Replit**
-- Click "Publish" button
-- Choose deployment type
-- Configure domain
-- Wait for deployment
-
-3. **Monitor**
-- Check logs regularly
-- Update commands as needed
-- Handle user feedback
+### Deploy on VPS
+1. Setup Node.js
+2. Clone repository
+3. Install dependencies
+4. Setup systemd service
+5. Run and monitor
 
 ---
 
 ## 📞 Support
 
-For issues:
-1. Check logs: `npm start`
-2. Review COMMAND_BUILDER.md
-3. Check existing commands for examples
-4. Report bugs with full error messages
+For help:
+1. Check documentation
+2. Review command examples
+3. Check logs: `npm start`
+4. Report issues with error messages
 
 ---
 
-## 🎯 Roadmap
+## 🎉 What's New
 
-- [ ] Web dashboard for stats
-- [ ] More mini-games
-- [ ] Music streaming integration
-- [ ] Group moderation tools
-- [ ] Advanced analytics
-- [ ] Custom command creation UI
+**v1.0.0 - Official Release**
+- 99 commands loaded
+- Advanced console output
+- Beautiful dashboard
+- Complete documentation
+- Multi-language support
+- SQLite + MongoDB support
 
 ---
 
-**Made with ❤️ by Gtajisan**
+<div align="center">
 
-*Suika Bot - Transform Your Telegram Experience* 🍈
+### 🍈 Made with ❤️ by Gtajisan
+
+**Suika Bot - Transform Your Telegram Experience**
+
+[GitHub](https://github.com/Gtajisan/suika-bot) • [Telegram](https://t.me/suika_bot) • [Dashboard](#)
+
+![Visitors](https://img.shields.io/badge/Made%20By-Gtajisan-red?style=for-the-badge)
+
+</div>
