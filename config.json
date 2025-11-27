@@ -1,13 +1,34 @@
 {
   "telegram": {
-    "token": ""
+    "token": "YOUR_BOT_TOKEN_HERE"
   },
+
   "database": {
-    "mongodbUri": ""
+    "mongodbUri": "mongodb+srv://user:pass@cluster.mongodb.net/dbname"
   },
+
   "bot": {
     "prefix": "/",
-    "timezone": "Asia/Kathmandu",
-    "adminBot": []
+    "timezone": "Asia/Dhaka",
+    "defaultLang": "en",
+    "adminBot": [123456789]
+  },
+
+  "dashboard": {
+    "title": "Suika Bot",
+    "description": "Telegram bot with games and economy",
+
+    "groups": {
+      "main": "https://t.me/your_main_group",
+      "support": "https://t.me/your_support_group",
+      "updates": "https://t.me/your_updates_channel"
+    },
+
+    "socials": {
+      "github": "https://github.com/your-repo",
+      "telegram": "https://t.me/your_bot",
+      "instagram": "",
+      "discord": ""
+    }
   }
 }
